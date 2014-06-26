@@ -11,6 +11,8 @@ module shift_reg #(parameter width = 11,
 						 input reset,
 						 output reg [width-1:0] q
 						);
+						
+reg [3:0] count;
 						 
 always@(posedge clk) begin
 	if (reset)
@@ -20,7 +22,7 @@ always@(posedge clk) begin
 			q <= q << 1;
 			q[0] <= d;
 			if (d == 0)
-				even_count <= even_count + 1;
+				count <= count + 1;
 		end
 	end
 end

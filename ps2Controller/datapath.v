@@ -13,7 +13,7 @@ wire [10:0] data_parallel;
 wire [7:0] scancode_out;
 wire [4:0] even_count;
 
-shift_reg sreg(.clk(clk), .d(data), .en(shift_left), .q(data_parallel), .even_count(even_count);
+shift_reg sreg(.clk(clk), .d(data), .en(shift_left), .q(data_parallel), .even_count(even_count));
 
 //Check start and stop bits
 assign frame_valid = data_parallel[0] & (~data_parallel[10]);

@@ -1,25 +1,53 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    21:18:43 06/25/2014 
-// Design Name: 
-// Module Name:    tb_shift_reg 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
-module tb_shift_reg(
-    );
 
+//PASS 6/25
+module tb_shift_reg();
+						 
+parameter WIDTH = 8;
+
+reg clk;
+reg d;
+reg en;
+reg reset;
+wire[WIDTH-1:0] q;
+
+shift_reg #(WIDTH) sreg(.clk(clk), .d(d), .en(en), .reset(reset), .q(q));
+
+initial begin
+	clk = 0;
+	d = 0;
+	en = 0;
+	reset = 1;
+	#5
+	en = 1;
+	d = 1;
+	#10
+	reset = 0;
+	d = 0;
+	#10
+	d = 1;
+	#10 
+	d = 0;
+	#10
+	d = 1;
+	#10 
+	d = 0;
+	#10
+	d = 1;
+	#10 
+	d = 0;
+	#10
+	d = 1;
+	#10 
+	d = 0;
+	#10
+	reset = 1;
+	#10
+	d = 1;
+end
+
+always begin
+	#5 clk = ~clk;
+end
 
 endmodule

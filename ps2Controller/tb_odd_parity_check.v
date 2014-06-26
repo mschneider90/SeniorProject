@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-//6/25 PASS
+//PASS 6/25
 module tb_odd_parity_check();
 
 reg serial;
