@@ -1,7 +1,19 @@
-*.html
-*.gise
-*.xmsgs
-*.project
+#ignore everything
+*
+
+#except subdirectories
+!*/
+#and .gitignore
+!.gitignore
+
+#and the verilog files we actually want
+!*.v
+!*.bit
+!*.ucf
+!*.xise
+
+
+
 
 
 
