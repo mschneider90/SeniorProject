@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 
-//shift_reg with synhronous reset
+//shift_reg with synchronous reset
 //Converts a serial input stream to parallel out
-//Also computes number of even bits for parity check purposes
 
 module shift_reg #(parameter width = 11,
                    parameter parity_width = 4)
@@ -10,8 +9,8 @@ module shift_reg #(parameter width = 11,
 						 input d,
 						 input en,
 						 input reset,
-						 output reg [width-1:0] q,
-						 output reg [parity_width-1:0] even_count); //for parity check. 
+						 output reg [width-1:0] q
+						);
 						 
 always@(posedge clk) begin
 	if (reset)
