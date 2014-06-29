@@ -1,21 +1,21 @@
-module alu(input      [31:0] a, b, 
-           input      [2:0]  alucont, 
-           output reg [31:0] result,
-           output            zero);
+module alu(input      [31:0] in_a, in_b, 
+           input      [2:0]  alu_op, 
+           output reg [31:0] alu_out,
+           output            alu_zero);
 
   wire [31:0] b2, sum, slt;
 
-  assign b2 = alucont[2] ? ~b:b; 
-  assign sum = a + b2 + alucont[2];
-  assign slt = sum[31];
+  assign b2 = alu_op[2] ? ~in_b:in_b; 
+  assign sum = in_a + b2 + alu_op[2];
+  assign slt = alu_out[31];
 
   always@(*)
-    case(alucont[1:0])
-      2'b00: result <= a & b;
-      2'b01: result <= a | b;
-      2'b10: result <= sum;
-      2'b11: result <= slt;
+    case(alu_op[1:0])
+      2'b00: alu_out <= in_a & in_b;
+      2'b01: alu_out <= in_a | in_b;
+      2'b10: alu_out <= sum;
+      2'b11: alu_out <= slt;
     endcase
 
-  assign zero = (result == 32'b0);
+  assign alu_zero = (result == 32'b0);
 endmodule

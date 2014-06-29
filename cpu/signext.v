@@ -1,5 +1,5 @@
-module signext(input  [15:0] a,
-               output [31:0] y);
+module signext(input  [15:0] in,
+               output [31:0] out_ext);
               
-  assign y = {{16{a[15]}}, a};
+  assign out_ext = {{16{in[15]}}, in};
 endmodule

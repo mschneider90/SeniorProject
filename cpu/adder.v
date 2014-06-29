@@ -1,5 +1,5 @@
 module adder(input [31:0] a, b,
-             output [31:0] y);
+             output [31:0] sum);
 
-  assign y = a + b;
+  assign sum = a + b;
 endmodule
