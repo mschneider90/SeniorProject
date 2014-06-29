@@ -3,8 +3,7 @@
 //shift_reg with synchronous reset
 //Converts a serial input stream to parallel out
 
-module shift_reg #(parameter width = 11,
-                   parameter parity_width = 4)
+module shift_reg #(parameter width = 11)
                   (input clk,
 						 input d,
 						 input en,
@@ -21,8 +20,6 @@ always@(posedge clk) begin
 		if (en) begin
 			q <= q << 1;
 			q[0] <= d;
-			if (d == 0)
-				count <= count + 1;
 		end
 	end
 end

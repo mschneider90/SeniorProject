@@ -17,5 +17,5 @@ module alu(input      [31:0] in_a, in_b,
       2'b11: alu_out <= slt;
     endcase
 
-  assign alu_zero = (result == 32'b0);
+  assign alu_zero = (alu_out == 32'b0);
 endmodule

@@ -1,17 +1,3 @@
-//--------------------------------------------------------------
-// mips.v
-// David_Harris@hmc.edu and Sarah_Harris@hmc.edu 23 October 2005
-// Single-cycle MIPS processor
-//--------------------------------------------------------------
-
-// files needed for simulation:
-//  mipsttest.v
-//  mipstop.v
-//  mipsmem.v
-//  mips.v
-//  mipsparts.v
-
-// single-cycle MIPS processor
 module mips #(parameter dwidth = 32)
            (input clk, reset,
             output [dwidth-1:0] pc,

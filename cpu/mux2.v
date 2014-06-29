@@ -4,5 +4,5 @@ module mux2 #(parameter WIDTH = 8)
               input              mux_sel, 
               output [WIDTH-1:0] mux_out);
 
-  assign y = s ? d1 : d0; 
+  assign mux_out = mux_sel ? in_b : in_a; 
 endmodule
