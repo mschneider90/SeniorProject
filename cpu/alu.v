@@ -7,7 +7,7 @@ module alu(input      [31:0] in_a, in_b,
 
   assign b2 = alu_op[2] ? ~in_b:in_b; 
   assign sum = in_a + b2 + alu_op[2];
-  assign slt = alu_out[31];
+  assign slt = sum[31];
 
   always@(*)
     case(alu_op[1:0])
