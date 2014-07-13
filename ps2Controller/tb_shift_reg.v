@@ -11,7 +11,7 @@ reg en;
 reg reset;
 wire[WIDTH-1:0] q;
 
-shift_reg #(WIDTH) sreg(.clk(clk), .d(d), .en(en), .reset(reset), .q(q));
+ShiftReg #(WIDTH) sreg(.clk(clk), .d(d), .en(en), .reset(reset), .q(q));
 
 initial begin
 	clk = 0;

@@ -8,7 +8,7 @@ reg clk;
 reg reset;
 wire parity;
 
-odd_parity_check pc(.serial_in(serial), .clk(clk), .reset(reset), .parity_valid(parity));
+OddParityCheck pc(.serial_in(serial), .clk(clk), .reset(reset), .parity_valid(parity));
 
 initial begin
 	clk <= 0;

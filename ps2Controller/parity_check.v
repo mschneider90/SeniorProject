@@ -4,10 +4,10 @@
 //Checks for valid odd parity, with synchronous reset
 //Odd parity: number of ONES plus PARITY BIT equals an odd number
 
-module odd_parity_check (input serial_in,
-								 input clk,
-								 input reset,
-                         output parity_valid);
+module OddParityCheck (input serial_in,
+			           input clk,
+					   input reset,
+                       output parity_valid);
 								 
 reg[3:0] counter;
 

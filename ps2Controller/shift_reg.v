@@ -3,13 +3,13 @@
 //shift_reg with synchronous reset
 //Converts a serial input stream to parallel out
 
-module shift_reg #(parameter width = 11)
+module ShiftReg #(parameter width = 11)
                   (input clk,
-						 input d,
-						 input en,
-						 input reset,
-						 output reg [width-1:0] q
-						);
+				   input d,
+				   input en,
+			       input reset,
+				   output reg [width-1:0] q
+			      );
 						
 reg [3:0] count;
 						 
