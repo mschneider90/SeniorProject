@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/ps2Controller/tb_ps2_state_controller_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_ps2_state_controller" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/tb_ps2_state_controller/shift_en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">shift_en</obj_property>
+      <obj_property name="ObjectShortName">shift_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/write_en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">write_en</obj_property>
+      <obj_property name="ObjectShortName">write_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/frame_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_valid</obj_property>
+      <obj_property name="ObjectShortName">frame_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/data" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">data</obj_property>
+      <obj_property name="ObjectShortName">data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/parity_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">parity_valid</obj_property>
+      <obj_property name="ObjectShortName">parity_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/control/state" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/control/next_state" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">next_state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ps2_state_controller/control/data_latch" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">data_latch</obj_property>
+      <obj_property name="ObjectShortName">data_latch</obj_property>
+   </wvobject>
+</wave_config>

@@ -3,13 +3,13 @@
 module PS2StateController(input clk,
                           input data,
                           input parity_valid,
-                          output shift_en,
-                          output write_en,
-                          output reset,
-                          output frame_valid
+                          output reg shift_en,
+                          output reg write_en,
+                          output reg reset,
+                          output reg frame_valid
                          );
 
-reg[3:0] nextState;
+reg[3:0] next_state;
 reg[3:0] state;
 reg data_latch;
 
@@ -24,6 +24,11 @@ parameter STATE_D6 = 7;
 parameter STATE_D7 = 8;
 parameter STATE_PARITY = 9;
 parameter STATE_STOP = 10;
+
+initial begin
+    state <= STATE_START;
+    next_state <= STATE_START;
+end
 
 always@(state) begin
     case(state)
@@ -91,7 +96,7 @@ always@(state) begin
             write_en <= 0;
             shift_en <= 0;
             reset <= 0;
-            if (parity_valid && data_latch) begin //parity OK and stop bit
+            if (data_latch && parity_valid) begin //stop bit
                 frame_valid <= 1;
             end 
             else begin
@@ -108,50 +113,45 @@ always@(state) begin
 end
 
 always@(posedge clk) begin
-    state <= nextState;
-    case (state) 
+    state <= next_state;
+    case (next_state) 
         STATE_START: begin
-            if (data_latch == 0) begin
-                nextState <= STATE_D0;
+            if (data_latch == 1'b0) begin
+                next_state <= STATE_D0;
             end
             else begin
-                nextState <= STATE_START;
+                next_state <= STATE_START;
             end
         end
         STATE_D0: begin
-            nextState <= STATE_D1;
+            next_state <= STATE_D1;
         end
         STATE_D1: begin
-            nextState <= STATE_D2;
+            next_state <= STATE_D2;
         end
         STATE_D2: begin
-            nextState <= STATE_D3;
+            next_state <= STATE_D3;
         end
         STATE_D3: begin
-            nextState <= STATE_D4;
+            next_state <= STATE_D4;
         end
         STATE_D4: begin
-            nextState <= STATE_D5;
+            next_state <= STATE_D5;
         end
         STATE_D5: begin
-            nextState <= STATE_D6;
+            next_state <= STATE_D6;
         end
         STATE_D6: begin
-            nextState <= STATE_D7;
+            next_state <= STATE_D7;
         end
         STATE_D7: begin
-            nextState <= STATE_PARITY;
+            next_state <= STATE_PARITY;
         end
         STATE_PARITY: begin
-            if (parity_valid) begin
-                nextState <= STATE_STOP;
-            end
-            else begin
-                nextState <= STATE_START;
-            end
+            next_state <= STATE_STOP;
         end
         STATE_STOP: begin
-            nextState <= STATE_START;
+            next_state <= STATE_START;
         end
     endcase
 end

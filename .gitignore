@@ -1,17 +1,23 @@
 #ignore everything
 *
 
-#Exceptions
+#...except all of this stuff
 #subdirectories
 !*/
+
 #.gitignore
 !.gitignore
 
 #verilog
 !*.v
+
+#xilinx
 !*.bit
 !*.ucf
 !*.xise
+!*.wcfg
+
+#cpu mem file
 !*.dat
 
 #scripts
@@ -26,7 +32,7 @@
 #asm
 !*.asm
 
-#Exceptions to the exceptions
+#Exceptions to the exceptions (specifically exclude)
 /cpu/isim
 /ps2Controller/isim
 
