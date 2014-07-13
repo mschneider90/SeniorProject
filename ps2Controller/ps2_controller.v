@@ -1,14 +1,13 @@
 `timescale 1ns / 1ps
 
-module PS2Controller #(parameter DATA_WIDTH = 8,
-                       parameter FRAME_WIDTH = 11)
+module PS2Controller #(parameter DATA_WIDTH = 8)
                        (input clk,
                         input data_in,
                         output[DATA_WIDTH-1:0] data_out,
                         output valid 
                        );
                        
-wire[FRAME_WIDTH-1:0] sreg_out;
+wire[DATA_WIDTH-1:0] sreg_out;
 wire parity_valid;
 wire shift_en;
 wire write_en;
@@ -25,7 +24,7 @@ OddParityCheck p_check(.serial_in(data_in),
                        .reset(reset),
                        .parity_valid(parity_valid));
                        
-DFlipFlop #(.DATA_WIDTH(8)) d_reg(.d_in(sreg_out[FRAME_WIDTH-3:1]),
+DFlipFlop #(.DATA_WIDTH(8)) d_reg(.d_in(sreg_out[DATA_WIDTH-1:0]),
                                   .clk(clk),
                                   .write_en(write_en),
                                   .q_out(data_out));

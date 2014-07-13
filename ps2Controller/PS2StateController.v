@@ -11,7 +11,6 @@ module PS2StateController(input clk,
 
 reg[3:0] next_state;
 reg[3:0] state;
-reg data_latch;
 
 parameter STATE_START = 0;
 parameter STATE_D0 = 1;
@@ -30,7 +29,7 @@ initial begin
     next_state <= STATE_START;
 end
 
-always@(state) begin
+always@(*) begin
     case(state)
         STATE_START: begin
             write_en <= 0;
@@ -93,10 +92,10 @@ always@(state) begin
             frame_valid <= 0;
         end
         STATE_STOP: begin
-            write_en <= 0;
+            write_en <= 1;
             shift_en <= 0;
             reset <= 0;
-            if (data_latch && parity_valid) begin //stop bit
+            if (data && parity_valid) begin //stop bit
                 frame_valid <= 1;
             end 
             else begin
@@ -114,9 +113,12 @@ end
 
 always@(posedge clk) begin
     state <= next_state;
-    case (next_state) 
+end
+
+always@(negedge clk) begin
+    case (state) 
         STATE_START: begin
-            if (data_latch == 1'b0) begin
+            if (data == 1'b0) begin
                 next_state <= STATE_D0;
             end
             else begin
@@ -154,10 +156,6 @@ always@(posedge clk) begin
             next_state <= STATE_START;
         end
     endcase
-end
-
-always@(negedge clk) begin
-    data_latch <= data;
 end
 
 endmodule

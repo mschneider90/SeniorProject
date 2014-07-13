@@ -2,18 +2,17 @@
 
 //shift_reg with synchronous reset
 //Converts a serial input stream to parallel out
+//Reads at negedge of clk
 
-module ShiftReg #(parameter width = 11)
+module ShiftReg #(parameter width = 8)
                   (input clk,
 				   input d,
 				   input en,
 			       input reset,
 				   output reg [width-1:0] q
 			      );
-						
-reg [3:0] count;
 						 
-always@(posedge clk) begin
+always@(negedge clk) begin
 	if (reset)
 		q <= 0;
 	else begin
