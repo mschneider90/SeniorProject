@@ -1,13 +1,13 @@
 #Display the word on the LEDs
-NET data_out[7] LOC = R4;
-NET data_out[6] LOC = F4;
-NET data_out[5] LOC = P15;
-NET data_out[4] LOC = E17;
-NET data_out[3] LOC = K14; 
-NET data_out[2] LOC = K15;
-NET data_out[1] LOC = J15;
-NET data_out[0] LOC = J14;
+NET "data_out<7>" LOC = "R4";
+NET "data_out<6>" LOC = "F4";
+NET "data_out<5>" LOC = "P15";
+NET "data_out<4>" LOC = "E17";
+NET "data_out<3>" LOC = "K14"; 
+NET "data_out<2>" LOC = "K15";
+NET "data_out<1>" LOC = "J15";
+NET "data_out<0>" LOC = "J14";
 
 #PS/2 connector
-NET clk LOC = R12;
-NET data_in LOC = P11;
+NET "clk" LOC = "R12";
+NET "data_in" LOC = "P11";
