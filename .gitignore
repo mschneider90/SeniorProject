@@ -12,6 +12,7 @@
 !*.bit
 !*.ucf
 !*.xise
+!*.dat
 
 #scripts
 !*.sh
@@ -21,6 +22,9 @@
 !*.cpp
 !*.h
 !*.hpp
+
+#asm
+!*.asm
 
 #Exceptions to the exceptions
 /cpu/isim
