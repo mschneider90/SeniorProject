@@ -1,17 +1,30 @@
 #ignore everything
 *
 
-#except subdirectories
+#Exceptions
+#subdirectories
 !*/
-#and .gitignore
+#.gitignore
 !.gitignore
 
-#and the verilog files we actually want
+#verilog
 !*.v
 !*.bit
 !*.ucf
 !*.xise
 
+#scripts
+!*.sh
+
+#c++
+!*.c
+!*.cpp
+!*.h
+!*.hpp
+
+#Exceptions to the exceptions
+/cpu/isim
+/ps2Controller/isim
 
 
 
