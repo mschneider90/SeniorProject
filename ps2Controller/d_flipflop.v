@@ -5,8 +5,8 @@
 
 module DFlipFlop #(parameter DATA_WIDTH = 8)
                   (input      [DATA_WIDTH-1:0] d_in, 
-				   input                  clk, 
-                   input                  write_en,
+				   input                       clk, 
+                   input                       write_en,
 				   output reg [DATA_WIDTH-1:0] q_out);
 
 initial begin
