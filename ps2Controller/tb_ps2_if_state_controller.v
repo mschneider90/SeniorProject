@@ -10,7 +10,7 @@ wire write_en;
 wire reset;
 wire frame_valid;
 
-PS2StateController control(.clk(clk),
+PS2InterfaceStateController control(.clk(clk),
                            .data(data),
                            .parity_valid(parity_valid),
                            .shift_en(shift_en),

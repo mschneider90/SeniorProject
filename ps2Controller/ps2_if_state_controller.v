@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module PS2StateController(input clk,
+module PS2InterfaceStateController(input clk,
                           input data,
                           input parity_valid,
                           output reg shift_en,

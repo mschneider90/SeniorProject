@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_ps2_controller();
+module tb_ps2_if();
 
 reg clk;
 reg data_in;
@@ -9,7 +9,7 @@ wire valid;
 
 parameter[7:0] test_word = 8'b10110010;
 
-PS2Controller ps2ctrl(.clk(clk), .data_in(data_in), .data_out(data_out), .valid(valid));
+PS2Interface ps2ctrl(.clk(clk), .data_in(data_in), .data_out(data_out), .valid(valid));
 
 initial begin
     clk = 1;
