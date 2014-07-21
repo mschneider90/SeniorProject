@@ -14,8 +14,8 @@ reg[D_WIDTH-1:0] data_in;
 reg[D_WIDTH-1:0] data_out;									 
 reg[D_WIDTH-1:0] reg_file[RF_DEPTH-1:0];
 
-assign #1 read_data = reg_file[read_addr];
-assign #1 reg_file[write_addr] = data_in;
+assign read_data = reg_file[read_addr];
+assign reg_file[write_addr] = data_in;
 
 always@(posedge clk) begin
 	if (write_enable)

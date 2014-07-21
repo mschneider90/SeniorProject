@@ -11,7 +11,7 @@ module InstructionCache #(parameter DATA_WIDTH = 16,
 
 reg[DATA_WIDTH-1:0] data[DATA_DEPTH-1:0];
 
-assign #1 data_out = data_read;
+assign data_out = data_read;
 				  
 always@(posedge clk) begin
 	if (we)

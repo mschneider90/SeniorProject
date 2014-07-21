@@ -9,7 +9,7 @@ module Register #(parameter REG_WIDTH = 8)
 						
 reg[REG_WIDTH-1:0] data;
 
-assign #1 read_data = data;
+assign read_data = data;
 						
 always@(posedge clk) begin
 	if (reset)

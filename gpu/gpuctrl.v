@@ -39,8 +39,8 @@ reg[STATE_WIDTH-1:0] nextState;
 reg[CTRL_WIDTH-1:0] nextOutput;
 reg[7:0] programCounter;
 
-assign #1 currentState = nextState;
-assign #1 ctrl_out = nextOutput;
+assign currentState = nextState;
+assign ctrl_out = nextOutput;
 
 //Next state logic
 always@(posedge clk) begin

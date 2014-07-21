@@ -58,15 +58,15 @@ InstructionDecoder instrdec();
 //Pointer to the instruction memory
 Register prog_mem(.write_data(io),
                   .write_enable(control[WE_MODE]),
-						.clk(clk),
-						.reset(reset),
-						.read_data());
+                  .clk(clk),
+                  .reset(reset),
+                  .read_data());
 //Number of instructions
 Register num_instr(.write_data(io),
                    .write_enable(control[WE_NUMINSTR]),
-						 .clk(clk),
-						 .reset(reset),
-						 .read_data());
+                   .clk(clk),
+                   .reset(reset),
+                   .read_data());
 //Width of sprite in px (square)
 Register spr_width(.write_data(io),
                    .write_enable(control[WE_SPRWIDTH]),

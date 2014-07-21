@@ -16,7 +16,7 @@ parameter CTRL_SR = 3;
 
 reg[OUT_WIDTH-1:0] result;
 
-assign alu_out #2 = result;
+assign alu_out = result;
 				 
 always@(*) begin
 	case (ctrl)
