@@ -1,0 +1,15 @@
+NET clk50MHz LOC = B8;
+
+NET rst LOC = B18;
+
+NET hsync LOC = T4;
+NET vsync LOC = U3;
+
+NET rgb<7> LOC = R9;
+NET rgb<6> LOC = T8;
+NET rgb<5> LOC = R8;
+NET rgb<4> LOC = N8;
+NET rgb<3> LOC = P8;
+NET rgb<2> LOC = P6;
+NET rgb<1> LOC = U5;
+NET rgb<0> LOC = U4;

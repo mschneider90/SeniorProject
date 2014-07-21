@@ -22,7 +22,7 @@ PS2StateController ps2_ctrl(.clk(clk_50MHz),
                             .interface_valid(interface_valid),
                             .output_enable(output_en)
                            );
-         
+
 PS2Interface ps2_if(.clk_ps2(clk_ps2),
                     .data_in(data_in),
                     .data_out(interface_out),

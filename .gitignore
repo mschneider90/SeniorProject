@@ -33,8 +33,9 @@
 !*.asm
 
 #Exceptions to the exceptions (specifically exclude)
-/cpu/isim
-/ps2Controller/isim
+/*/isim
+/*/netgen
+/*/backup
 
 
 
