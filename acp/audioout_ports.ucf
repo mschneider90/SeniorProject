@@ -1,0 +1,14 @@
+NET clk LOC = B8;
+NET butt_1 LOC = H13;
+NET butt_2 LOC = E18;
+NET butt_3 LOC = D18;
+NET butt_4 LOC = B18;
+
+NET audio_out LOC = L15; #PMOD JA1
+
+NET oct<0> LOC = G18;
+NET oct<1> LOC = H18;
+NET oct<2> LOC = K18;
+NET oct<3> LOC = K17;
+NET oct<4> LOC = L14;
+NET oct<5> LOC = L13;

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/inevitable_disaster/Dropbox/school_sp14/cmpe_140/senior/AudioTest/sqgendemo_test_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="sqgendemo_test" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="12" />
+   <wvobject fp_name="/sqgendemo_test/audio_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">audio_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">audio_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/butt_1" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">butt_1</obj_property>
+      <obj_property name="ObjectShortName">butt_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/butt_2" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">butt_2</obj_property>
+      <obj_property name="ObjectShortName">butt_2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/butt_3" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">butt_3</obj_property>
+      <obj_property name="ObjectShortName">butt_3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/butt_4" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">butt_4</obj_property>
+      <obj_property name="ObjectShortName">butt_4</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/oct" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">oct[5:0]</obj_property>
+      <obj_property name="ObjectShortName">oct[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/wavesel" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wavesel</obj_property>
+      <obj_property name="ObjectShortName">wavesel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/sqgen/square_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">square_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">square_out[3:0]</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#0000ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/trgen/triangle_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">triangle_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">triangle_out[3:0]</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffff00</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/freqgen/freq_out" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">freq_out</obj_property>
+      <obj_property name="ObjectShortName">freq_out</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff0000</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/trgen/count" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">count[5:0]</obj_property>
+      <obj_property name="ObjectShortName">count[5:0]</obj_property>
+   </wvobject>
+</wave_config>
