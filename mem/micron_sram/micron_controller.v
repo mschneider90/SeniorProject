@@ -3,26 +3,26 @@
 module micron_controller #(parameter A_WIDTH = 16,
                            parameter D_WIDTH = 16)
                           (input clk50MHz,
-                           input baddr[A_WIDTH-1:0],
-                           inout bdata[D_WIDTH-1:0],
+                           input[A_WIDTH-1:0] baddr,
+                           inout[D_WIDTH-1:0] bdata,
                            input bwe,
                            input [1:0] bburst,
                            output bwait,
-                           output maddr[A_WIDTH-1:0],
-                           inout  mdata[D_WIDTH-1:0],
-                           output moe_L,  //output enable
-                           output mwe_L,  //write enable
-                           output madv_L, //address valid
+                           output[A_WIDTH-1:0] maddr,
+                           inout[D_WIDTH-1:0]  mdata,
+                           output reg moe_L,  //output enable
+                           output reg mwe_L,  //write enable
+                           output reg madv_L, //address valid
                            output mclk,   //memory clock
                            output mub_L,  //upper byte
                            output mlb_L,  //lower byte
-                           output mce_L,  //chip enable
-                           output mcre,   //control register enable
+                           output reg mce_L,  //chip enable
+                           output reg mcre,   //control register enable
                            input  mwait); //wait
                            
 //Address of the SRAM controller
 //TODO change this to global scope
-parameter CTRL_ADDR = 16'hFFF0;
+parameter CTRL_ADDR = 16'hFFFA;
             
 //Constants            
 parameter ASSERT = 1;
@@ -47,7 +47,9 @@ assign mlb_L = DEASSERT_L;
 
 //For read, mclk is active from WAIT_1 to D3
 //For write, ???
-assign mclk = (currentState >= STATE_WAIT_1 && currentState <= STATE_READ_D3)? clk50MHz : DEASSERT;
+assign mclk = (currentState >= STATE_READ_WAIT_1 &&
+               currentState <= STATE_READ_D3)? 
+             clk50MHz : DEASSERT;
 
 reg[3:0] currentState;
 reg[3:0] nextState;
@@ -71,7 +73,7 @@ always@(negedge clk50MHz) begin
                     nextState <= STATE_IDLE;
                 end
                 else begin
-                    nextState <= STATE_READ_WAIT_1;
+                    nextState <= STATE_READ_ADDR;
                 end
             end
             else begin

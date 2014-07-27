@@ -36,6 +36,10 @@
 /*/isim
 /*/netgen
 /*/backup
+#Two levels deep for the /mem/ directory
+/*/*/isim
+/*/*/netgen
+/*/*/backup
 
 
 
