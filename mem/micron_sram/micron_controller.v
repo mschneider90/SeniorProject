@@ -70,7 +70,9 @@ assign mlb_L = DEASSERT_L;
 //mclk is active in WAIT or DATA states
 //TODO add write states
 assign mclk = (currentState == STATE_READ_WAIT || 
-               currentState == STATE_READ_DATA)? 
+               currentState == STATE_READ_DATA || 
+               currentState == STATE_WRITE_WAIT || 
+               currentState == STATE_WRITE_DATA)?
              clk50MHz : DEASSERT;
 
 reg[3:0] currentState;
