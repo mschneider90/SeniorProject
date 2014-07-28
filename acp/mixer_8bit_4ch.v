@@ -1,4 +1,4 @@
-`timescale 1ns / 100ps
+`timescale 1ns / 1ns
 
 module mixer_8bit_4ch(
 	in1,

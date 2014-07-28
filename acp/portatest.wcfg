@@ -3,14 +3,14 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="C:/Users/inevitable_disaster/Dropbox/school_sp14/cmpe_140/senior/AudioTest/sqgendemo_test_isim_beh.wdb" id="1" type="auto">
+      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/acp/sqgendemo_test_isim_beh.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="glbl" />
             <top_module name="sqgendemo_test" />
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="15" />
+   <WVObjectSize size="16" />
    <wvobject fp_name="/sqgendemo_test/audio_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">audio_out[7:0]</obj_property>
       <obj_property name="ObjectShortName">audio_out[7:0]</obj_property>
@@ -60,6 +60,12 @@
       <obj_property name="ElementShortName">current_note[5:0]</obj_property>
       <obj_property name="ObjectShortName">current_note[5:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/porta1/en" type="logic" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+      <obj_property name="label">porta_en</obj_property>
    </wvobject>
    <wvobject fp_name="/sqgendemo_test/sqd/porta1/prev_note" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">prev_note[5:0]</obj_property>

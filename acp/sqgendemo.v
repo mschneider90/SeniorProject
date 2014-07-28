@@ -2,13 +2,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module sqgendemo(clk,
-							butt_1, butt_2, butt_3, butt_4,
-							oct,
-							volsel,
-							audio_out
+						butt_1, butt_2, butt_3, butt_4,
+						oct,
+						volsel,
+						audio_out,
+						SECCTR
     );
 
-
+output reg SECCTR;
 input clk;
 input butt_1, butt_2, butt_3, butt_4;
 
@@ -45,6 +46,7 @@ wire [3:0] sq2;
 
 wire [5:0] porta_out;
 
+reg porta_en;
 
 
 //reg [9:0] counter;
@@ -54,11 +56,14 @@ integer note_2;
 integer note_3; 
 integer note_4;
 
+integer SecondCtr;
+integer StateCtr; 
+ 
 FX_porta porta1 (
-	.note_in 	(note_in),
+	.note_in 	(note_in2),
 	.clk50mhz	(clk),
 	.note_out	(porta_out),
-	.en			(butt_1)  //HOW I MAKE ENABLE BIT? PLZ 
+	.en			(porta_en)  //used to be butt_1
 	);
 
 base_freq_genx64 freqgen (
@@ -68,7 +73,7 @@ base_freq_genx64 freqgen (
 	);
 	
 base_freq_genx64 freqgen2 (
-	.note_in	   (note_in2),
+	.note_in	   (note_in), //changed to test PORTA1. change back when done. 
 	.clk50mhz	(clk),
 	.freq_out	(basefreq2)
 );
@@ -110,7 +115,7 @@ trigen trgen1 (
 trigen trgen2 (   //change trigen to trigen8bit to make an 8 bit triangle wave
 	.base_freq (buffreq4),
 	.triangle_out (tr2),
-	.en (butt_4)
+	.en (butt_3)
 );
 
 
@@ -140,83 +145,177 @@ BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
 
 
 	initial begin
-//	counter = 0;
-//	wavesel = 0;
+	//	counter = 0;
+	//	wavesel = 0;
+		SecondCtr <= 0;
+		SECCTR <= 0;
+		StateCtr <= 0;
+		porta_en <= 0;
+		note_in <= 31;
+		note_1 <= 0;
+		note_2 <= 0;
+		note_3 <= 0;
+		note_4 <= 0;
 	end
 	
 
 always@(posedge clk)
 begin
 
-note_1 = 1;
- note_2 = 13;
- note_3 = 25;
-note_4 = 37;
+//note_1 = 1;
+// note_2 = 13;
+// note_3 = 25;
+//note_4 = 37;
+/*
 case(oct)
 
 	6'b000001:
 	begin
-		note_1 = 3;
-		note_2 = 15;
-		note_3 = 27;
-		note_4 = 39;
+		note_1 <= 3;
+		note_2 <= 15;
+		note_3 <= 27;
+		note_4 <= 39;
 	end
 
 	6'b000010:
 	begin
-		note_1 = 5;
-		note_2 = 17;
-		note_3 = 29;
-		note_4 = 41;
+		note_1 <= 5;
+		note_2 <= 17;
+		note_3 <= 29;
+		note_4 <= 41;
 	end
 
 	6'b000100:
 	begin
-		note_1 = 6;
-		note_2 = 18;
-		note_3 = 30;
-		note_4 = 42;
+		note_1 <= 6;
+		note_2 <= 18;
+		note_3 <= 30;
+		note_4 <= 42;
 	end
 
 	6'b001000:
 	begin
-		note_1 = 8;
-		note_2 = 20;
-		note_3 = 32;
-		note_4 = 44;
+		note_1 <= 8;
+		note_2 <= 20;
+		note_3 <= 32;
+		note_4 <= 44;
 	end
 
 	6'b010000:
 	begin
-		note_1 = 10;
-		note_2 = 22;
-		note_3 = 34;
-		note_4 = 46;
+		note_1 <= 10;
+		note_2 <= 22;
+		note_3 <= 34;
+		note_4 <= 46;
 	end
 
 	6'b100000:
 	begin
-		note_1 = 12;
-		note_2 = 24;
-		note_3 = 36;
-		note_4 = 48;
+		note_1 <= 12;
+		note_2 <= 24;
+		note_3 <= 36;
+		note_4 <= 48;
 	end
 
 	default:
 	begin
-		note_1 = 1;
-		note_2 = 13;
-		note_3 = 25;
-		note_4 = 37;
+		note_1 <= 1;
+		note_2 <= 13;
+		note_3 <= 25;
+		note_4 <= 37;
 	end
 
 endcase
+*/  
+ /*
+ FX_porta porta1 (
+	.note_in 	(note_in),
+	.clk50mhz	(clk),
+	.note_out	(porta_out),
+	.en			(porta_en)  //used to be butt_1
+	);
+ */
+
+	if(butt_4) //button 4 is being reassigned as an "RST COUNTER" button.
+	begin
+		SecondCtr <= 0;
+		StateCtr <= 0;
+		SECCTR <= 0;
+	end
+	else
+	begin
+
+		SecondCtr <= SecondCtr + 1;
+	end
+
+	if (SecondCtr >= 50000000)
+	begin
+		SECCTR <= ~SECCTR;
+		StateCtr <= StateCtr + 1;
+		SecondCtr <= 0;
+		
+		if (StateCtr > 8)
+		begin
+			StateCtr <= 0;
+		end
+		
+		case(StateCtr)  
+			0:
+				begin
+					note_in <= 26;
+					
+				end
+			1:
+				begin
+					porta_en <= 1;
+					note_in <= 34;
+				end
+			2:
+				begin
+					note_in <= 46;
+				end
+			3: 
+				begin
+					note_in <= 22;
+				end
+			4:
+				begin
+					porta_en <= 1;
+				end		
+			5: 
+				begin
+					porta_en <= 0;
+				end		
+			6: 
+				begin
+					porta_en <= 0;
+				end		
+			7: 
+				begin
+					porta_en <= 0;
+				end		
+			8:
+				begin
+					porta_en <= 0;
+				end		
+			default:
+				begin
+					porta_en <= 0;
+				end
+		endcase
+	
+		
+	end
+
+ 
+	
  
  
- 
+/*
 if(butt_1)
 begin
-	 note_in = note_1;
+	 note_in = note_1; //maybe instead of assigning note_in to 0 or note_1, we use an enable wire to the next module. 
+								//0This prevents porta from getting a 0 as the next note
 end
 else
 begin
@@ -250,34 +349,9 @@ else
 begin
 	note_in4 = 0;
 end
-/*
-case (volsel)
-2'b00:
-begin
+*/
 
-end
 
-2'b01:
-begin
-
-end
-
-2'b10:
-begin
-
-end
-
-2'b11:
-begin
-
-end
-
-default:
-begin
-
-end
-endcase
-*/ 
 
 end
 

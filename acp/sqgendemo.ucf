@@ -14,7 +14,7 @@ NET oct<5> LOC = L13;
 NET volsel<0> LOC = N17;
 NET volsel<1> LOC = R17;
 
-
+NET SECCTR LOC = J14;
 
 //NET wavesel LOC = R17;
 

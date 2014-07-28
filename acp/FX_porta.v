@@ -1,23 +1,5 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    20:17:54 06/25/2014 
-// Design Name: 
-// Module Name:    FX_porta 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+`timescale 1ns / 1ns
+
 module FX_porta(
 	note_in,
 	clk50mhz,
@@ -40,8 +22,8 @@ reg note_chg;
 
 
 
-wire [7:0] currentNote; 
-wire [7:0] previousNote;
+//wire [7:0] currentNote; 
+//wire [7:0] previousNote;
 wire [5:0] subdiv; 
 wire [5:0] distance;
 wire up;
@@ -68,11 +50,12 @@ d_flipflop porta_shiftreg2(
 
 initial
 begin
-count = 0;
+count <= 0;
 //freq_out = 0;
-note_clk = 0;
-note_out = 1;
-note_chg = 0;
+note_clk <= 0;
+//note_out = 0;
+note_chg <= 0;
+//previousNote <= 0; 
 end
 
 always@(posedge clk50mhz)
