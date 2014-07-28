@@ -118,7 +118,7 @@ end
 always@(negedge clk) begin
     case (state) 
         STATE_START: begin
-            if (data == 1'b0) begin //start bit
+            if (data == 1'b0) begin //start bit detection
                 next_state <= STATE_D0;
             end
             else begin
