@@ -22,7 +22,7 @@ micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
                        .bdata(bdata),
                        .bwe(0),
-                       .bburst(0),
+                       .bburst(2'b11),
                        .bwait(bwait),
                        .maddr(maddr),
                        .mdata(mdata),
@@ -43,6 +43,8 @@ initial begin
     bwait = 0;
     #8
     baddr = 16'hFFFA;
+    #10
+    baddr = 16'h0000;
 end
 
 always begin
