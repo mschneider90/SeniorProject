@@ -10,7 +10,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="14" />
+   <WVObjectSize size="12" />
    <wvobject fp_name="/tb_micron_controller/clk50MHz" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk50MHz</obj_property>
       <obj_property name="ObjectShortName">clk50MHz</obj_property>
@@ -52,22 +52,12 @@
       <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ctrl/c_counter/count" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">count[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ctrl/b_counter/count" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">count[7:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/tb_micron_controller/ctrl/cycle_count_geq" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">cycle_count_geq</obj_property>
       <obj_property name="ObjectShortName">cycle_count_geq</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ctrl/cycle_counter" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cycle_counter[1:0]</obj_property>
-      <obj_property name="ObjectShortName">cycle_counter[1:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+   <wvobject fp_name="/tb_micron_controller/ctrl/burst_count_geq" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">burst_count_geq</obj_property>
+      <obj_property name="ObjectShortName">burst_count_geq</obj_property>
    </wvobject>
 </wave_config>

@@ -91,8 +91,7 @@ always@(negedge clk50MHz) begin
         STATE_IDLE: begin
             if (baddr == CTRL_ADDR) begin //detected our address
                 if (bwe) begin
-                    //TODO goto first write state
-                    nextState <= STATE_IDLE;
+                    nextState <= STATE_WRITE_ADDR;
                 end
                 else begin
                     nextState <= STATE_READ_ADDR;
@@ -111,6 +110,19 @@ always@(negedge clk50MHz) begin
             end
         end
         STATE_READ_DATA: begin
+            if (burst_count_geq) begin
+                nextState <= STATE_IDLE;
+            end
+        end
+        STATE_WRITE_ADDR: begin
+            nextState <= STATE_WRITE_WAIT;
+        end
+        STATE_WRITE_WAIT: begin
+            if (cycle_count_geq) begin
+                nextState <= STATE_WRITE_DATA;
+             end
+        end
+        STATE_WRITE_DATA: begin
             if (burst_count_geq) begin
                 nextState <= STATE_IDLE;
             end
@@ -160,6 +172,42 @@ always@(currentState) begin
         STATE_READ_DATA: begin
             //Outputs
             moe_L <= ASSERT_L;
+            mwe_L <= DEASSERT_L;
+            madv_L <= DEASSERT_L;
+            mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= ASSERT;
+        end
+        STATE_WRITE_ADDR: begin
+            //Outputs
+            moe_L <= DEASSERT_L;
+            mwe_L <= ASSERT_L;
+            madv_L <= ASSERT_L;
+            mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
+        end
+        STATE_WRITE_WAIT: begin
+                    //Outputs
+            moe_L <= DEASSERT_L;
+            mwe_L <= DEASSERT_L;
+            madv_L <= DEASSERT_L;
+            mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= ASSERT;
+            burst_count_en <= DEASSERT;
+        end
+        STATE_WRITE_DATA: begin
+                    //Outputs
+            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
