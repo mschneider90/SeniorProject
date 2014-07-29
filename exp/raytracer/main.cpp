@@ -52,9 +52,11 @@ int main() {
             int total_pix = RES_X * RES_Y;
 
             RayInfo r;
+            //Calculate the center of the pixel
             r.pos.x = FOCAL_WIDTH / (RES_X * 2) + x * FOCAL_WIDTH / RES_X - FOCAL_WIDTH / 2;
             r.pos.y = FOCAL_WIDTH / (RES_Y * 2) + y * FOCAL_WIDTH / RES_Y - FOCAL_WIDTH / 2;
             r.pos.z = 0;
+            //Calculate the angle at which the ray travels through the pixel
             r.theta_x = std::atan2(r.pos.x, FOCAL_LENGTH);
             r.theta_y = std::atan2(r.pos.y, FOCAL_LENGTH);
 
