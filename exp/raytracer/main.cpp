@@ -47,10 +47,13 @@ int main() {
 
     Color24 framebuffer[RES_X][RES_Y];
 
+    //Start with an "eyeball" at the three dimensional origin, with a screen of RES_X * RES_Y pixels
+    //in front of it, FOCAL_LENGTH away and FOCAL_WIDTH x FOCAL_WIDTH in size. For each pixel in the 
+    //screen, cast a ray through the center of it. If the ray hits an object, return the color of 
+    //that object; otherwise, return the background color.
+    int total_pix = RES_X * RES_Y;
     for (int x = 0; x < RES_X; x++) {
         for (int y = 0; y < RES_Y; y++) {
-            int total_pix = RES_X * RES_Y;
-
             RayInfo r;
             //Calculate the center of the pixel
             r.pos.x = FOCAL_WIDTH / (RES_X * 2) + x * FOCAL_WIDTH / RES_X - FOCAL_WIDTH / 2;
