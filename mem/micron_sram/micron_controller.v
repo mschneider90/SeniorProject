@@ -5,7 +5,6 @@ module micron_controller #(parameter A_WIDTH = 16,
                           (input clk50MHz,
                            input[A_WIDTH-1:0] baddr,
                            inout[D_WIDTH-1:0] bdata,
-                           input bwe,
                            input [1:0] bburst,
                            output bwait,
                            output[A_WIDTH-1:0] maddr,
@@ -22,7 +21,8 @@ module micron_controller #(parameter A_WIDTH = 16,
                            
 //Address of the SRAM controller
 //TODO change this to global scope
-parameter CTRL_ADDR = 16'hFFFA;
+parameter CTRL_ADDR_READ = 16'hFFFA;
+parameter CTRL_ADDR_WRITE = 16'hFFFB;
             
 //Constants            
 parameter ASSERT = 1;
