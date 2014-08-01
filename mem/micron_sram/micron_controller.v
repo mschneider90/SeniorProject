@@ -91,13 +91,11 @@ end
 always@(negedge clk50MHz) begin
     case (currentState)
         STATE_IDLE: begin
-            if (baddr == CTRL_ADDR) begin //detected our address
-                if (bwe) begin
-                    nextState <= STATE_WRITE_ADDR;
-                end
-                else begin
-                    nextState <= STATE_READ_ADDR;
-                end
+            if (baddr == CTRL_ADDR_WIRE) begin //detected our write address
+                nextState <= STATE_WRITE_ADDR;
+            end
+            else if (baddr == CTRL_ADDR_READ) begin //detected our read address
+                nextState <= STATE_READ_ADDR;
             end
             else begin
                 nextState <= STATE_IDLE;
