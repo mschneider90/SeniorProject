@@ -67,7 +67,7 @@ int main() {
             ObjectBuffer obj_buf = { 0 };
             Color24 pix_color = rayTrace(obj_buf, r, white, .01, MAX_RAY_LENGTH);
             if (colorEquals(pix_color, white)) {
-                std::cout << "X";
+                std::cout << " ";
             }
             else {
                 std::cout << "O";
@@ -91,9 +91,13 @@ Color24 rayTrace(ObjectBuffer obj_buffer, RayInfo r, Color24 background_color, f
             return c;
         }
         else {
-            r.pos.z += delta;
-            r.pos.x += delta * r.theta_x;
-            r.pos.y += delta * r.theta_y;
+            float x_incr = delta * std::tan(r.theta_x);
+            float y_incr = delta * std::tan(r.theta_y);
+
+            r.pos.x += x_incr;
+            r.pos.y += y_incr;
+            r.pos.z += std::sqrt(std::pow(x_incr, 2) + std::pow(y_incr, 2) + std::pow(delta, 2));
+
             return rayTrace(obj_buffer, r, background_color, delta, max_ray_length);
         }
     }
@@ -101,7 +105,7 @@ Color24 rayTrace(ObjectBuffer obj_buffer, RayInfo r, Color24 background_color, f
 
 bool intersectsObject(Vec3 pos, ObjectBuffer obj_buf) {
     //Temporary: only have one shape (circle of radius 3) at a position <0,0,10> (in the middle of the scene 10 units away from the origin)
-    Vec3 circle_position = { 0, 0, 5 };
+    Vec3 circle_position = { 0, 0, 7.5 };
     int circle_radius = 5;
 
     if (distanceFromPoint(pos, circle_position) < circle_radius)
