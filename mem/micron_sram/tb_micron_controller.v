@@ -21,7 +21,6 @@ wire[15:0] mdata;
 micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
                        .bdata(bdata),
-                       .bwe(1),
                        .bburst(2'b11),
                        .bwait(bwait),
                        .maddr(maddr),
