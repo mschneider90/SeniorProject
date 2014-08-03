@@ -1,35 +1,14 @@
+#include "RayTraceUtil.h"
+#include "Ray.h"
+
 #include <iostream>
 #include <cmath>
-
-typedef struct {
-    float x;
-    float y;
-    float z;
-} Vec3;
-
-typedef struct {
-    Vec3 pos;
-    float theta_x;
-    float theta_y;
-} RayInfo;
-
-typedef unsigned char byte;
-typedef struct {
-    byte r;
-    byte g;
-    byte b;
-} Color24;
 
 typedef struct {
     int obj; //temp
 } ObjectBuffer;
 
 Color24 rayTrace(ObjectBuffer obj_buffer, RayInfo r, Color24 background_color, float delta, float max_ray_length);
-float distanceFromOrigin(Vec3 pos);
-float distanceFromPoint(Vec3 pos, Vec3 point);
-Vec3 pixelPosition(float focal_width, float focal_length);
-bool intersectsObject(Vec3 pos, ObjectBuffer obj_buf);
-bool colorEquals(Color24 c1, Color24 c2);
 
 int main() {
     const int RES_X = 30;
@@ -112,15 +91,6 @@ bool intersectsObject(Vec3 pos, ObjectBuffer obj_buf) {
         return true;
     else
         return false;
-}
-
-float distanceFromPoint(Vec3 pos, Vec3 point) {
-    return std::sqrt(pow(pos.x - point.x, 2) + pow(pos.y - point.y, 2) + pow(pos.z - point.z, 2));
-}
-
-float distanceFromOrigin(Vec3 pos) {
-    Vec3 origin = { 0, 0, 0 };
-    return distanceFromPoint(pos, origin);
 }
 
 bool colorEquals(Color24 c1, Color24 c2) {
