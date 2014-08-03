@@ -19,6 +19,7 @@ protected:
 	Vec3<float> pos;
 
     SceneObj() {};
+    SceneObj(Vec3<float> _pos) : pos(_pos) { }
 public:
 	virtual bool doesRayIntersect(const Ray& _ray) const = 0;
     virtual void setPosition(const Vec3<float> _pos) { pos = _pos; }

@@ -16,8 +16,6 @@ int main() {
     const float FOCAL_LENGTH = 1.0;
     const float FOCAL_WIDTH = 4.0;
 
-    Color32 framebuffer[RES_X][RES_Y];
-
     Color32 background_color = StdColor::White;
     Scene scene(background_color);
     Sphere* sphere = scene.addSphere(Vec3<float>(0,0,10), 3);
@@ -40,6 +38,7 @@ int main() {
             ray_angle.x = std::atan2(pix_pos.x, FOCAL_LENGTH);
             ray_angle.y = std::atan2(pix_pos.y, FOCAL_LENGTH);
             ray_angle.z = 0;
+
             Ray ray(pix_pos, ray_angle);
 
             Color32 pix_color = rayTrace(scene, ray);

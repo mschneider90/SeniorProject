@@ -17,10 +17,15 @@ public:
 
 	vec_t distanceFromOrigin() const;
 	vec_t distanceFromPoint(const Vec3<vec_t>& _point) const;
+    static vec_t dot(const Vec3<vec_t>& vec_a, const Vec3<vec_t>& vec_b);
 
     Vec3<vec_t>& operator=(const Vec3<vec_t>& rhs);
-	bool operator==(const vec_t& _other) const;
-	bool operator!=(const vec_t& _other) const;
+	bool operator==(const vec_t& _rhs) const;
+	bool operator!=(const vec_t& _rhs) const;
+    Vec3<vec_t>& operator+=(const Vec3<vec_t>& _rhs);
+    Vec3<vec_t>& operator-=(const Vec3<vec_t>& _rhs);
+    const Vec3<vec_t> operator+(const Vec3<vec_t>& _rhs);
+    const Vec3<vec_t> operator-(const Vec3<vec_t>& _rhs);
 };
 
 #endif

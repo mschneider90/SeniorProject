@@ -2,21 +2,31 @@
 #include "Ray.h"
 #include "Color32.h"
 #include "SceneObj.h"
+#include "Sphere.h"
 
-//TODO implement
-Scene::~Scene() { } 
+Scene::~Scene() {
+    for (auto obj_iter = scene_objs.begin(); obj_iter != scene_objs.end(); obj_iter++) {
+        SceneObj* obj = *obj_iter;
+        delete obj;
+    }
+} 
 
-//TODO implement
 Sphere* Scene::addSphere(const Vec3<float>& _pos, const float _radius) {
-    return nullptr;
+    Sphere* sphere = new Sphere(_pos, _radius);
+    scene_objs.push_back(sphere);
+    return sphere;
 }
 
-//TODO implement
 bool Scene::doesRayIntersectObj(const Ray& _ray) { 
+    //TODO how to handle multiple intersections?
+    for (auto obj_iter = scene_objs.begin(); obj_iter != scene_objs.end(); obj_iter++) {
+        if ((*obj_iter)->doesRayIntersect(_ray)) {
+            return true;
+        }
+    }
     return false;
 }
 
-//TODO implement
 Color32 Scene::getBackgroundColor() {
-    return Color32(StdColor::White);
+    return background_color;
 }

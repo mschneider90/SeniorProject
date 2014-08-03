@@ -16,7 +16,7 @@ enum class SceneObjType;
 // A Scene is a list of SceneObjs, with a background
 class Scene {
 private:
-	std::vector<SceneObj> scene_objs;
+	std::vector<SceneObj*> scene_objs;
 	Color32 background_color;
 protected:
 public:
