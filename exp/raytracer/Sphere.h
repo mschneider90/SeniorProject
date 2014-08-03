@@ -7,12 +7,13 @@ class Ray;
 
 class Sphere : public SceneObj {
 private:
+    float radius;
+    Sphere() { }
+    ~Sphere() { }
 protected:
-	float radius;
 public:
-	Sphere() { }
-	~Sphere() { }
 	virtual bool doesRayIntersect(const Ray& _ray);
-}
+    void setRadius(float _radius) { radius = _radius; }
+};
 
 #endif

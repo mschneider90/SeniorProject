@@ -1,11 +1,11 @@
 #include "Color32.h"
 
-void Color32::setColor(StandardColor _color) {
-	if (_color == StandardColor::White) {
-		r = 0xFF;
-		g = 0xFF;
-		b = 0xFF;
-		a = 0xFF;
+void Color32::setColor(StdColor _color) {
+	if (_color == StdColor::White) {
+		r = static_cast<byte>(0xFF);
+        g = static_cast<byte>(0xFF);
+        b = static_cast<byte>(0xFF);
+        a = static_cast<byte>(0xFF);
 	}
 }
 

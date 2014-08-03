@@ -1,15 +1,16 @@
 #include "Vec3.h"
 #include <cmath>
 
-template <class vec_t> vec_t Vec3<vec_t>::distanceFromOrigin() {
+template <class vec_t> vec_t Vec3<vec_t>::distanceFromOrigin() const {
+    Vec3 origin(0, 0, 0);
 	return distanceFromPoint(origin);
 }
 
-template <class vec_t> vec_t Vec3<vec_t>::distanceFromPoint(Vec3<vec_t> _point) {
+template <class vec_t> vec_t Vec3<vec_t>::distanceFromPoint(const Vec3<vec_t>& _point) const {
 	return std::sqrt(pow(pos.x - point.x, 2) + pow(pos.y - point.y, 2) + pow(pos.z - point.z, 2));
 }
 
-template <class vec_t> Vec3<vec_t>& operator=(const Vec3<vec_t>& _rhs) {
+template <class vec_t> Vec3<vec_t>& Vec3<vec_t>::operator=(const Vec3<vec_t>& _rhs) {
     this->x = _rhs.x;
     this->y = _rhs.y;
     this->z = _rhs.z;
@@ -26,7 +27,7 @@ template <class vec_t> bool Vec3<vec_t>::operator==(const vec_t& _other) const {
 	}
 }
 
-template <class vec_t> bool Vec3<vec_t>::operator!=(const vect_t& _other) const {
+template <class vec_t> bool Vec3<vec_t>::operator!=(const vec_t& _other) const {
 	if (_other == *this) {
 		return false;
 	}

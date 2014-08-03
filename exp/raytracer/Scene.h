@@ -6,8 +6,10 @@
 #include "SceneObj.h"
 #include "Ray.h"
 
+//Forward declarations
 class Color32;
 class SceneObj;
+class Sphere;
 class Ray;
 enum class SceneObjType;
 
@@ -20,9 +22,9 @@ protected:
 public:
 	Scene(Color32 _background_color) : background_color(_background_color) { }
 	~Scene();
-	SceneObj* addSceneObj(const SceneObjType _sceneobj_type);
+	Sphere* addSphere(const Vec3<float>& _pos, const float _radius);
 	bool doesRayIntersectObj(const Ray& _ray);
 	Color32 getBackgroundColor();
-}
+};
 
 #endif

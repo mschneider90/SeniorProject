@@ -1,9 +1,9 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-typedef char byte;
+typedef unsigned char byte;
 
-enum class StandardColor { White, Black };
+enum class StdColor { White, Black };
 
 class Color32
 {
@@ -15,23 +15,16 @@ public:
 	char b;
 	char a;
 
-	Color32(StandardColor _color) {
+	Color32(StdColor _color) {
 		setColor(_color);
 	}
-	Color32(byte _r, byte _g, byte_b, byte_a) : r(_r), g(_g), b(_b), a(_a) { }
+	Color32(byte _r, byte _g, byte _b, byte _a) : r(_r), g(_g), b(_b), a(_a) { }
 	Color32() { }
 
-	void setColor(StandardColor _color) {
-		if (_color == StandardColor::White) {
-			r = 0xFF;
-			g = 0xFF;
-			b = 0xFF;
-			a = 0xFF;
-		}
-	}
+    void setColor(StdColor _color);
 
 	bool operator==(const Color32& _other) const;
 	bool operator!=(const Color32& _other) const;
-}
+};
 
 #endif
