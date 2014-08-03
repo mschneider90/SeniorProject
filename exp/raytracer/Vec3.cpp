@@ -40,6 +40,30 @@ template <class vec_t> bool Vec3<vec_t>::operator!=(const vec_t& _other) const {
 	}
 }
 
+template <class vec_t> Vec3<vec_t>& Vec3<vec_t>::operator+=(const Vec3<vec_t>& _rhs) {
+    this->x += _rhs.x;
+    this->y += _rhs.y;
+    this->z += _rhs.z;
+
+    return *this;
+}
+
+template <class vec_t> Vec3<vec_t>& Vec3<vec_t>::operator-=(const Vec3<vec_t>& _rhs) {
+    this->x -= _rhs.x;
+    this->y -= _rhs.y;
+    this->z -= _rhs.z;
+
+    return *this;
+}
+
+template <class vec_t> const Vec3<vec_t> Vec3<vec_t>::operator+(const Vec3<vec_t>& _rhs) {
+
+}
+
+template <class vec_t> const Vec3<vec_t> Vec3<vec_t>::operator-(const Vec3<vec_t>& _rhs) {
+
+}
+
 template <class vec_t> static vec_t dot(const Vec3<vec_t>& vec_a, const Vec3<vec_t>& vec_b) {
     return (vec_a.x * vec_b.x + vec_a.y * vec_b.y + vec_a.z * vec_b.z);
 }
