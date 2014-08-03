@@ -67,16 +67,15 @@ assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
 assign mub_L = DEASSERT_L;
 assign mlb_L = DEASSERT_L;
 
+reg[3:0] currentState;
+reg[3:0] nextState;
+
 //mclk is active in WAIT or DATA states
-//TODO add write states
 assign mclk = (currentState == STATE_READ_WAIT || 
                currentState == STATE_READ_DATA || 
                currentState == STATE_WRITE_WAIT || 
                currentState == STATE_WRITE_DATA)?
              clk50MHz : DEASSERT;
-
-reg[3:0] currentState;
-reg[3:0] nextState;
 
 initial begin
     currentState <= STATE_IDLE;
@@ -91,7 +90,7 @@ end
 always@(negedge clk50MHz) begin
     case (currentState)
         STATE_IDLE: begin
-            if (baddr == CTRL_ADDR_WIRE) begin //detected our write address
+            if (baddr == CTRL_ADDR_WRITE) begin //detected our write address
                 nextState <= STATE_WRITE_ADDR;
             end
             else if (baddr == CTRL_ADDR_READ) begin //detected our read address
@@ -194,7 +193,7 @@ always@(currentState) begin
             burst_count_en <= DEASSERT;
         end
         STATE_WRITE_WAIT: begin
-                    //Outputs
+            //Outputs
             moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
@@ -206,7 +205,7 @@ always@(currentState) begin
             burst_count_en <= DEASSERT;
         end
         STATE_WRITE_DATA: begin
-                    //Outputs
+            //Outputs
             moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
