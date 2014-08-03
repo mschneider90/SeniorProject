@@ -5,7 +5,6 @@ module micron_controller #(parameter A_WIDTH = 16,
                           (input clk50MHz,
                            input[A_WIDTH-1:0] baddr,
                            inout[D_WIDTH-1:0] bdata,
-                           input bwe,
                            input [1:0] bburst,
                            output bwait,
                            output[A_WIDTH-1:0] maddr,
@@ -22,7 +21,8 @@ module micron_controller #(parameter A_WIDTH = 16,
                            
 //Address of the SRAM controller
 //TODO change this to global scope
-parameter CTRL_ADDR = 16'hFFFA;
+parameter CTRL_ADDR_READ = 16'hFFFA;
+parameter CTRL_ADDR_WRITE = 16'hFFFB;
             
 //Constants            
 parameter ASSERT = 1;
@@ -33,26 +33,49 @@ parameter DEASSERT_L = 1;
 //States
 parameter STATE_IDLE = 0;
 parameter STATE_READ_ADDR = 1;
-parameter STATE_READ_WAIT_1 = 2;
-parameter STATE_READ_WAIT_2 = 3;
-parameter STATE_READ_WAIT_3 = 4;
-parameter STATE_READ_D0 = 5;
-parameter STATE_READ_D1 = 6;
-parameter STATE_READ_D2 = 7;
-parameter STATE_READ_D3 = 8;
-                           
+parameter STATE_READ_WAIT = 2;
+parameter STATE_READ_DATA = 3;
+parameter STATE_WRITE_ADDR = 4;
+parameter STATE_WRITE_WAIT = 5;
+parameter STATE_WRITE_DATA = 6;
+
+//See: micron_ram.pdf, pg. 29
+//Default read/write latency is 4 cycles
+//This also allows us to operate up to 52MHz - convenient
+parameter RW_LATENCY_CYCLES = 4;
+
+//Local reset for counters
+reg reset;
+
+//Counter for r/w latency
+reg cycle_count_en;
+wire cycle_count_geq;
+wire[1:0] cycle_counter;
+count_reg c_counter(.en(cycle_count_en), .rst(reset), .clk(clk50MHz), .count(cycle_counter));
+//Zero indexed so subtract 1
+assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEASSERT;
+
+//Counter for burst length - support length of up to 16
+reg burst_count_en;
+wire burst_count_geq;
+wire[3:0] burst_counter;
+count_reg b_counter(.en(burst_count_en), .rst(reset), .clk(clk50MHz), .count(burst_counter));
+//Zero indexed so subtract 1
+assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
+                       
 //These aren't used
 assign mub_L = DEASSERT_L;
 assign mlb_L = DEASSERT_L;
 
-//For read, mclk is active from WAIT_1 to D3
-//For write, ???
-assign mclk = (currentState >= STATE_READ_WAIT_1 &&
-               currentState <= STATE_READ_D3)? 
-             clk50MHz : DEASSERT;
-
 reg[3:0] currentState;
 reg[3:0] nextState;
+
+//mclk is active in WAIT or DATA states
+assign mclk = (currentState == STATE_READ_WAIT || 
+               currentState == STATE_READ_DATA || 
+               currentState == STATE_WRITE_WAIT || 
+               currentState == STATE_WRITE_DATA)?
+             clk50MHz : DEASSERT;
 
 initial begin
     currentState <= STATE_IDLE;
@@ -67,42 +90,41 @@ end
 always@(negedge clk50MHz) begin
     case (currentState)
         STATE_IDLE: begin
-            if (baddr == CTRL_ADDR) begin //detected our address
-                if (bwe) begin
-                    //TODO goto first write state
-                    nextState <= STATE_IDLE;
-                end
-                else begin
-                    nextState <= STATE_READ_ADDR;
-                end
+            if (baddr == CTRL_ADDR_WRITE) begin //detected our write address
+                nextState <= STATE_WRITE_ADDR;
+            end
+            else if (baddr == CTRL_ADDR_READ) begin //detected our read address
+                nextState <= STATE_READ_ADDR;
             end
             else begin
                 nextState <= STATE_IDLE;
             end
         end
         STATE_READ_ADDR: begin
-            nextState <= STATE_READ_WAIT_1;
+            nextState <= STATE_READ_WAIT;
         end
-        STATE_READ_WAIT_1: begin
-            nextState <= STATE_READ_WAIT_2;
+        STATE_READ_WAIT: begin
+            if (cycle_count_geq) begin
+                nextState <= STATE_READ_DATA;
+            end
         end
-        STATE_READ_WAIT_2: begin
-            nextState <= STATE_READ_WAIT_3;
+        STATE_READ_DATA: begin
+            if (burst_count_geq) begin
+                nextState <= STATE_IDLE;
+            end
         end
-        STATE_READ_WAIT_3: begin
-            nextState <= STATE_READ_D0;
+        STATE_WRITE_ADDR: begin
+            nextState <= STATE_WRITE_WAIT;
         end
-        STATE_READ_D0: begin
-            nextState <= STATE_READ_D1;
+        STATE_WRITE_WAIT: begin
+            if (cycle_count_geq) begin
+                nextState <= STATE_WRITE_DATA;
+             end
         end
-        STATE_READ_D1: begin
-            nextState <= STATE_READ_D2;
-        end
-        STATE_READ_D2: begin
-            nextState <= STATE_READ_D3;
-        end
-        STATE_READ_D3: begin
-            nextState <= STATE_IDLE;
+        STATE_WRITE_DATA: begin
+            if (burst_count_geq) begin
+                nextState <= STATE_IDLE;
+            end
         end
     endcase
 end
@@ -111,58 +133,88 @@ end
 always@(currentState) begin
     case (currentState) 
         STATE_IDLE: begin
+            //Outputs
             moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= DEASSERT_L;
+            
+            //Local signals
+            reset <= ASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
         end
         STATE_READ_ADDR: begin
+            //Outputs
             moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
         end
-        STATE_READ_WAIT_1: begin
+        STATE_READ_WAIT: begin
+            //Outputs
             moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= ASSERT;
+            burst_count_en <= DEASSERT;
         end
-        STATE_READ_WAIT_2: begin
+        STATE_READ_DATA: begin
+            //Outputs
             moe_L <= ASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= ASSERT;
         end
-        STATE_READ_WAIT_3: begin
-            moe_L <= ASSERT_L;
+        STATE_WRITE_ADDR: begin
+            //Outputs
+            moe_L <= DEASSERT_L;
+            mwe_L <= ASSERT_L;
+            madv_L <= ASSERT_L;
+            mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
+        end
+        STATE_WRITE_WAIT: begin
+            //Outputs
+            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= ASSERT;
+            burst_count_en <= DEASSERT;
         end
-        STATE_READ_D0: begin
-            moe_L <= ASSERT_L;
+        STATE_WRITE_DATA: begin
+            //Outputs
+            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-        end
-        STATE_READ_D1: begin
-            moe_L <= ASSERT_L;
-            mwe_L <= DEASSERT_L;
-            madv_L <= DEASSERT_L;
-            mce_L <= ASSERT_L;
-        end
-        STATE_READ_D2: begin
-            moe_L <= ASSERT_L;
-            mwe_L <= DEASSERT_L;
-            madv_L <= DEASSERT_L;
-            mce_L <= ASSERT_L;
-        end
-        STATE_READ_D3: begin
-            moe_L <= ASSERT_L;
-            mwe_L <= DEASSERT_L;
-            madv_L <= DEASSERT_L;
-            mce_L <= ASSERT_L;
+            
+            //Local signals
+            reset <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= ASSERT;
         end
     endcase
 end

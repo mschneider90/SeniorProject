@@ -1,8 +1,9 @@
 `timescale 1ns / 1ps
 
-module tb_micron_controller();
-
-reg clk50MHz;
+module tb_impl_micron_controller(input clk50MHz,
+                                 input button_1,
+                                 input button_2);
+                                 
 reg[15:0] baddr;
 reg bwait;
 wire[15:0] maddr;
@@ -21,7 +22,7 @@ wire[15:0] mdata;
 micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
                        .bdata(bdata),
-                       .bburst(2'b11),
+                       .bburst(2'b01),
                        .bwait(bwait),
                        .maddr(maddr),
                        .mdata(mdata),
@@ -36,21 +37,12 @@ micron_controller ctrl(.clk50MHz(clk50MHz),
                        .mwait(0)
                       );
                       
-initial begin
-    clk50MHz = 0;
-    baddr = 0;
-    bwait = 0;
-    #8
-    baddr = 16'hFFFA;
-    #10
-    baddr = 16'h0000;
+reg reading;
+reg writing;
+                      
+always@(posedge clk50MHz) begin
+
 end
-
-always begin
-    #5 clk50MHz = ~clk50MHz;
-end
-
-
-
+                      
 
 endmodule
