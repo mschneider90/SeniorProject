@@ -60,31 +60,31 @@ integer SecondCtr;
 integer StateCtr; 
  
 FX_porta porta1 (
-	.note_in 	(note_in2),
+	.note_in 	(note_in3),
 	.clk50mhz	(clk),
 	.note_out	(porta_out),
 	.en			(porta_en)  //used to be butt_1
 	);
 
-base_freq_genx64 freqgen (
+base_freq_genx64 freqgen ( //SQUARE CHANNEL 1
 	.note_in		(porta_out),
 	.clk50mhz	(clk),
 	.freq_out	(basefreq1)
 	);
 	
-base_freq_genx64 freqgen2 (
-	.note_in	   (note_in), //changed to test PORTA1. change back when done. 
+base_freq_genx64 freqgen2 (  //TRIANGLE CHANNEL 1 
+	.note_in	   (note_in2), 
 	.clk50mhz	(clk),
 	.freq_out	(basefreq2)
 );
 
-base_freq_genx64 freqgen3 (
-	.note_in	   (note_in3),
+base_freq_genx64 freqgen3 ( //SQUARE CHANNEL 2 (note_in port changed from note_in3 to note_in to test portamento module. CHange back when done
+	.note_in	   (note_in),
 	.clk50mhz	(clk),
 	.freq_out	(basefreq3)
 );
 
-base_freq_genx64 freqgen4 (
+base_freq_genx64 freqgen4 ( //TRIANGLE CHANNEL 2
 	.note_in	   (note_in4),
 	.clk50mhz	(clk),
 	.freq_out	(basefreq4)
@@ -248,7 +248,7 @@ endcase
 		SecondCtr <= SecondCtr + 1;
 	end
 
-	if (SecondCtr >= 50000000)
+	if (SecondCtr >= 25000000) //implementation value: 25,000,000 to 50,000,000 //test value: 100000 //this sets the time it takes for the state to transition
 	begin
 		SECCTR <= ~SECCTR;
 		StateCtr <= StateCtr + 1;
@@ -262,44 +262,55 @@ endcase
 		case(StateCtr)  
 			0:
 				begin
-					note_in <= 26;
-					
+					note_in <= 12;
+					porta_en <= 1;
 				end
 			1:
 				begin
 					porta_en <= 1;
-					note_in <= 34;
+					note_in <= 24;
 				end
 			2:
 				begin
-					note_in <= 46;
+					note_in <= 36;
 				end
 			3: 
 				begin
-					note_in <= 22;
+					note_in <= 24;
 				end
 			4:
 				begin
+					note_in <= 36;
 					porta_en <= 1;
 				end		
 			5: 
 				begin
-					porta_en <= 0;
+					//note_in <= 33;
+					porta_en <= 1;
 				end		
 			6: 
 				begin
-					porta_en <= 0;
+					note_in <= 24;
+					porta_en <= 1;
 				end		
 			7: 
 				begin
-					porta_en <= 0;
+					//note_in <= 34;
+					porta_en <= 1;
 				end		
 			8:
 				begin
-					porta_en <= 0;
-				end		
+					note_in <= 12;
+					porta_en <= 1;
+				end
+			9:
+				begin
+					note_in <= 0;
+					porta_en <= 1;
+				end				
 			default:
 				begin
+					note_in <= 0;
 					porta_en <= 0;
 				end
 		endcase

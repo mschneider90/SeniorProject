@@ -18,7 +18,7 @@ reg [5:0] current_note;
 integer count;
 reg note_clk;
 reg note_chg;
-
+reg en_flag;
 
 
 
@@ -53,15 +53,17 @@ begin
 count <= 0;
 //freq_out = 0;
 note_clk <= 0;
-//note_out = 0;
+note_out = 0;
 note_chg <= 0;
+prev_note <= 0;
+en_flag <= 0;
 //previousNote <= 0; 
 end
 
 always@(posedge clk50mhz)
 begin
 	count = count + 1;
-	if (count >= 3187500)
+	if (count >= 10000) //implementation value: 3187500 //testbench value: 10000
 	begin
 		count = 0;
 		note_clk = ~note_clk;
@@ -84,15 +86,27 @@ begin
 	
 	if(en)
 	begin
+		
+		if(en_flag == 0)
+		begin
+			en_flag <= 1;
+			note_out <= current_note;
+		end
+
+
 		if(up)
 		begin
+		
 			if(note_out < note_in)
 			begin
 				note_out <= note_out + subdiv;
 			end
+			
 		end
+		
 		else 
 		begin
+		
 			if(note_out > note_in)
 			begin
 				note_out <= note_out - subdiv;
@@ -103,6 +117,7 @@ begin
 	else 
 	begin
 		note_out <= 0;
+		en_flag <=0;		
 	end
 
 end
