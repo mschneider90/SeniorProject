@@ -10,7 +10,9 @@ Scene::~Scene() { }
 SceneObj* Scene::addSceneObj(const SceneObjType _sceneobj_type) { }
 
 //TODO implement
-bool Scene::doesRayIntersectObj(const Ray& _ray) { }
+bool Scene::doesRayIntersectObj(const Ray& _ray) { 
+    return false;
+}
 
 //TODO implement
 Color32 Scene::getBackgroundColor() { }

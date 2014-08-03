@@ -1,5 +1,8 @@
-#include "RayTraceUtil.h"
 #include "Ray.h"
+#include "Color32.h"
+#include "Scene.h"
+#include "Sphere.h"
+#include "Vec3.h"
 
 #include <iostream>
 #include <cmath>
@@ -19,12 +22,7 @@ int main() {
 
     const float MAX_RAY_LENGTH = 30;
 
-    Color24 white;
-    white.b = 0xFF;
-    white.g = 0xFF;
-    white.r = 0xFF;
-
-    Color24 framebuffer[RES_X][RES_Y];
+    Color32 framebuffer[RES_X][RES_Y];
 
     //Start with an "eyeball" at the three dimensional origin, with a screen of RES_X * RES_Y pixels
     //in front of it, FOCAL_LENGTH away and FOCAL_WIDTH x FOCAL_WIDTH in size. For each pixel in the 
@@ -33,18 +31,19 @@ int main() {
     int total_pix = RES_X * RES_Y;
     for (int x = 0; x < RES_X; x++) {
         for (int y = 0; y < RES_Y; y++) {
-            RayInfo r;
             //Calculate the center of the pixel
-            r.pos.x = FOCAL_WIDTH / (RES_X * 2) + x * FOCAL_WIDTH / RES_X - FOCAL_WIDTH / 2;
-            r.pos.y = FOCAL_WIDTH / (RES_Y * 2) + y * FOCAL_WIDTH / RES_Y - FOCAL_WIDTH / 2;
-            r.pos.z = 0;
+            Vec3<float> pix_pos;
+            pix_pos.x = FOCAL_WIDTH / (RES_X * 2) + x * FOCAL_WIDTH / RES_X - FOCAL_WIDTH / 2;
+            pix_pos.y = FOCAL_WIDTH / (RES_Y * 2) + y * FOCAL_WIDTH / RES_Y - FOCAL_WIDTH / 2;
+            pix_pos.z = 0;
             //Calculate the angle at which the ray travels through the pixel
             r.theta_x = std::atan2(r.pos.x, FOCAL_LENGTH);
             r.theta_y = std::atan2(r.pos.y, FOCAL_LENGTH);
+            Ray r;
 
             //Dummy obj buffer for now
             ObjectBuffer obj_buf = { 0 };
-            Color24 pix_color = rayTrace(obj_buf, r, white, .01, MAX_RAY_LENGTH);
+            Color32 pix_color = rayTrace(obj_buf, r, white, .01, MAX_RAY_LENGTH);
             if (colorEquals(pix_color, white)) {
                 std::cout << " ";
             }

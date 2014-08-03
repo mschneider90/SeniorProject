@@ -12,12 +12,14 @@ public:
 
 	Vec3 origin(0,0,0);
 
+    Vec3() : x(0), y(0), z(0) { }
 	Vec3(const vec_t _x, const vec_t _y, const vec_t _z) : x(_x), y(_z), z(_z) { }
 	~Vec3() { }
 
 	float distanceFromOrigin() const;
 	float distanceFromPoint(const Vec3<vec_t>& _point) const;
 
+    Vec3<vec_t>& operator=(const Vec3<vec_t>& rhs);
 	bool operator==(const vec_t& _other) const;
 	bool operator!=(const vect_t& _other) const;
 }
