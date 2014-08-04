@@ -4,11 +4,9 @@ module micron_controller #(parameter A_WIDTH = 16,
                            parameter D_WIDTH = 16)
                           (input clk50MHz,
                            input[A_WIDTH-1:0] baddr,
-                           inout[D_WIDTH-1:0] bdata,
                            input [1:0] bburst,
                            output bwait,
                            output[A_WIDTH-1:0] maddr,
-                           inout[D_WIDTH-1:0]  mdata,
                            output reg moe_L,  //output enable
                            output reg mwe_L,  //write enable
                            output reg madv_L, //address valid
@@ -21,8 +19,8 @@ module micron_controller #(parameter A_WIDTH = 16,
                            
 //Address of the SRAM controller
 //TODO change this to global scope
-parameter CTRL_ADDR_READ = 16'hFFFA;
-parameter CTRL_ADDR_WRITE = 16'hFFFB;
+parameter CTRL_ADDR_READ = 16'h0001;
+parameter CTRL_ADDR_WRITE = 16'h0000;
             
 //Constants            
 parameter ASSERT = 1;
@@ -62,6 +60,9 @@ wire[3:0] burst_counter;
 count_reg b_counter(.en(burst_count_en), .rst(reset), .clk(clk50MHz), .count(burst_counter));
 //Zero indexed so subtract 1
 assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
+
+//Pass addr bus straight through
+assign maddr = baddr;
                        
 //These aren't used
 assign mub_L = DEASSERT_L;

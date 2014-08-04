@@ -20,11 +20,9 @@ wire[15:0] mdata;
                           
 micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
-                       .bdata(bdata),
                        .bburst(2'b11),
                        .bwait(bwait),
                        .maddr(maddr),
-                       .mdata(mdata),
                        .moe_L(moe_L),
                        .mwe_L(mwe_L),
                        .madv_L(madv_L),
@@ -49,8 +47,5 @@ end
 always begin
     #5 clk50MHz = ~clk50MHz;
 end
-
-
-
 
 endmodule
