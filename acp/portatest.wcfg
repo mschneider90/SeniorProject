@@ -44,23 +44,6 @@
       <obj_property name="ObjectShortName">volsel[1:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sqgendemo_test/sqd/porta1/note_in" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
-      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/sqd/porta1/note_out" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">note_out[5:0]</obj_property>
-      <obj_property name="ObjectShortName">note_out[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="label">porta_note_out[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/sqd/porta1/current_note" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">current_note[5:0]</obj_property>
-      <obj_property name="ObjectShortName">current_note[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/sqgendemo_test/sqd/porta1/en" type="logic" db_ref_id="1">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">en</obj_property>
@@ -71,6 +54,23 @@
       <obj_property name="ElementShortName">prev_note[5:0]</obj_property>
       <obj_property name="ObjectShortName">prev_note[5:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/porta1/note_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
+      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/porta1/current_note" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">current_note[5:0]</obj_property>
+      <obj_property name="ObjectShortName">current_note[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sqgendemo_test/sqd/porta1/note_out" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">note_out[5:0]</obj_property>
+      <obj_property name="ObjectShortName">note_out[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="label">porta_note_out[5:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/sqgendemo_test/sqd/porta1/note_clk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">note_clk</obj_property>
