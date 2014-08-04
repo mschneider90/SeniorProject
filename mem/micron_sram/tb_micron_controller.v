@@ -4,7 +4,7 @@ module tb_micron_controller();
 
 reg clk50MHz;
 reg[15:0] baddr;
-reg bwait;
+wire bwait;
 wire[15:0] maddr;
 wire moe_L;
 wire mwe_L;
@@ -37,7 +37,6 @@ micron_controller ctrl(.clk50MHz(clk50MHz),
 initial begin
     clk50MHz = 0;
     baddr = 0;
-    bwait = 0;
     #8
     baddr = 16'hFFFA;
     #10

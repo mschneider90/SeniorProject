@@ -1,11 +1,19 @@
 `timescale 1ns / 1ps
 
+//Controller for Micron MT45W8 pseudo-SRAM device
+//
+//External interface:
+//Cycle 0: Present device address.
+//Cycle 1: Present starting memory/register address & burst length
+//Cycle 2: If "bwait" is asserted, wait until "bwait" is deasserted.
+//...
+//Cycle n: Present/read one data word per cycle
 module micron_controller #(parameter A_WIDTH = 16,
                            parameter D_WIDTH = 16)
                           (input clk50MHz,
                            input[A_WIDTH-1:0] baddr,
                            input [1:0] bburst,
-                           output bwait,
+                           output reg bwait,
                            output[A_WIDTH-1:0] maddr,
                            output reg moe_L,  //output enable
                            output reg mwe_L,  //write enable
@@ -37,7 +45,7 @@ parameter STATE_WRITE_ADDR = 4;
 parameter STATE_WRITE_WAIT = 5;
 parameter STATE_WRITE_DATA = 6;
 
-//See: micron_ram.pdf, pg. 29
+//See: micron_ram.pdf (datasheet), pg. 29
 //Default read/write latency is 4 cycles
 //This also allows us to operate up to 52MHz - convenient
 parameter RW_LATENCY_CYCLES = 4;
@@ -139,6 +147,7 @@ always@(currentState) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= DEASSERT_L;
+            bwait <= DEASSERT;
             
             //Local signals
             reset <= ASSERT;
@@ -151,6 +160,7 @@ always@(currentState) begin
             mwe_L <= DEASSERT_L;
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
+            bwait <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -163,6 +173,7 @@ always@(currentState) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            bwait <= ASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -175,6 +186,7 @@ always@(currentState) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            bwait <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -187,6 +199,7 @@ always@(currentState) begin
             mwe_L <= ASSERT_L;
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
+            bwait <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -199,6 +212,7 @@ always@(currentState) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            bwait <= ASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -211,6 +225,7 @@ always@(currentState) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
+            bwait <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -219,8 +234,5 @@ always@(currentState) begin
         end
     endcase
 end
-
-
-
 
 endmodule
