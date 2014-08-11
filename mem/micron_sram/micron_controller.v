@@ -27,8 +27,8 @@ module micron_controller #(parameter A_WIDTH = 16,
                            
 //Address of the SRAM controller
 //TODO change this to global scope
-parameter CTRL_ADDR_READ = 16'h0001;
-parameter CTRL_ADDR_WRITE = 16'h0000;
+parameter CTRL_ADDR_READ = 16'hFFFA;
+parameter CTRL_ADDR_WRITE = 16'hFFFB;
             
 //Constants            
 parameter ASSERT = 1;
@@ -44,6 +44,7 @@ parameter STATE_READ_DATA = 3;
 parameter STATE_WRITE_ADDR = 4;
 parameter STATE_WRITE_WAIT = 5;
 parameter STATE_WRITE_DATA = 6;
+parameter STATE_FINISH = 7;
 
 //See: micron_ram.pdf (datasheet), pg. 29
 //Default read/write latency is 4 cycles
@@ -57,7 +58,11 @@ reg reset;
 reg cycle_count_en;
 wire cycle_count_geq;
 wire[1:0] cycle_counter;
-count_reg c_counter(.en(cycle_count_en), .rst(reset), .clk(clk50MHz), .count(cycle_counter));
+count_reg c_counter(.en(cycle_count_en),
+                    .rst(reset),
+                    .clk(clk50MHz),
+                    .count(cycle_counter),
+                    .load(DEASSERT));
 //Zero indexed so subtract 1
 assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEASSERT;
 
@@ -65,9 +70,17 @@ assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEA
 reg burst_count_en;
 wire burst_count_geq;
 wire[3:0] burst_counter;
-count_reg b_counter(.en(burst_count_en), .rst(reset), .clk(clk50MHz), .count(burst_counter));
+count_reg b_counter(.en(burst_count_en),
+                    .rst(reset),
+                    .clk(clk50MHz),
+                    .count(burst_counter),
+                    .load(DEASSERT));
 //Zero indexed so subtract 1
 assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
+
+//Generate memory block
+reg mclk_en;
+assign mclk = (mclk_en == ASSERT)? clk50MHz : DEASSERT;
 
 //Pass addr bus straight through
 assign maddr = baddr;
@@ -78,13 +91,6 @@ assign mlb_L = DEASSERT_L;
 
 reg[3:0] currentState;
 reg[3:0] nextState;
-
-//mclk is active in WAIT or DATA states
-assign mclk = (currentState == STATE_READ_WAIT || 
-               currentState == STATE_READ_DATA || 
-               currentState == STATE_WRITE_WAIT || 
-               currentState == STATE_WRITE_DATA)?
-             clk50MHz : DEASSERT;
 
 initial begin
     currentState <= STATE_IDLE;
@@ -119,7 +125,7 @@ always@(negedge clk50MHz) begin
         end
         STATE_READ_DATA: begin
             if (burst_count_geq) begin
-                nextState <= STATE_IDLE;
+                nextState <= STATE_FINISH;
             end
         end
         STATE_WRITE_ADDR: begin
@@ -132,8 +138,11 @@ always@(negedge clk50MHz) begin
         end
         STATE_WRITE_DATA: begin
             if (burst_count_geq) begin
-                nextState <= STATE_IDLE;
+                nextState <= STATE_FINISH;
             end
+        end
+        STATE_FINISH: begin
+            nextState <= STATE_IDLE;
         end
     endcase
 end
@@ -148,6 +157,7 @@ always@(currentState) begin
             madv_L <= DEASSERT_L;
             mce_L <= DEASSERT_L;
             bwait <= DEASSERT;
+            mclk_en <= DEASSERT;
             
             //Local signals
             reset <= ASSERT;
@@ -161,6 +171,7 @@ always@(currentState) begin
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
             bwait <= DEASSERT;
+            mclk_en <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -174,6 +185,7 @@ always@(currentState) begin
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
             bwait <= ASSERT;
+            mclk_en <= ASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -187,6 +199,7 @@ always@(currentState) begin
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
             bwait <= DEASSERT;
+            mclk_en <= ASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -200,6 +213,7 @@ always@(currentState) begin
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
             bwait <= DEASSERT;
+            mclk_en <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -213,6 +227,7 @@ always@(currentState) begin
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
             bwait <= ASSERT;
+            mclk_en <= ASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -226,11 +241,26 @@ always@(currentState) begin
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
             bwait <= DEASSERT;
+            mclk_en <= ASSERT;
             
             //Local signals
             reset <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= ASSERT;
+        end
+        STATE_FINISH: begin
+            //Outputs
+            moe_L <= DEASSERT_L;
+            mwe_L <= DEASSERT_L;
+            madv_L <= DEASSERT_L;
+            mce_L <= DEASSERT_L;
+            bwait <= DEASSERT;
+            mclk_en <= ASSERT;
+            
+            //Local signals
+            reset <= ASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
         end
     endcase
 end
