@@ -39,7 +39,7 @@ wire[4:0] counter;
 
 assign mdata = (counter > 8)? 'bz : bdata;
 
-count_reg cntr(1, ~button_1, clk50MHz, counter);
+count_reg cntr(.en(1), .rst(~button_1), .clk(clk50MHz), .count(counter));
 
 assign bdata = 16'h2222;
 assign baddr = (counter > 8)? 16'h0001 : 16'h0000;
