@@ -75,8 +75,7 @@ count_reg b_counter(.en(burst_count_en),
                     .clk(clk50MHz),
                     .count(burst_counter),
                     .load(DEASSERT));
-//Zero indexed so subtract 1
-assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
+assign burst_count_geq = (burst_counter >= bburst) ? ASSERT : DEASSERT;
 
 //Generate memory block
 reg mclk_en;
