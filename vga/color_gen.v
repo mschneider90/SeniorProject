@@ -1,12 +1,10 @@
 `timescale 1ns / 100ps
 
-module color_gen(row, col, output_valid, rgb);
-
-input [10:0] col;
-input [10:0] row; 
-input output_valid;
-
-output reg [7:0] rgb;
+module color_gen #(parameter COLOR_DEPTH = 8)
+                  (input[10:0] row,
+                   input[10:0] col,
+                   input output_valid,
+                   output reg [COLOR_DEPTH-1:0] rgb);
 
 reg [10:0] i;
 reg [10:0] j;
