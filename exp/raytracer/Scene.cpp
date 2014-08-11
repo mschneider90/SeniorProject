@@ -17,7 +17,7 @@ Sphere* Scene::addSphere(const Vec3<float>& _pos, const float _radius) {
     return sphere;
 }
 
-bool Scene::doesRayIntersectObj(const Ray& _ray) { 
+bool Scene::doesRayIntersectObj(const Ray& _ray) const { 
     //TODO how to handle multiple intersections?
     for (auto obj_iter = scene_objs.begin(); obj_iter != scene_objs.end(); obj_iter++) {
         if ((*obj_iter)->doesRayIntersect(_ray)) {

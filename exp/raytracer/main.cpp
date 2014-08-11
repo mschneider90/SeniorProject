@@ -18,7 +18,7 @@ int main() {
 
     Color32 background_color = StdColor::White;
     Scene scene(background_color);
-    Sphere* sphere = scene.addSphere(Vec3<float>(0,0,10), 3);
+    Sphere* sphere = scene.addSphere(Vec3<float>(0,0,10), 5);
 
     //Start with an "eyeball" at the three dimensional origin, with a screen of RES_X * RES_Y pixels
     //in front of it, FOCAL_LENGTH away and FOCAL_WIDTH x FOCAL_WIDTH in size. For each pixel in the 
@@ -39,6 +39,8 @@ int main() {
             ray_angle.y = std::atan2(pix_pos.y, FOCAL_LENGTH);
             ray_angle.z = 0;
 
+			//std::cout << "Pix position: " << pix_pos.x << ", " << pix_pos.y << std::endl;
+			//std::cout << "Ray angle: " << ray_angle.x << ", " << ray_angle.y << ", " << ray_angle.z << std::endl;
             Ray ray(pix_pos, ray_angle);
 
             Color32 pix_color = rayTrace(scene, ray);
@@ -58,5 +60,11 @@ int main() {
 }
 
 Color32 rayTrace(const Scene& _scene, const Ray& _ray) {
-    return StdColor::White;
+	if (_scene.doesRayIntersectObj(_ray))
+	{
+		return StdColor::Black;
+	}
+	else {
+		return StdColor::White;
+	}
 }

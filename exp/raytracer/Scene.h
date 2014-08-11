@@ -5,6 +5,7 @@
 #include "Color32.h"
 #include "SceneObj.h"
 #include "Ray.h"
+#include "Vec3.h"
 
 //Forward declarations
 class Color32;
@@ -23,7 +24,7 @@ public:
 	Scene(Color32 _background_color) : background_color(_background_color) { }
 	~Scene();
 	Sphere* addSphere(const Vec3<float>& _pos, const float _radius);
-	bool doesRayIntersectObj(const Ray& _ray);
+	bool doesRayIntersectObj(const Ray& _ray) const;
 	Color32 getBackgroundColor();
 };
 

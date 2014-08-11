@@ -2,6 +2,7 @@
 #define SPHERE_H
 
 #include "SceneObj.h"
+#include "Vec3.h"
 
 //Forward declarations
 class Ray;
