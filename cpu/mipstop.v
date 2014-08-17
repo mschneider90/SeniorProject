@@ -1,4 +1,4 @@
-module top(input         clk, reset, 
+module top(input         clk, reset, bus_wait,
            output [31:0] writedata, dataadr, 
            output        memwrite);
 
@@ -6,18 +6,22 @@ module top(input         clk, reset,
   
   mips mips(.clk(clk), 
             .reset(reset),
-				.pc(pc),
-				.instr(instr),
-				.memwrite(memwrite),
+            .pc(pc),
+            .instr(instr),
+            .memwrite(memwrite),
             .alumult_out(dataadr),
-				.writedata(writedata),
-				.readdata(readdata));
+            .writedata(writedata),
+            .readdata(readdata),
+            .bus_wait(bus_wait));
+            
   imem imem(.addr(pc[7:2]),
             .data_r(instr));
+            
   dmem dmem(.clk(clk),
             .we(memwrite),
- 				.addr(dataadr),
-				.data_w(writedata),
-				.data_r(readdata));
+            .addr(dataadr),
+            .bus_wait(bus_wait),
+            .data_w(writedata),
+            .data_r(readdata));
 
 endmodule

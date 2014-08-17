@@ -6,6 +6,7 @@ module datapath #(parameter dwidth = 32)
                 input         link, mult,
                 input         mfhi, mflo,
                 input  [2:0]  alucontrol,
+                input         bus_wait,
                 output        zero,
                 output [dwidth-1:0] pc,
                 input  [dwidth-1:0] instr,
@@ -30,9 +31,9 @@ module datapath #(parameter dwidth = 32)
   assign pcfromrf = srca;
   assign pcfromj = instr[25:0] << 2;
   assign enc_in = {jumpreg, pcsrc, jump, 1'b0};
-  flopr #(dwidth) pcreg(.clk(clk),
-                        .en(1),
-                        .reset(reset),
+  d_reg #(dwidth) pcreg(.clk(clk),
+                        .en(~bus_wait), //Wait signal from bus causes PC stall, to support
+                        .reset(reset),  // multicycle memory access
                         .d(pcnext),
                         .q(pc));
   adder pcadd1(.a(pc),

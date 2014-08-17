@@ -1,4 +1,4 @@
-module dff #(parameter WIDTH = 8)
+module d_reg #(parameter WIDTH = 8)
               (input      clk, reset, en,
                input      [WIDTH-1:0] d, 
                output reg [WIDTH-1:0] q);
