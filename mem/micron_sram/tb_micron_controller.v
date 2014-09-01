@@ -3,9 +3,9 @@
 module tb_micron_controller();
 
 reg clk50MHz;
-reg[15:0] baddr;
+reg[19:0] baddr;
 wire bwait;
-wire[15:0] maddr;
+wire[19:0] maddr;
 wire moe_L;
 wire mwe_L;
 wire madv_L;
@@ -19,12 +19,15 @@ wire[15:0] bdata;
 wire[15:0] mdata;
 
 reg[15:0] mdata_reg;
+reg bwe_L;
 
 assign mdata = (mdata_reg == 16'hFFFF)? 'bz : mdata_reg;
                           
 micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
                        .bburst(2'b11),
+                       .benable_L(0),
+                       .bwe_L(bwe_L),
                        .bwait(bwait),
                        .maddr(maddr),
                        .moe_L(moe_L),
@@ -55,53 +58,94 @@ reg rst;
 count_reg cntr(.en(1), .rst(rst), .clk(clk50MHz), .count(counter), .load(0));
                       
 initial begin
-    clk50MHz <= 0;
+    clk50MHz <= 1;
     baddr <= 0;
     mdata_reg <= 16'hFFFF;
-    rst = 1;
+    rst <= 1;
+    bwe_L <= 0;
 end
+
+parameter DATA_1 = 1;
+parameter DATA_2 = 2;
+parameter DATA_3 = 3;
+parameter DATA_4 = 4;
+
+reg[1:0] errors;
 
 always@(counter) begin
     case (counter) 
         0: begin
-            rst = 0;
-            baddr <= 16'hFFFB; //Write
+            rst <= 0;
+            errors <= 0;
+            baddr <= 0;
+            bwe_L <= 0;
         end
         1: begin
-            baddr <= 16'h0000; //Starting addr
-        end
-        2: begin
             //Wait 1
         end
-        3: begin
+        2: begin
             //Wait 2
         end
-        4: begin
+        3: begin
             //Wait 3
         end
+        4: begin
+            mdata_reg <= DATA_1; //data 1
+        end
         5: begin
-            //Wait 4
+            mdata_reg <= DATA_2; //data 2
         end
         6: begin
-            mdata_reg <= 16'h0001; //data 1
+            mdata_reg <= DATA_3; //data 3
         end
         7: begin
-            mdata_reg <= 16'h0002; //data 2
+            mdata_reg <= DATA_4; //data 4
         end
         8: begin
-            mdata_reg <= 16'h0003; //data 3
+            mdata_reg <= 16'hFFFF; //disable 
+            baddr <= 0;
+            bwe_L <= 1;
         end
         9: begin
-            mdata_reg <= 16'h0004; //data 4
+            //wait 1
         end
         10: begin
-            mdata_reg <= 16'hFFFF; //disable 
+            //wait 2
         end
         11: begin
-            baddr <= 16'hFFFA; //read
+            //wait 3
         end
         12: begin
-            baddr <= 16'h0000; //addr
+            //data 1
+            if (mdata != DATA_1) begin
+                errors <= errors + 1;
+            end
+        end
+        13: begin 
+            //data 2
+            if (mdata != DATA_2) begin
+                errors <= errors + 1;
+            end
+        end
+        14: begin
+            //data 3
+            if (mdata != DATA_3) begin
+                errors <= errors + 1;
+            end
+        end
+        15: begin
+            //data 4
+            if (mdata != DATA_4) begin
+                errors <= errors + 1;
+            end
+        end
+        16: begin
+            if (errors == 0) begin
+                $display("PASS");
+            end
+            else begin
+                $display("FAIL");
+            end
         end
     endcase
 end

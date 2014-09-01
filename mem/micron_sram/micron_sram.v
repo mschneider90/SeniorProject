@@ -15,6 +15,8 @@ module micron_sram #(parameter D_WIDTH = 16,
                      input ub_L,
                      input lb_L);
                      
+parameter LATENCY = 4;
+                     
 //States
 parameter STATE_IDLE = 0;
 parameter STATE_READ_ADDR = 1;
@@ -58,7 +60,7 @@ reg[D_WIDTH-1:0] mem[63:0];
 reg[D_WIDTH-1:0] data_reg;
 
 reg data_out_en;
-assign data = (data_out_en)? data_reg : 'bz;
+assign data = (data_out_en && ce_L == ASSERT_L)? data_reg : 'bz;
 
 reg mem_wait_en;
 assign mem_wait = (mem_wait_en)? ASSERT : DEASSERT;
@@ -75,6 +77,14 @@ end
 
 always@(posedge clk) begin
     currentState <= nextState;
+end
+
+always@(posedge clk) begin
+    if (ce_L == ASSERT_L) begin
+        if (currentState == STATE_WRITE_DATA) begin
+            mem[currentAddr] <= data;
+        end
+    end
 end
    
 //Next state logic   
@@ -93,7 +103,7 @@ always@(*) begin
             end
         end
         STATE_READ_WAIT: begin
-            if (waitCounter == 2'b11) begin
+            if (waitCounter == LATENCY - 2) begin
                 nextState <= STATE_READ_DATA;
             end
         end
@@ -103,7 +113,7 @@ always@(*) begin
             end
         end
         STATE_WRITE_WAIT: begin
-            if (waitCounter == 2'b11) begin
+            if (waitCounter == LATENCY - 2) begin 
                 nextState <= STATE_WRITE_DATA;
             end
         end
@@ -155,7 +165,6 @@ always@(*) begin
             addr_en <= DEASSERT;
         end
         STATE_WRITE_DATA: begin
-            mem[currentAddr] <= data;
             mem_wait_en <= DEASSERT;
             data_out_en <= DEASSERT;
             

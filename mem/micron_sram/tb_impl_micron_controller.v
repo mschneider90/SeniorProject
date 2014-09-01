@@ -17,10 +17,13 @@ module tb_impl_micron_controller(input clk50MHz,
                               
 wire[15:0] baddr;
 wire bwait;
+wire bwe_L;
 
 micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
                        .bburst(2'b10),
+                       .benable_L(0),
+                       .bwe_L(bwe_L),
                        .bwait(bwait),
                        .maddr(maddr),
                        .moe_L(moe_L),
@@ -37,12 +40,13 @@ micron_controller ctrl(.clk50MHz(clk50MHz),
 wire [15:0] bdata;
 wire[4:0] counter;
 
-assign mdata = (counter > 8)? 'bz : bdata;
+assign mdata = (counter > 7)? 'bz : bdata;
 
 count_reg cntr(.en(1), .rst(~button_1), .clk(clk50MHz), .count(counter));
 
-assign bdata = 16'h2222;
-assign baddr = (counter > 8)? 16'h0001 : 16'h0000;
+assign bdata = 16'hFFFF;
+assign baddr = (counter > 7)? 16'h0000 : 16'h0000;
 assign data_out = (counter == 16)? mdata : 8'h00;
+assign bwe_L = (counter > 7)? 0 : 1;
     
 endmodule
