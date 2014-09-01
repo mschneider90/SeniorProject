@@ -25,19 +25,20 @@ reg [7:0] ch3;
 reg [7:0] ch4;
 
 reg [7:0] tmpch1;
+reg [7:0] tmpch2;
 reg [7:0] tempresult;
 
 
 output reg [7:0] out;
 
-always @(in1, in2, in3, in4) //should this be a sampling rate? who knows 
+always @(in1, in2, in3, in4, ch1, ch2, vol1) //should this be a sampling rate? who knows 
 begin
 
 
 ch1 <= in1 << 2;
 ch2 <= in2 << 2;
 ch3 <= in3 << 2;
-tmpch1 <= in4 << 2;
+ch4 <= in4 << 2;
 
 //volume1: first volume ch. may be used on tri
 
@@ -46,23 +47,27 @@ case (vol1) //1/4, 1/2, 3/4 and full volume. Note ordering of volumes from low t
 2'b00: //routine for caculating volume. 00: 1/4
 begin
 	
-	ch4 <= tmpch1 >> 2;
+	ch1 <= in1;
+	ch2 <= in2;
 end
 2'b01: //01: 1/2
 begin
-	ch4 <= tmpch1 >> 1;
+	ch1 <= in1 << 1;
+	ch2 <= in2 << 1;
 end
 2'b11: //11: 3/4
 begin
-	ch4 <= (tmpch1 >> 1) + (tmpch1 >> 2);
+	ch1 <= (in1) + (in1 << 1);
+	ch2 <= (in2) + (in2 << 1);
 end
 2'b10: //10: full volume 
 begin
-	ch4 <= tmpch1;
+	ch1 <= in1 << 2;
+	ch2 <= in2 << 2;
 end
 default:
 begin
-	ch4 <= tmpch1; 
+	ch1 <=  in1 << 2; 
 end
 endcase 
 

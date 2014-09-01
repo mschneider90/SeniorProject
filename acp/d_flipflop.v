@@ -5,7 +5,7 @@
 
 module d_flipflop #(parameter width = 8)
                    (input      [width-1:0] d_in, 
-						  input       clk, 
+						  input      clk, 
 						  output reg [width-1:0] q_out);
 
 initial begin

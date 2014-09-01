@@ -1,4 +1,4 @@
-`timescale 20ns / 20ns
+`timescale 20ns / 1ns
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -29,7 +29,7 @@ wire [7:0] audio_out;
 //reg wavesel;
 
 
-sqgendemo sqd (clk, butt_1, butt_2, butt_3, butt_4, oct, volsel, audio_out
+sqgendemo UUT (clk, butt_1, butt_2, butt_3, butt_4, oct, volsel, audio_out
     );
 
 initial begin
