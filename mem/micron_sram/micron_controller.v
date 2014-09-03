@@ -1,13 +1,7 @@
 `timescale 1ns / 1ps
 
 //Controller for Micron MT45W8 pseudo-SRAM device
-//
-//External interface:
-//The four most significant bits are the device address
-//Cycle 0: Present starting memory/register address & burst length
-//Cycle 1: If "bwait" is asserted, wait until "bwait" is deasserted.
-//...
-//Cycle n: Present/read one data word per cycle
+
 module micron_controller #(parameter A_WIDTH = 24,
                            parameter D_WIDTH = 16)
                           (input clk50MHz,
@@ -15,7 +9,7 @@ module micron_controller #(parameter A_WIDTH = 24,
                            input [1:0] bburst,
                            input bwe_L,
                            input benable_L,
-                           output reg bwait,
+                           output bwait,
                            output[A_WIDTH-1:0] maddr,
                            output reg moe_L,  //output enable
                            output reg mwe_L,  //write enable
@@ -72,9 +66,13 @@ count_reg b_counter(.en(burst_count_en),
                     .load(DEASSERT));
 assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
 
-//Generate memory block
+//Generate memory clock
 reg mclk_en;
 assign mclk = (mclk_en == ASSERT)? clk50MHz : DEASSERT;
+
+//Wait output
+reg bwait_en;
+assign bwait = (bwait_en == ASSERT)? ASSERT : 'bz;
 
 //Pass addr bus straight through
 assign maddr = baddr;
@@ -152,7 +150,7 @@ always@(*) begin
                 madv_L <= DEASSERT_L;
                 mce_L <= DEASSERT_L;
             end
-            bwait <= DEASSERT;
+            bwait_en <= DEASSERT;
             mclk_en <= DEASSERT;
             
             //Local signals
@@ -166,7 +164,7 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-            bwait <= ASSERT;
+            bwait_en <= ASSERT;
             mclk_en <= ASSERT;
             
             //Local signals
@@ -180,7 +178,7 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-            bwait <= DEASSERT;
+            bwait_en <= DEASSERT;
             mclk_en <= ASSERT;
             
             //Local signals
@@ -194,7 +192,7 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-            bwait <= ASSERT;
+            bwait_en <= ASSERT;
             mclk_en <= ASSERT;
             
             //Local signals
@@ -208,7 +206,7 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-            bwait <= DEASSERT;
+            bwait_en <= DEASSERT;
             mclk_en <= ASSERT;
             
             //Local signals
@@ -222,7 +220,7 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= DEASSERT_L;
-            bwait <= DEASSERT;
+            bwait_en <= DEASSERT;
             mclk_en <= ASSERT;
             
             //Local signals
