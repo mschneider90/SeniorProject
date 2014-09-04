@@ -5,7 +5,9 @@ module PriorityEncoder  (input  [7:0] enc_in,
                                                  //correspond to width of input + 1
                                                  //MSB is a "valid" bit
 
-wire valid;
+reg valid;
+reg [2:0] bcd_out; 
+
 assign enc_out = {valid, bcd_out};  
        
 always@(*) begin
