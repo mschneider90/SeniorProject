@@ -35,7 +35,7 @@ module triangle_channel(
 	 output wire [3:0] wave_out;
 	 
 	 
-	 wire porta_out;
+	 wire [5:0] porta_out;
 	 
 	 wire [5:0] fx_mux_out;
 	 

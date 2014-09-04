@@ -58,7 +58,7 @@ reg [1:0] FX3_sel;
 //wire [5:0] FX1_mux_out;
 
 
-reg porta_en;
+//reg porta_en;
 
 
 //reg [9:0] counter;
@@ -124,7 +124,7 @@ BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
 		SecondCtr <= 0;
 		SECCTR <= 0;
 		StateCtr <= 0;
-		porta_en <= 0;
+		//porta_en <= 0;
 		note_in <= 31;
 		note_in2 <= 0;
 		note_in3 <= 0;
@@ -143,18 +143,20 @@ BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
 		FX3_sel <= 0;
 	end
 	
-
+//assign F = (prev_note_A>note_in) ?  (prev_note_A - note_in) : (note_in - prev_note_A);
 
 always@(posedge clk)
 begin
 
-
+	FX1_sel <= (oct[5] == 1) ? 1 : 0;
+	FX2_sel <= (oct[4] == 1) ? 1 : 0;
+	
 	//this routine creates generates a note clock -- timing for the actual notes. This determines the tempo. 
-	note_clk_count = note_clk_count + 1;
+	note_clk_count <= note_clk_count + 1;
 	if (note_clk_count >= 3187500) //implementation value: 3187500 OR//796875 //testbench value: 318750
 	begin
-		note_clk_count = 0;
-		note_clk = ~note_clk;
+		note_clk_count <= 0;
+		note_clk <= ~note_clk;
 	end
 
 
@@ -194,8 +196,8 @@ begin
 					
 					sq1_en <=1;
 					
-					porta_en <= 0;
-					FX1_sel <= 0;
+					//porta_en <= 0;
+					//FX1_sel <= 1;
 				end
 			1:
 				begin
@@ -224,7 +226,7 @@ begin
 					note_in <= 44;
 					note_in3 <= 1;
 					note_in2 <= 13;
-				
+					//FX1_sel <= 0;
 					sq1_en <=1;
 				end		
 			5: 
@@ -317,7 +319,7 @@ begin
 			default:
 				begin
 					note_in <= 0;
-					porta_en <= 0;
+//					porta_en <= 0;
 				end
 		endcase
 		
