@@ -41,7 +41,7 @@ initial begin
 #1 clk = 0;
 #1 volsel = 2'b11;
 #1 oct = 6'b000000;
-#1000000 butt_1 = 1;
+#10000 butt_1 = 1;
 
 
 #5000000 oct = 6'b100000;

@@ -24,8 +24,8 @@ reg [7:0] ch2;
 reg [7:0] ch3;
 reg [7:0] ch4;
 
-reg [7:0] tmpch1;
-reg [7:0] tmpch2;
+//reg [7:0] tmpch1;
+//reg [7:0] tmpch2;
 reg [7:0] tempresult;
 
 

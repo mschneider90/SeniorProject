@@ -1,10 +1,11 @@
-`timescale 1ns / 1ns//////////////////////////////////////////////////////////
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date:    15:30:21 08/31/2014 
+// Create Date:    16:08:07 09/03/2014 
 // Design Name: 
-// Module Name:    wave_channel 
+// Module Name:    triangle_channel 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -17,7 +18,8 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module sq_channel( 	note_in,
+module triangle_channel(
+							note_in,
 							note_clk,
 							channel_en,
 							fx_sel,
@@ -40,11 +42,11 @@ module sq_channel( 	note_in,
 	 wire basefreq;
 	 wire buffreq;
 	 
-		 reg porta_en;
-
+	 reg porta_en;
+	 
 initial begin
 	porta_en = 0;
-end
+end	 
 	 
 always@(posedge clk50mhz)	 	 
 begin
@@ -72,7 +74,7 @@ end
 endcase	 
 end
 	 
-FX_porta sq_porta (
+FX_porta tr_porta (
 	.note_in 	(note_in),
 	.note_clk	(note_clk),
 	.note_out	(porta_out),
@@ -80,7 +82,7 @@ FX_porta sq_porta (
 	.clk50mhz	(clk50mhz)
 	);
 	
-mux4to1 sq_FX_mux (
+mux4to1 tr_FX_mux (
 	.in_a		(note_in),
 	.in_b		(porta_out),
 	.in_c		(0),
@@ -90,19 +92,20 @@ mux4to1 sq_FX_mux (
 );
 
 
-base_freq_genx64 sq_freqgen ( //SQUARE CHANNEL 1
+base_freq_genx64 tr_freqgen ( //SQUARE CHANNEL 1
 	.note_in		(fx_mux_out),
 	.clk50mhz	(clk50mhz),
 	.freq_out	(basefreq)
 );
 
-BUFG freq1_bufg (.I (basefreq), .O (buffreq)); //a clock buffer? 
+BUFG freq3_bufg (.I (basefreq), .O (buffreq)); //a clock buffer? 
 	 
 //SQUARE WAVE CHANNEL
-square_gen sqgen1 ( 	
+trigen trgen1 ( 	
 	.base_freq	(buffreq),
-	.square_out	(wave_out),
+	.triangle_out	(wave_out),
 	.en			(channel_en)
 );
+
 
 endmodule

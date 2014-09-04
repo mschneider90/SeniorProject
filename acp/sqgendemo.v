@@ -25,15 +25,15 @@ input [5:0] oct;
 output wire [7:0] audio_out;
 //wire freq;
 //wire freq2;
-wire basefreq1;
-wire basefreq2;
-wire basefreq3;
-wire basefreq4;
+//wire basefreq1;
+//wire basefreq2;
+//wire basefreq3;
+//wire basefreq4;
 
-wire buffreq1;
-wire buffreq2;
-wire buffreq3;
-wire buffreq4;
+//wire buffreq1;
+//wire buffreq2;
+//wire buffreq3;
+//wire buffreq4;
 
 reg sq1_en;
 reg sq2_en;
@@ -45,7 +45,7 @@ reg [5:0] note_in3;
 reg [5:0] note_in4;
 
 wire [3:0] tr1;
-wire [3:0] tr2;
+//wire [3:0] tr2;
 wire [3:0] sq1;
 wire [3:0] sq2;
 
@@ -53,7 +53,9 @@ wire [5:0] porta_out;
 
 
 reg [1:0] FX1_sel;
-wire [5:0] FX1_mux_out;
+reg [1:0] FX2_sel;
+reg [1:0] FX3_sel;
+//wire [5:0] FX1_mux_out;
 
 
 reg porta_en;
@@ -72,92 +74,33 @@ integer note_clk_count;
 
 reg note_clk;
 
- 
-FX_porta porta1 (
+
+sq_channel sq_ch1(
 	.note_in 	(note_in),
 	.note_clk	(note_clk),
-	.note_out	(porta_out),
-	.en			(porta_en),  //used to be butt_1
-	.clk50mhz	(clk)
-	);
-
-base_freq_genx64 freqgen ( //SQUARE CHANNEL 1
-	.note_in		(FX1_mux_out),
+	.channel_en	(sq1_en & butt_1),
+	.fx_sel		(FX1_sel),
 	.clk50mhz	(clk),
-	.freq_out	(basefreq1)
+	.wave_out	(sq1)
+    );
+	 
+sq_channel sq_ch2(
+	.note_in 	(note_in3),
+	.note_clk	(note_clk),
+	.channel_en	(sq2_en & butt_2),
+	.fx_sel		(FX2_sel),
+	.clk50mhz	(clk),
+	.wave_out	(sq2)
 	);
 	
-base_freq_genx64 freqgen2 (  //TRIANGLE CHANNEL 1 
-	.note_in	   (note_in2), 
+triangle_channel tr_ch3(
+	.note_in 	(note_in2),
+	.note_clk	(note_clk),
+	.channel_en	(tr1_en & butt_3),
+	.fx_sel		(FX3_sel),
 	.clk50mhz	(clk),
-	.freq_out	(basefreq2)
+	.wave_out	(tr1)
 );
-
-base_freq_genx64 freqgen3 ( //SQUARE CHANNEL 2 (note_in port changed from note_in3 to note_in to test portamento module. CHange back when done
-	.note_in	   (note_in3),
-	.clk50mhz	(clk),
-	.freq_out	(basefreq3)
-);
-
-base_freq_genx64 freqgen4 ( //TRIANGLE CHANNEL 2
-	.note_in	   (note_in4),
-	.clk50mhz	(clk),
-	.freq_out	(basefreq4)
-);
-
-
-//SQUARE WAVE CHANNEL 1 
-square_gen sqgen1 ( 	
-	.base_freq	(buffreq1),
-	.square_out	(sq1),
-	.en			(sq1_en && butt_1)
-	);
-
-//SQUARE WAVE CHANNEL 2
-square_gen sqgen2 ( 	
-	.base_freq	(buffreq3),
-	.square_out	(sq2),
-	.en			(sq2_en && butt_2)
-	);
-
-//TRIANGLE WAVE CHANNEL 3
-trigen trgen1 (
-	.base_freq (buffreq2),
-	.triangle_out (tr1),
-	.en (tr1_en && butt_3)
-);
-
-
-//TRIANGEL WAVE CHANNEL 4
-trigen trgen2 (   //change trigen to trigen8bit to make an 8 bit triangle wave
-	.base_freq (buffreq4),
-	.triangle_out (tr2),
-	.en (butt_4)
-);
-
-
-
-//Channel 1 FX Selector Multiplexer
-mux4to1 FX1_mux (
-	.in_a		(note_in),
-	.in_b		(porta_out),
-	.in_c		(0),
-	.in_d		(0),
-	.mux_sel	(FX1_sel),
-	.mux_out	(FX1_mux_out)
-);
-
-
-
-/*
-mux2_4bit waveselmux (
-	.d_in0 (sq_out),
-	.d_in1 (tri_out),
-	.sel (wavesel),
-	.d_out (audio_out)
-);
-*/ 
-
 
 mixer_8bit_4ch mixer (
 	.in1 (sq1),
@@ -168,11 +111,12 @@ mixer_8bit_4ch mixer (
 	.out (audio_out)
 );
 
+/*
 BUFG freq1_bufg (.I (basefreq1), .O (buffreq1)); //a clock buffer? 
 BUFG freq2_bufg (.I (basefreq2), .O (buffreq2));
 BUFG freq3_bufg (.I (basefreq3), .O (buffreq3));
 BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
-
+*/
 
 	initial begin
 	//	counter = 0;
@@ -195,6 +139,8 @@ BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
 		note_clk_count <= 0;
 		note_clk <= 0;
 		FX1_sel <= 0;
+		FX2_sel <= 0;
+		FX3_sel <= 0;
 	end
 	
 
@@ -489,3 +435,96 @@ end
 
 
 endmodule
+
+
+
+
+
+/*
+ 
+FX_porta porta1 (
+	.note_in 	(note_in),
+	.note_clk	(note_clk),
+	.note_out	(porta_out),
+	.en			(porta_en),  //used to be butt_1
+	.clk50mhz	(clk)
+	);
+
+base_freq_genx64 freqgen ( //SQUARE CHANNEL 1
+	.note_in		(FX1_mux_out),
+	.clk50mhz	(clk),
+	.freq_out	(basefreq1)
+	);
+	
+base_freq_genx64 freqgen2 (  //TRIANGLE CHANNEL 1 
+	.note_in	   (note_in2), 
+	.clk50mhz	(clk),
+	.freq_out	(basefreq2)
+);
+
+base_freq_genx64 freqgen3 ( //SQUARE CHANNEL 2 (note_in port changed from note_in3 to note_in to test portamento module. CHange back when done
+	.note_in	   (note_in3),
+	.clk50mhz	(clk),
+	.freq_out	(basefreq3)
+);
+
+base_freq_genx64 freqgen4 ( //TRIANGLE CHANNEL 2
+	.note_in	   (note_in4),
+	.clk50mhz	(clk),
+	.freq_out	(basefreq4)
+);
+
+
+//SQUARE WAVE CHANNEL 1 
+square_gen sqgen1 ( 	
+	.base_freq	(buffreq1),
+	.square_out	(sq1),
+	.en			(sq1_en && butt_1)
+	);
+
+//SQUARE WAVE CHANNEL 2
+square_gen sqgen2 ( 	
+	.base_freq	(buffreq3),
+	.square_out	(sq2),
+	.en			(sq2_en && butt_2)
+	);
+
+//TRIANGLE WAVE CHANNEL 3
+trigen trgen1 (
+	.base_freq (buffreq2),
+	.triangle_out (tr1),
+	.en (tr1_en && butt_3)
+);
+
+
+//TRIANGEL WAVE CHANNEL 4
+trigen trgen2 (   //change trigen to trigen8bit to make an 8 bit triangle wave
+	.base_freq (buffreq4),
+	.triangle_out (tr2),
+	.en (butt_4)
+);
+
+
+
+
+
+//Channel 1 FX Selector Multiplexer
+mux4to1 FX1_mux (
+	.in_a		(note_in),
+	.in_b		(porta_out),
+	.in_c		(0),
+	.in_d		(0),
+	.mux_sel	(FX1_sel),
+	.mux_out	(FX1_mux_out)
+);
+
+
+*/
+/*
+mux2_4bit waveselmux (
+	.d_in0 (sq_out),
+	.d_in1 (tri_out),
+	.sel (wavesel),
+	.d_out (audio_out)
+);
+*/ 
