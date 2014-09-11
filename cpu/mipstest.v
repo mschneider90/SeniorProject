@@ -1,9 +1,3 @@
-//------------------------------------------------
-// mipstest.v
-// David_Harris@hmc.edu 23 October 2005
-// Testbench for MIPS processor
-//------------------------------------------------
-
 module testbench();
 
   reg         clk;
