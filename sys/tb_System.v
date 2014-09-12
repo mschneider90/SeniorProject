@@ -10,6 +10,7 @@ System sys(.clk50MHz(clk50MHz),
 
 initial begin
     reset = 1;
+    clk50MHz = 0;
     #10
     reset = 0;
 end
