@@ -1,64 +1,95 @@
 `timescale 1ns / 1ps
 
-module System();
+module System(input clk50MHz,
+              input reset);
 
-/*
-           (input clk, reset,
-            output [dwidth-1:0] pc,       //TODO remove pc and instr once we support reading
-            input  [dwidth-1:0] instr,    //from ROM over bus interface
-            input               bus_wait,
-            input               bus_ack,
-            output              bus_write,
-            output              bus_burst_length,
-            output [dwidth-1:0] bus_addr,
-            output              bus_req,
-            inout  [dwidth-1:0] bus_data); */
-mips cpu();
+parameter D_WIDTH = 32;
+parameter A_WIDTH = 32;
 
-imem instr_mem(.addr(),
-               .data_r());
-             
-     
-/*(input clk50MHz,
-                           input[A_WIDTH-1:0] baddr,
-                           input [1:0] bburst,
-                           input bwe,
-                           input benable,
-                           output bwait,
-                           output[A_WIDTH-1:0] maddr,
-                           output reg moe_L,  //output enable
-                           output reg mwe_L,  //write enable
-                           output reg madv_L, //address valid
-                           output mclk,   //memory clock
-                           output mub_L,  //upper byte
-                           output mlb_L,  //lower byte
-                           output reg mce_L,  //chip enable
-                           output reg mcre,   //control register enable
-                           input  mwait); //wait */     
-micron_controller mem_ctrl();
+parameter NUM_DEVICES = 1; // num masters
 
-/*
-input clk,
-                     input[A_WIDTH-1:0] addr,
-                     input adv_L,
-                     input ce_L,
-                     input oe_L,
-                     input we_L,
-                     output mem_wait,
-                     inout[D_WIDTH-1:0] data,
-                     input ub_L,
-                     input lb_L); */
-micron_sram ram();
+//each device gets an ID
+//note that these should be synced with the values in BusAddressTranslator.v
+//There might be a better way to do this???
+parameter ROM_BUS_ID = 0;
+parameter RAM_BUS_ID = 1;
+parameter VGA_BUS_ID = 2;
+parameter PS2_BUS_ID = 3;
+parameter ACP_BUS_ID = 4;
+parameter CPU_BUS_ID = 7;
 
-/*
-input     [ADDR_WIDTH-1:0] virtual_addr,
-                              output reg[ADDR_WIDTH-1:0] phys_addr */
-BusAddressTranslator bat();
+wire [D_WIDTH-1:0] pc;
+wire [D_WIDTH-1:0] instr;
 
-/*
-input [NUM_DEVICES-1:0] req,
-                       input clk,
-                       output reg [NUM_DEVICES-1:0] ack */
-BusController bus_ctrl();
+wire bus_wait;
+wire [NUM_DEVICES-1:0] bus_ack;
+wire [NUM_DEVICES-1:0] bus_req;
+wire bus_write;
+wire [1:0] bus_burst_length;
+wire [A_WIDTH-1:0] bus_addr;
+wire [D_WIDTH-1:0] bus_data;
+wire [NUM_DEVICES-1:0] device_en;
+
+mips cpu(.clk(clk50MHz),
+         .reset(reset),
+         .pc(pc), 
+         .instr(instr),
+         .bus_wait(bus_wait),
+         .bus_ack(bus_ack[CPU_BUS_ID]),
+         .bus_write(bus_write),
+         .bus_burst_length(bus_burst_length), //2 bits
+         .bus_addr(bus_addr), //32 bits
+         .bus_req(bus_req[CPU_BUS_ID]),
+         .bus_data(bus_data)); //16 bits
+
+imem instr_mem(.addr(pc),
+               .data_r(instr));
+
+//TODO signals to memory should go outside of System for implementation
+wire [23:0] maddr;
+wire moe_L;
+wire mwe_L;
+wire madv_L;
+wire mclk;
+wire mub_L;
+wire mlb_L;
+wire mce_L;
+wire mcre;
+wire mwait;
+
+micron_controller mem_ctrl(.clk50MHz(clk50MHz),
+                           .baddr(bus_phys_addr), //32 bits
+                           .bburst(bus_burst_length), //2 bits
+                           .bwe(bus_write),
+                           .benable(device_en[RAM_BUS_ID]),
+                           .bwait(bus_wait),
+                           .maddr(maddr), //24 bits
+                           .moe_L(moe_L),
+                           .mwe_L(mwe_L),
+                           .madv_L(madv_L),
+                           .mclk(mclk),
+                           .mub_L(mub_L),
+                           .mlb_L(mlb_L),
+                           .mce_L(mce_L),
+                           .mcre(mcre),
+                           .mwait(mwait));
+
+micron_sram ram(.addr(maddr), // 24 bits
+                .adv_L(madv_L),
+                .ce_L(mce_L),
+                .oe_L(moe_L),
+                .we_L(mwe_L),
+                .mem_wait(mwait),
+                .data(bus_data), //16 bits
+                .ub_L(mub_L),
+                .lb_L(mlb_L));
+
+BusAddressTranslator bat(.virtual_addr(bus_addr), //32 bits
+                         .phys_addr(bus_phys_addr)); //32 bits
+
+BusController bus_ctrl(.req(bus_req),
+                       .clk(clk50MHz),
+                       .device_en(device_en),
+                       .ack(bus_ack)); 
 
 endmodule
