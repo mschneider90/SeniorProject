@@ -7,8 +7,8 @@ module micron_controller #(parameter A_WIDTH = 24,
                           (input clk50MHz,
                            input[A_WIDTH-1:0] baddr,
                            input [1:0] bburst,
-                           input bwe_L,
-                           input benable_L,
+                           input bwe,
+                           input benable,
                            output bwait,
                            output[A_WIDTH-1:0] maddr,
                            output reg moe_L,  //output enable
@@ -97,8 +97,8 @@ end
 always@(negedge clk50MHz) begin
     case (currentState)
         STATE_IDLE: begin
-            if (benable_L == ASSERT_L) begin
-                if (bwe_L == ASSERT_L) begin
+            if (benable == ASSERT) begin
+                if (bwe == ASSERT) begin
                     nextState <= STATE_WRITE_WAIT;
                 end
                 else begin
@@ -141,8 +141,8 @@ always@(*) begin
         STATE_IDLE: begin
             //Outputs
             moe_L <= DEASSERT_L;
-            mwe_L <= bwe_L;
-            if (benable_L == ASSERT_L) begin
+            mwe_L <= bwe;
+            if (benable == ASSERT) begin
                 madv_L <= ASSERT_L;
                 mce_L <= ASSERT_L;
             end
