@@ -1,12 +1,13 @@
-module mips #(parameter dwidth = 32)
+module mips #(parameter dwidth = 32,
+              parameter awidth = 32)
            (input clk, reset,
             output [dwidth-1:0] pc,       //TODO remove pc and instr once we support reading
             input  [dwidth-1:0] instr,    //from ROM over bus interface
             input               bus_wait,
             input               bus_ack,
             output              bus_write,
-            output              bus_burst_length,
-            output [dwidth-1:0] bus_addr,
+            output [1:0]        bus_burst_length,
+            output [awidth-1:0] bus_addr,
             output              bus_req,
             inout  [dwidth-1:0] bus_data);
 
@@ -18,6 +19,7 @@ module mips #(parameter dwidth = 32)
   wire [dwidth-1:0] readdata;
   wire [dwidth-1:0] writedata;
   
+  //TODO make all bus outputs hi-z unless they are active
   assign bus_burst_length = 1; //Always read/write one word at a time
   
   assign bus_data = (bus_write)? writedata : 'bz;
