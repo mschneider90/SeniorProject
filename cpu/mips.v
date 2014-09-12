@@ -29,7 +29,7 @@ module mips #(parameter dwidth = 32,
                          .memop(memop),
                          .bus_ack(bus_ack),
                          .bus_wait(bus_wait),
-                         .bus_reg(bus_reg),
+                         .bus_req(bus_req),
                          .pc_stall(pc_stall));
   
   controller c(.op(instr[31:26]),

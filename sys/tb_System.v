@@ -15,7 +15,7 @@ initial begin
 end
 
 always begin
-    #5 clk = ~clk;
+    #5 clk50MHz = ~clk50MHz;
 end
 
 

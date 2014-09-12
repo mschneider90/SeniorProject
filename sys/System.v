@@ -6,7 +6,7 @@ module System(input clk50MHz,
 parameter D_WIDTH = 32;
 parameter A_WIDTH = 32;
 
-parameter NUM_DEVICES = 1; // num masters
+parameter NUM_DEVICES = 8;
 
 //each device gets an ID
 //note that these should be synced with the values in BusAddressTranslator.v
@@ -85,11 +85,11 @@ micron_sram ram(.addr(maddr), // 24 bits
                 .lb_L(mlb_L));
 
 BusAddressTranslator bat(.virtual_addr(bus_addr), //32 bits
-                         .phys_addr(bus_phys_addr)); //32 bits
+                         .phys_addr(bus_phys_addr),
+                         .device_en(device_en)); //32 bits
 
 BusController bus_ctrl(.req(bus_req),
                        .clk(clk50MHz),
-                       .device_en(device_en),
                        .ack(bus_ack)); 
 
 endmodule
