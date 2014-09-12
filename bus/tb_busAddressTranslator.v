@@ -4,8 +4,11 @@ module tb_busAddressTranslator();
 
 reg[31:0] virtual_addr;
 wire[31:0] phys_addr;
+wire[7:0] device_en;
 
-BusAddressTranslator bat(.virtual_addr(virtual_addr), .phys_addr(phys_addr));
+BusAddressTranslator bat(.virtual_addr(virtual_addr),
+                         .phys_addr(phys_addr),
+                         .device_en(device_en));
 
 always begin
     virtual_addr <= 32'h00000020;
