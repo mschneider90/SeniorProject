@@ -4,6 +4,7 @@ module top(input         clk, reset, bus_wait,
 
   wire [31:0] pc, instr, readdata;
   
+  //TODO this is out of date
   mips mips(.clk(clk), 
             .reset(reset),
             .pc(pc),
