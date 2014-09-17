@@ -44,6 +44,9 @@ module triangle_channel(
 	 
 	 reg porta_en;
 	 
+	 wire [1:0] porta_speed_sel;
+	 assign porta_speed_sel = 1;
+	 
 initial begin
 	porta_en = 0;
 end	 

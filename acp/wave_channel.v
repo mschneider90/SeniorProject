@@ -42,6 +42,10 @@ module sq_channel( 	note_in,
 	 
 		 reg porta_en;
 
+	wire [1:0] porta_speed_sel;
+	 assign porta_speed_sel = 1;
+
+
 initial begin
 	porta_en <= 0;
 end
@@ -76,6 +80,7 @@ FX_porta sq_porta (
 	.note_in 	(note_in),
 	.note_clk	(note_clk),
 	.note_out	(porta_out),
+	.speed_sel 	(porta_speed_sel),
 	.en			(porta_en),  //used to be butt_1
 	.clk50mhz	(clk50mhz)
 	);

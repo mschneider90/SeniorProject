@@ -5,10 +5,22 @@ NET butt_3 LOC = D18;
 NET butt_4 LOC = B18;
 
 NET audio_out LOC = L15; #PMOD JA1
-
 NET oct<0> LOC = G18;
 NET oct<1> LOC = H18;
 NET oct<2> LOC = K18;
 NET oct<3> LOC = K17;
 NET oct<4> LOC = L14;
 NET oct<5> LOC = L13;
+#pin2ucf - Wed Sep 10 19:33:16 2014
+#The following constraints were newly added
+NET "SECCTR" LOC = J14;
+NET "audio_out<0>" LOC = M15;
+NET "audio_out<1>" LOC = L17;
+NET "audio_out<2>" LOC = K12;
+NET "audio_out<3>" LOC = L15;
+NET "audio_out<4>" LOC = K13;
+NET "audio_out<5>" LOC = L16;
+NET "audio_out<6>" LOC = M14;
+NET "audio_out<7>" LOC = M16;
+NET "volsel<0>" LOC = N17;
+NET "volsel<1>" LOC = R17;
