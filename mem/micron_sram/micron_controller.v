@@ -120,7 +120,12 @@ always@(negedge clk50MHz) begin
         end
         STATE_READ_WAIT: begin
             if (cycle_count_geq) begin
-                nextState <= STATE_READ_DATA;
+                if (burst_length == 1) begin
+                    nextState <= STATE_FINISH;
+                end
+                else begin
+                    nextState <= STATE_READ_DATA;
+                end
             end
         end
         STATE_READ_DATA: begin
@@ -130,7 +135,12 @@ always@(negedge clk50MHz) begin
         end
         STATE_WRITE_WAIT: begin
             if (cycle_count_geq) begin
-                nextState <= STATE_WRITE_DATA;
+                if (burst_length == 1) begin
+                    nextState <= STATE_FINISH;
+                end
+                else begin
+                    nextState <= STATE_WRITE_DATA;
+                end
              end
         end
         STATE_WRITE_DATA: begin
