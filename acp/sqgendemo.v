@@ -14,6 +14,7 @@ input clk;
 input butt_1, butt_2, butt_3, butt_4;
 
 //input wavesel;
+//input wavesel;
 input [1:0] volsel;
 wire [1:0] volstatic; //testing signal
 assign volstatic = 2'b00;
@@ -38,6 +39,7 @@ output wire [7:0] audio_out;
 reg sq1_en;
 reg sq2_en;
 reg tr1_en;
+reg noise_en;
 
 reg [5:0] note_in;
 reg [5:0] note_in2;
@@ -48,6 +50,7 @@ wire [3:0] tr1;
 //wire [3:0] tr2;
 wire [3:0] sq1;
 wire [3:0] sq2;
+wire [3:0] noise;
 
 wire [5:0] porta_out;
 
@@ -63,7 +66,7 @@ reg [1:0] FX3_sel;
 
 //reg [9:0] counter;
 
-integer note_1;
+integer note_1; 
 integer note_2; 
 integer note_3; 
 integer note_4;
@@ -102,11 +105,21 @@ triangle_channel tr_ch3(
 	.wave_out	(tr1)
 );
 
+noise_channel noise_cha4(
+	.note_in		({oct[3:0],1'b0, 1'b0}),
+	.note_clk	(note_clk),
+	.channel_en	(butt_4), //also NEED TO add noise_en when not just testing.
+	.fx_sel		(FX2_sel),
+	.clk50mhz	(clk),
+	.wave_out	(noise)
+);
+
+
 mixer_8bit_4ch mixer (
 	.in1 (sq1),
 	.in2 (sq2),
 	.in3 (tr1),
-	.in4 (0),
+	.in4 (noise),
 	.vol1 (volsel), //changed from volsel to volstatic for testing purposes. 
 	.out (audio_out)
 );
@@ -128,14 +141,15 @@ BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
 		note_in <= 31;
 		note_in2 <= 0;
 		note_in3 <= 0;
-		note_in4 <= 0;
+		note_in4 <= 40;
 		note_1 <= 0;
 		note_2 <= 0;
 		note_3 <= 0;
-		note_4 <= 0;
+		note_4 <= 43;
 		sq1_en <= 1;
 		sq2_en <= 1;
 		tr1_en <= 1;
+		noise_en <=1;
 		note_clk_count <= 0;
 		note_clk <= 0;
 		FX1_sel <= 0;
@@ -153,7 +167,7 @@ begin
 	
 	//this routine creates generates a note clock -- timing for the actual notes. This determines the tempo. 
 	note_clk_count <= note_clk_count + 1;
-	if (note_clk_count >= 3187500) //implementation value: 3187500 OR//796875 //testbench value: 318750
+	if (note_clk_count >= 318750) //implementation value: 3187500 OR//796875 //testbench value: 318750
 	begin
 		note_clk_count <= 0;
 		note_clk <= ~note_clk;
@@ -161,7 +175,7 @@ begin
 
 
 	//the following two if blocks determine the timing of the states. 
-	if(butt_4) //button 4 is being reassigned as an "RST COUNTER" button.
+	if(oct[0]) //button 4 is being reassigned as an "RST COUNTER" button.
 	begin
 		SecondCtr <= 0;
 		StateCtr <= 0;

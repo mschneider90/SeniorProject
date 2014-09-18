@@ -48,15 +48,15 @@ end
 	end
 
 
-if (en) 
-begin
-count = count + 1;
-end
-else
-begin
-count = 0;
-square_out = 4'b0000;
-end
+	if (en) 
+	begin
+		count = count + 1;
+	end
+	else
+	begin
+		count = 0;
+		square_out = 4'b0000;
+	end
 
 
 
