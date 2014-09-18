@@ -58,13 +58,22 @@ assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEA
 //Counter for burst length - support length of up to 16
 reg burst_count_en;
 wire burst_count_geq;
-wire[3:0] burst_counter;
+wire[2:0] burst_counter;
 count_reg b_counter(.en(burst_count_en),
                     .rst(reset),
                     .clk(clk50MHz),
                     .count(burst_counter),
                     .load(DEASSERT));
-assign burst_count_geq = (burst_counter >= bburst - 1) ? ASSERT : DEASSERT;
+reg[2:0] burst_length;
+always@(*) begin
+    case (bburst) 
+        2'b00: burst_length = 1;
+        2'b01: burst_length = 2;
+        2'b10: burst_length = 4;
+        2'b11: burst_length = 8;
+    endcase
+end
+assign burst_count_geq = (burst_counter >= burst_length - 1) ? ASSERT : DEASSERT;
 
 //Generate memory clock
 reg mclk_en;
@@ -141,7 +150,7 @@ always@(*) begin
         STATE_IDLE: begin
             //Outputs
             moe_L <= DEASSERT_L;
-            mwe_L <= bwe;
+            mwe_L <= ~bwe;
             if (benable == ASSERT) begin
                 madv_L <= ASSERT_L;
                 mce_L <= ASSERT_L;
