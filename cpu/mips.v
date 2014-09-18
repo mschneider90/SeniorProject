@@ -20,7 +20,7 @@ module mips #(parameter dwidth = 32,
   wire [dwidth-1:0] writedata;
   
   //TODO make all bus outputs hi-z unless they are active
-  assign bus_burst_length = 1; //Always read/write one word at a time
+  assign bus_burst_length = 2'b00; //Always read/write one word at a time
   
   assign bus_data = (bus_write)? writedata : 'bz;
   assign readdata = bus_data;
