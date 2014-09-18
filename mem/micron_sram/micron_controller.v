@@ -55,7 +55,7 @@ count_reg c_counter(.en(cycle_count_en),
 //Zero indexed so subtract 1
 assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEASSERT;
 
-//Counter for burst length - support length of up to 16
+//Counter for burst length - support length of up to 8
 reg burst_count_en;
 wire burst_count_geq;
 wire[2:0] burst_counter;
