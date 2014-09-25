@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
-module BusController #(NUM_DEVICES = 8,
-                       ADDR_WIDTH = 32)
+module BusController #(parameter NUM_DEVICES = 8,
+                       parameter ADDR_WIDTH = 32)
                       (input [NUM_DEVICES-1:0] req,
                        input clk,                    
                        input      [ADDR_WIDTH-1:0]  virtual_addr,
@@ -102,7 +102,7 @@ always@(posedge clk) begin
             end
         end
         STATE_BUSY: begin
-            ack[current_device] = 1;
+            ack[current_device] <= 1;
             if (req[current_device] == 1)
                 nextState <= STATE_BUSY;
             else begin
