@@ -1,10 +1,12 @@
-module regfile(input         clk, 
+module regfile #(parameter width = 32)
+              (input         clk, 
                input         we3, 
                input  [4:0]  ra1, ra2, wa3, 
-               input  [31:0] wd3, 
-               output [31:0] rd1, rd2);
+               input  [4:0]  debug_ra4,
+               input  [width-1:0] wd3, 
+               output [width-1:0] rd1, rd2, debug_rd4);
 
-  reg [31:0] rf[31:0];
+  reg [width-1:0] rf[31:0];
   
   integer i;
   //initialize all registers to 0
@@ -22,6 +24,8 @@ module regfile(input         clk,
   always @(posedge clk)
     if (we3) rf[wa3] <= wd3;	
 
+  //Reg 0 always has the value 0, hence the inline conditionals below
   assign rd1 = (ra1 != 0) ? rf[ra1] : 0;
   assign rd2 = (ra2 != 0) ? rf[ra2] : 0;
+  assign debug_rd4 = (debug_ra4 != 0) ? rf[debug_ra4] : 0;
 endmodule

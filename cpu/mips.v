@@ -1,14 +1,17 @@
-module mips #(parameter dwidth = 32,
-              parameter awidth = 32)
+module mips #(parameter dwidth = 16,
+              parameter awidth = 32,
+              parameter iwidth = 32)
            (input clk, reset,
             output [dwidth-1:0] pc,       //TODO remove pc and instr once we support reading
-            input  [dwidth-1:0] instr,    //from ROM over bus interface
+            input  [iwidth-1:0] instr,    //from ROM over bus interface
             input               bus_wait,
             input               bus_ack,
+            input  [4:0]        debug_ra4,
             output              bus_write,
             output [1:0]        bus_burst_length,
             output [awidth-1:0] bus_addr,
             output              bus_req,
+            output [dwidth-1:0] debug_rd4,
             inout  [dwidth-1:0] bus_data);
 
   wire        memtoreg,
@@ -23,7 +26,20 @@ module mips #(parameter dwidth = 32,
   assign bus_burst_length = 2'b00; //Always read/write one word at a time
   
   assign bus_data = (bus_write)? writedata : 'bz;
-  assign readdata = bus_data;
+  
+  //Delay bus data by two clock cycles to correctly interface with bus
+  wire [dwidth-1:0] bus_data_delayed;
+  d_reg #(dwidth) read_data_delay_1(.clk(clk),
+                                  .reset(reset),
+                                  .en(1),
+                                  .d(bus_data),
+                                  .q(bus_data_delayed));
+
+  d_reg #(dwidth) read_data_delay_2(.clk(clk),
+                                  .reset(reset),
+                                  .en(1),
+                                  .d(bus_data_delayed),
+                                  .q(readdata));
   
   cpuBusInterface bus_if(.clk(clk),
                          .memop(memop),
@@ -70,7 +86,9 @@ module mips #(parameter dwidth = 32,
               .alumult_out(bus_addr),
               .writedata(writedata),
               .readdata(readdata),
-              .pc_stall(pc_stall));
+              .pc_stall(pc_stall),
+              .debug_ra4(debug_ra4),
+              .debug_rd4(debug_rd4));
 endmodule
 
 
