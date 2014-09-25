@@ -103,7 +103,7 @@ always@(posedge clk50MHz) begin
 end
 
 //Next state logic
-always@(negedge clk50MHz) begin
+always@(*) begin
     case (currentState)
         STATE_IDLE: begin
             if (benable == ASSERT) begin
@@ -149,7 +149,12 @@ always@(negedge clk50MHz) begin
             end
         end
         STATE_FINISH: begin
-            nextState <= STATE_IDLE;
+            if (benable) begin
+                nextState <= STATE_FINISH;
+            end
+            else begin
+                nextState <= STATE_IDLE;
+            end
         end
     endcase
 end

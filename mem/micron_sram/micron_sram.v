@@ -13,7 +13,8 @@ module micron_sram #(parameter D_WIDTH = 16,
                      output mem_wait,
                      inout[D_WIDTH-1:0] data,
                      input ub_L,
-                     input lb_L);
+                     input lb_L,
+                     input mcre);
                      
 parameter LATENCY = 4;
                      
