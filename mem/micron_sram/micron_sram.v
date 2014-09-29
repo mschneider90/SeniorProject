@@ -149,7 +149,9 @@ always@(*) begin
         STATE_READ_DATA: begin
             data_reg <= mem[currentAddr];
             mem_wait_en <= DEASSERT;
-            data_out_en <= ASSERT;
+            if (oe_L == ASSERT_L) begin
+                data_out_en <= ASSERT;
+            end
             
             //counters
             wait_load <= DEASSERT;

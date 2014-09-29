@@ -26,10 +26,16 @@ always@(*) begin
             if (memop) begin
                 nextState <= STATE_REQ;
             end
+            else begin
+                nextState <= STATE_IDLE;
+            end
         end
         STATE_REQ: begin
             if (bus_ack) begin
                 nextState <= STATE_WAIT;
+            end
+            else begin
+                nextState <= STATE_REQ;
             end
         end
         STATE_WAIT: begin

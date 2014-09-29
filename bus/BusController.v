@@ -59,6 +59,7 @@ always@(*) begin
     end
     else begin
         phys_addr <= 0;
+        device_en <= 0;
     end
 end
                   

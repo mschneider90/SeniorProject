@@ -33,7 +33,7 @@ System sys(.clk50MHz(clk50MHz),
            .mwe_L(mwe_L),
            .mcre(mcre),
            .mwait(mwait),
-           .bus_data(bus_data),
+           .mem_data(bus_data),
            .mub_L(mub_L),
            .mlb_L(mlb_L) //end SRAM controller specific signals
            );

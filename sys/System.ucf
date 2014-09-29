@@ -36,22 +36,22 @@ NET "maddr<15>" LOC = "E1";
 #NET "baddr<23>" = "K6";
 
 #Data bus
-NET "bus_data<0>" LOC = "L1";
-NET "bus_data<1>" LOC = "L4";
-NET "bus_data<2>" LOC = "L6";
-NET "bus_data<3>" LOC = "M4";
-NET "bus_data<4>" LOC = "N5";
-NET "bus_data<5>" LOC = "P1";
-NET "bus_data<6>" LOC = "P2";
-NET "bus_data<7>" LOC = "R2";
-NET "bus_data<8>" LOC = "L3";
-NET "bus_data<9>" LOC = "L5";
-NET "bus_data<10>" LOC = "M3";
-NET "bus_data<11>" LOC = "M6";
-NET "bus_data<12>" LOC = "L2";
-NET "bus_data<13>" LOC = "N4";
-NET "bus_data<14>" LOC = "R3";
-NET "bus_data<15>" LOC = "T1";
+NET "mem_data<0>" LOC = "L1";
+NET "mem_data<1>" LOC = "L4";
+NET "mem_data<2>" LOC = "L6";
+NET "mem_data<3>" LOC = "M4";
+NET "mem_data<4>" LOC = "N5";
+NET "mem_data<5>" LOC = "P1";
+NET "mem_data<6>" LOC = "P2";
+NET "mem_data<7>" LOC = "R2";
+NET "mem_data<8>" LOC = "L3";
+NET "mem_data<9>" LOC = "L5";
+NET "mem_data<10>" LOC = "M3";
+NET "mem_data<11>" LOC = "M6";
+NET "mem_data<12>" LOC = "L2";
+NET "mem_data<13>" LOC = "N4";
+NET "mem_data<14>" LOC = "R3";
+NET "mem_data<15>" LOC = "T1";
 
 #LED out
 NET "debug_rd4<7>" LOC = "R4";

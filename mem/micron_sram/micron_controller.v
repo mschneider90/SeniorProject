@@ -9,9 +9,12 @@ module micron_controller #(parameter A_WIDTH = 24,
                            input [1:0] bburst,
                            input bwe,
                            input benable,
+                           input  [D_WIDTH-1:0] bus_data_in,
+                           output [D_WIDTH-1:0] bus_data_out,
+                           inout  [D_WIDTH-1:0] mem_data,
                            output bwait,
                            output[A_WIDTH-1:0] maddr,
-                           output reg moe_L,  //output enable
+                           output moe_L,  //output enable
                            output reg mwe_L,  //write enable
                            output reg madv_L, //address valid
                            output mclk,   //memory clock
@@ -35,6 +38,10 @@ parameter STATE_WRITE_WAIT = 3;
 parameter STATE_WRITE_DATA = 4;
 parameter STATE_FINISH = 5;
 
+//Unidirectional bus to tristate bus conversion
+assign mem_data = (moe_L == ASSERT_L)? 'bz : bus_data_in;
+assign bus_data_out = mem_data;
+
 //See: micron_ram.pdf (datasheet), pg. 29
 //Default read/write latency is 4 cycles
 //This also allows us to operate up to 52MHz - convenient
@@ -47,7 +54,8 @@ reg reset;
 reg cycle_count_en;
 wire cycle_count_geq;
 wire[1:0] cycle_counter;
-count_reg c_counter(.en(cycle_count_en),
+count_reg c_counter(.count_load(0),
+                    .en(cycle_count_en),
                     .rst(reset),
                     .clk(clk50MHz),
                     .count(cycle_counter),
@@ -59,7 +67,8 @@ assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEA
 reg burst_count_en;
 wire burst_count_geq;
 wire[2:0] burst_counter;
-count_reg b_counter(.en(burst_count_en),
+count_reg b_counter(.count_load(0),
+                    .en(burst_count_en),
                     .rst(reset),
                     .clk(clk50MHz),
                     .count(burst_counter),
@@ -80,8 +89,9 @@ reg mclk_en;
 assign mclk = (mclk_en == ASSERT)? clk50MHz : DEASSERT;
 
 //Wait output
+//TODO this doesn't need to be like this
 reg bwait_en;
-assign bwait = (bwait_en == ASSERT)? ASSERT : 'bz;
+assign bwait = (bwait_en == ASSERT)? ASSERT : DEASSERT;
 
 //Pass addr bus straight through
 assign maddr = baddr;
@@ -92,6 +102,9 @@ assign mlb_L = DEASSERT_L;
 
 reg[3:0] currentState;
 reg[3:0] nextState;
+
+assign moe_L = (cycle_count_geq & currentState == STATE_READ_WAIT)?
+                ASSERT_L : DEASSERT_L;
 
 initial begin
     currentState <= STATE_IDLE;
@@ -132,6 +145,9 @@ always@(*) begin
             if (burst_count_geq) begin
                 nextState <= STATE_FINISH;
             end
+            else begin
+                nextState <= STATE_READ_DATA;
+            end
         end
         STATE_WRITE_WAIT: begin
             if (cycle_count_geq) begin
@@ -146,6 +162,9 @@ always@(*) begin
         STATE_WRITE_DATA: begin
             if (burst_count_geq) begin
                 nextState <= STATE_FINISH;
+            end
+            else begin
+                nextState <= STATE_WRITE_DATA;
             end
         end
         STATE_FINISH: begin
@@ -164,7 +183,6 @@ always@(*) begin
     case (currentState) 
         STATE_IDLE: begin
             //Outputs
-            moe_L <= DEASSERT_L;
             mwe_L <= ~bwe;
             if (benable == ASSERT) begin
                 madv_L <= ASSERT_L;
@@ -176,6 +194,7 @@ always@(*) begin
             end
             bwait_en <= DEASSERT;
             mclk_en <= DEASSERT;
+            mcre <= DEASSERT;
             
             //Local signals
             reset <= ASSERT;
@@ -184,7 +203,6 @@ always@(*) begin
         end
         STATE_READ_WAIT: begin
             //Outputs
-            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
@@ -198,7 +216,6 @@ always@(*) begin
         end
         STATE_READ_DATA: begin
             //Outputs
-            moe_L <= ASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
@@ -212,7 +229,6 @@ always@(*) begin
         end
         STATE_WRITE_WAIT: begin
             //Outputs
-            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
@@ -226,7 +242,6 @@ always@(*) begin
         end
         STATE_WRITE_DATA: begin
             //Outputs
-            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
@@ -240,7 +255,6 @@ always@(*) begin
         end
         STATE_FINISH: begin
             //Outputs
-            moe_L <= DEASSERT_L;
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= DEASSERT_L;
