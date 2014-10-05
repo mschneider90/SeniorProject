@@ -73,7 +73,7 @@ end
 //use assign statements if these are wires instead of always block. 
 assign distance = (prev_note_A>note_in) ?  (prev_note_A - note_in) : (note_in - prev_note_A);
 assign up = (prev_note_A > note_in) ? 0 : 1;
-assign subdiv = (distance > 4 ) ?  (distance / 4) : 2 ; //if distance is greater than 4, we divide it by 4. Otherwise subdiv is just 1. 
+assign subdiv = (distance > speed ) ?  (distance >> speed_sel) : 2 ; //if distance is greater than 4, we divide it by 4. Otherwise subdiv is just 1. 
 //s[1] <= (a[1]>a[2])?(a[1]-a[2]):(a[2]-a[1]);
 //end
 
@@ -88,7 +88,7 @@ begin
 				prev_note_A <= prev_note;
 			end
 	
-	//speed select 
+	//speed select : we can't divide distance by speed because non power of two divisors doesn't natively work. 
 	case(speed_sel)
 		0: speed <= 2;
 		1: speed <= 4;

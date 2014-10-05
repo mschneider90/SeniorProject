@@ -58,11 +58,14 @@ wire [5:0] porta_out;
 reg [1:0] FX1_sel;
 reg [1:0] FX2_sel;
 reg [1:0] FX3_sel;
+
+reg [1:0] FX1_optA;
+reg [1:0] FX1_optB;
+
 //wire [5:0] FX1_mux_out;
 
 
 //reg porta_en;
-
 
 //reg [9:0] counter;
 
@@ -83,10 +86,13 @@ sq_channel sq_ch1(
 	.note_clk	(note_clk),
 	.channel_en	(sq1_en & butt_1),
 	.fx_sel		(FX1_sel),
+	.fx_optA		(FX1_optA),
+	.fx_optB		(FX1_optB),
 	.clk50mhz	(clk),
 	.wave_out	(sq1)
     );
 	 
+	 /*
 sq_channel sq_ch2(
 	.note_in 	(note_in3),
 	.note_clk	(note_clk),
@@ -113,7 +119,7 @@ noise_channel noise_cha4(
 	.clk50mhz	(clk),
 	.wave_out	(noise)
 );
-
+*/
 
 mixer_8bit_4ch mixer (
 	.in1 (sq1),
@@ -162,12 +168,13 @@ BUFG freq4_bufg (.I (basefreq4), .O (buffreq4));
 always@(posedge clk)
 begin
 
-	FX1_sel <= (oct[5] == 1) ? 1 : 0;
-	FX2_sel <= (oct[4] == 1) ? 1 : 0;
+	FX1_sel <= oct[5:4];
+	FX1_optA <= oct[1:0];
+	FX1_optB <= oct[3:2];
 	
 	//this routine creates generates a note clock -- timing for the actual notes. This determines the tempo. 
 	note_clk_count <= note_clk_count + 1;
-	if (note_clk_count >= 318750) //implementation value: 3187500 OR//796875 //testbench value: 318750
+	if (note_clk_count >= 3187500) //implementation value: 3187500 OR//796875 //testbench value: 318750
 	begin
 		note_clk_count <= 0;
 		note_clk <= ~note_clk;
@@ -217,6 +224,8 @@ begin
 				begin
 					//note_in <= 0;
 					note_in2 <= 13;
+					
+					
 					
 					sq1_en <=0;
 				end
