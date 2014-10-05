@@ -174,7 +174,7 @@ begin
 	
 	//this routine creates generates a note clock -- timing for the actual notes. This determines the tempo. 
 	note_clk_count <= note_clk_count + 1;
-	if (note_clk_count >= 3187500) //implementation value: 3187500 OR//796875 //testbench value: 318750
+	if (note_clk_count >= 318750) //implementation value: 3187500 OR//796875 //testbench value: 318750
 	begin
 		note_clk_count <= 0;
 		note_clk <= ~note_clk;

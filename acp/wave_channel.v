@@ -150,7 +150,7 @@ mux4to1 sq_FX_mux (
 	.in_a		(note_in),
 	.in_b		(porta_out),
 	.in_c		(vibra_out),
-	.in_d		(0),
+	.in_d		(6'b000000),
 	.mux_sel	(fx_sel),
 	.mux_out	(fx_mux_out)
 );
@@ -160,7 +160,7 @@ mux4to1 sq_FX_mux (
 mux_4to1_4bit vibrato_offset_mux (
 	.in_a		(4'b0),
 	.in_b		(4'b0),
-	.in_c		({vib_offset_dir,vib_offset_mul}),
+	.in_c		({{vibra_offset_dir},{vibra_offset_mul[2:0]}}),
 	.in_d		(4'b0),
 	.mux_sel	(fx_sel),
 	.mux_out	(vib_offset_mux_out)

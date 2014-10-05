@@ -47,6 +47,17 @@ base_freq_genx64 UUT (note_in, clk50mhz, bfg_out, offset_mult, offset_dir
     );
 	 
 	 
+sq_channel UU3(
+	.note_in 	(note_in),
+	.note_clk	(note_clk),
+	.channel_en	(sq1_en),
+	.fx_sel		(FX1_sel),
+	.fx_optA		(FX1_optA),
+	.fx_optB		(FX1_optB),
+	.clk50mhz	(clk),
+	.wave_out	(sq1)
+    );
+	 
 	 
 	 
 

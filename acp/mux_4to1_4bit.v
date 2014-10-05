@@ -16,10 +16,10 @@ module mux_4to1_4bit #(parameter DATA_WIDTH = 4)
                  output reg [DATA_WIDTH-1:0] mux_out);
 
                  
-parameter SEL_A = 2'b00;
-parameter SEL_B = 2'b01;
-parameter SEL_C = 2'b10;
-parameter SEL_D = 2'b11;
+localparam SEL_A = 2'b00;
+localparam SEL_B = 2'b01;
+localparam SEL_C = 2'b10;
+localparam SEL_D = 2'b11;
 
 always@(*) begin
     case (mux_sel)
