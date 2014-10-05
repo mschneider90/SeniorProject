@@ -19,16 +19,19 @@ wire[15:0] bdata;
 wire[15:0] mdata;
 
 reg[15:0] mdata_reg;
-reg bwe_L;
-
-assign mdata = (mdata_reg == 16'hFFFF)? 'bz : mdata_reg;
+reg bwe;
+reg[1:0] burst_length;
+reg benable;
                           
 micron_controller ctrl(.clk50MHz(clk50MHz),
                        .baddr(baddr),
-                       .bburst(2'b11),
-                       .benable_L(0),
-                       .bwe_L(bwe_L),
+                       .bburst(burst_length),
+                       .benable(benable),
+                       .bwe(bwe),
                        .bwait(bwait),
+                       .bus_data_in(mdata_reg),
+                       .bus_data_out(bdata),
+                       .mem_data(mdata),
                        .maddr(maddr),
                        .moe_L(moe_L),
                        .mwe_L(mwe_L),
@@ -60,9 +63,10 @@ count_reg cntr(.en(1), .rst(rst), .clk(clk50MHz), .count(counter), .load(0));
 initial begin
     clk50MHz <= 1;
     baddr <= 0;
-    mdata_reg <= 16'hFFFF;
+    mdata_reg <= 16'h0000;
     rst <= 1;
-    bwe_L <= 0;
+    bwe <= 0;
+    burst_length <= 0;
 end
 
 parameter DATA_1 = 1;
@@ -72,13 +76,73 @@ parameter DATA_4 = 4;
 
 reg[1:0] errors;
 
-always@(counter) begin
+always@(counter) begin //Burst of 1
     case (counter) 
         0: begin
+            burst_length = 2'b00;
             rst <= 0;
             errors <= 0;
             baddr <= 0;
-            bwe_L <= 0;
+            bwe <= 1;
+            benable = 1;
+        end
+        1: begin
+            //Wait 1
+        end
+        2: begin
+            //Wait 2
+        end
+        3: begin
+            //Wait 3
+        end
+        4: begin
+            mdata_reg <= DATA_1; //data 1
+        end 
+        5: begin
+            benable <= 0;
+            bwe <= 0;
+        end
+        6: begin
+            mdata_reg <= 16'h0000; 
+            baddr <= 0;
+            benable = 1;
+        end
+        7: begin
+            //wait 1
+        end
+        8: begin
+            //wait 2
+        end
+        9: begin
+            //wait 3
+        end
+        10: begin
+            //data 1
+            if (bdata != DATA_1) begin
+                errors <= errors + 1;
+            end
+        end
+        11: begin
+            benable = 0;
+            if (errors == 0) begin
+                $display("PASS");
+            end
+            else begin
+                $display("FAIL");
+            end
+        end
+    endcase
+end
+
+/*
+always@(counter) begin //Burst of 4
+    case (counter) 
+        0: begin
+            burst_length = 2'b10;
+            rst <= 0;
+            errors <= 0;
+            baddr <= 0;
+            bwe <= 1;
         end
         1: begin
             //Wait 1
@@ -100,11 +164,11 @@ always@(counter) begin
         end
         7: begin
             mdata_reg <= DATA_4; //data 4
-        end
+        end 
         8: begin
             mdata_reg <= 16'hFFFF; //disable 
             baddr <= 0;
-            bwe_L <= 1;
+            bwe <= 0;
         end
         9: begin
             //wait 1
@@ -117,13 +181,13 @@ always@(counter) begin
         end
         12: begin
             //data 1
-            if (mdata != DATA_1) begin
+            if (bdata != DATA_1) begin
                 errors <= errors + 1;
             end
         end
         13: begin 
             //data 2
-            if (mdata != DATA_2) begin
+            if (bdata != DATA_2) begin
                 errors <= errors + 1;
             end
         end
@@ -135,10 +199,10 @@ always@(counter) begin
         end
         15: begin
             //data 4
-            if (mdata != DATA_4) begin
+            if (bdata != DATA_4) begin
                 errors <= errors + 1;
             end
-        end
+        end 
         16: begin
             if (errors == 0) begin
                 $display("PASS");
@@ -148,7 +212,7 @@ always@(counter) begin
             end
         end
     endcase
-end
+end */
 
 always begin
     #5 clk50MHz = ~clk50MHz;

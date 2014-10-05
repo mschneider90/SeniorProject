@@ -1,4 +1,5 @@
-module datapath #(parameter dwidth = 32)
+module datapath #(parameter dwidth = 32,
+                  parameter iwidth = 32)
                (input         clk, reset,
                 input         memtoreg, pcsrc,
                 input         alusrc, regdst,
@@ -7,10 +8,12 @@ module datapath #(parameter dwidth = 32)
                 input         mfhi, mflo,
                 input  [2:0]  alucontrol,
                 input         pc_stall,
+                input  [4:0]  debug_ra4,
                 output        zero,
                 output [dwidth-1:0] pc,
                 input  [dwidth-1:0] instr,
                 output [dwidth-1:0] alumult_out, writedata,
+                output [dwidth-1:0] debug_rd4,
                 input  [dwidth-1:0] readdata);
 
   wire [4:0]  writereg;
@@ -59,14 +62,16 @@ module datapath #(parameter dwidth = 32)
 
 //~~~~~~~~~~~~~~~~~ register file logic~~~~~~~~~~~~~~~~~~~~~~
 				
-  regfile     rf(.clk(clk),
+  regfile #(32)  rf(.clk(clk),
                  .we3(regwrite),
                  .ra1(instr[25:21]),
                  .ra2(instr[20:16]),
                  .wa3(rf_writeAddr),
                  .wd3(rf_writeData),
                  .rd1(srca),
-                 .rd2(writedata));
+                 .rd2(writedata),
+                 .debug_ra4(debug_ra4),
+                 .debug_rd4(debug_rd4));
   mux2 #(5)   wrmux(.in_a(instr[20:16]),
                     .in_b(instr[15:11]),
                     .mux_sel(regdst),

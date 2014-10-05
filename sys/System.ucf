@@ -1,0 +1,74 @@
+NET "clk50MHz" LOC = "B8";
+
+//Micron SRAM control signals
+NET "moe_L" LOC = "T2";
+NET "mwe_L" LOC = "N7";
+NET "madv_L" LOC = "J4";
+NET "mclk" LOC = "H5";
+NET "mub_L" LOC = "K4";
+NET "mlb_L" LOC = "K5";
+NET "mce_L" LOC = "R6";
+NET "mcre" LOC = "P7";
+
+#Address bus
+NET "maddr<1>" LOC = "J1";
+NET "maddr<2>" LOC = "J2";
+NET "maddr<3>" LOC = "H4";
+NET "maddr<4>" LOC = "H1";
+NET "maddr<5>" LOC = "H2";
+NET "maddr<6>" LOC = "J5";
+NET "maddr<7>" LOC = "H3";
+NET "maddr<8>" LOC = "H6";
+NET "maddr<9>" LOC = "F1";
+NET "maddr<10>" LOC = "G3";
+NET "maddr<11>" LOC = "G6";
+NET "maddr<12>" LOC = "G5";
+NET "maddr<13>" LOC = "G4";
+NET "maddr<14>" LOC = "F2";
+NET "maddr<15>" LOC = "E1";
+#NET "baddr<16>" = "M5";
+#NET "baddr<17>" = "E2";
+#NET "baddr<18>" = "C2";
+#NET "baddr<19>" = "C1";
+#NET "baddr<20>" = "D2";
+#NET "baddr<21>" = "K3";
+#NET "baddr<22>" = "D1";
+#NET "baddr<23>" = "K6";
+
+#Data bus
+NET "mem_data<0>" LOC = "L1";
+NET "mem_data<1>" LOC = "L4";
+NET "mem_data<2>" LOC = "L6";
+NET "mem_data<3>" LOC = "M4";
+NET "mem_data<4>" LOC = "N5";
+NET "mem_data<5>" LOC = "P1";
+NET "mem_data<6>" LOC = "P2";
+NET "mem_data<7>" LOC = "R2";
+NET "mem_data<8>" LOC = "L3";
+NET "mem_data<9>" LOC = "L5";
+NET "mem_data<10>" LOC = "M3";
+NET "mem_data<11>" LOC = "M6";
+NET "mem_data<12>" LOC = "L2";
+NET "mem_data<13>" LOC = "N4";
+NET "mem_data<14>" LOC = "R3";
+NET "mem_data<15>" LOC = "T1";
+
+#LED out
+NET "debug_rd4<7>" LOC = "R4";
+NET "debug_rd4<6>" LOC = "F4";
+NET "debug_rd4<5>" LOC = "P15";
+NET "debug_rd4<4>" LOC = "E17";
+NET "debug_rd4<3>" LOC = "K14"; 
+NET "debug_rd4<2>" LOC = "K15";
+NET "debug_rd4<1>" LOC = "J15";
+NET "debug_rd4<0>" LOC = "J14";
+
+#Reset
+NET "reset" LOC = "R17";
+
+#Debug register select
+NET "debug_ra4<0>" LOC = "G18";
+NET "debug_ra4<1>" LOC = "H18";
+NET "debug_ra4<2>" LOC = "K18";
+NET "debug_ra4<3>" LOC = "K17";
+NET "debug_ra4<4>" LOC = "L14";

@@ -26,14 +26,23 @@ always@(*) begin
             if (memop) begin
                 nextState <= STATE_REQ;
             end
+            else begin
+                nextState <= STATE_IDLE;
+            end
         end
         STATE_REQ: begin
             if (bus_ack) begin
                 nextState <= STATE_WAIT;
             end
+            else begin
+                nextState <= STATE_REQ;
+            end
         end
         STATE_WAIT: begin
-            if (!bus_wait) begin
+            if (bus_wait) begin
+                nextState <= STATE_WAIT;
+            end
+            else begin
                 nextState <= STATE_DATA;
             end
         end
@@ -58,13 +67,13 @@ always@(*) begin
             pc_stall = 1;
         end
         STATE_DATA: begin
-            bus_req = 1;
+            bus_req = 0;
             pc_stall = 1;
         end
     endcase
 end
 
-always@(posedge clk) begin
+always@(negedge clk) begin
     currentState <= nextState;
 end
 

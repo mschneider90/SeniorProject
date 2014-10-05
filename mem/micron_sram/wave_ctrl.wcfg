@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/mem/micron_sram/tb_micron_controller_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_micron_controller" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="27" />
+   <wvobject fp_name="/tb_micron_controller/bwait" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bwait</obj_property>
+      <obj_property name="ObjectShortName">bwait</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/maddr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">maddr[19:0]</obj_property>
+      <obj_property name="ObjectShortName">maddr[19:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/moe_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">moe_L</obj_property>
+      <obj_property name="ObjectShortName">moe_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mwe_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mwe_L</obj_property>
+      <obj_property name="ObjectShortName">mwe_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/madv_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">madv_L</obj_property>
+      <obj_property name="ObjectShortName">madv_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mclk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mclk</obj_property>
+      <obj_property name="ObjectShortName">mclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mub_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mub_L</obj_property>
+      <obj_property name="ObjectShortName">mub_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mlb_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mlb_L</obj_property>
+      <obj_property name="ObjectShortName">mlb_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mce_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mce_L</obj_property>
+      <obj_property name="ObjectShortName">mce_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mcre" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mcre</obj_property>
+      <obj_property name="ObjectShortName">mcre</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/bdata" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mdata" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">mdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">mdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/counter" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">counter[7:0]</obj_property>
+      <obj_property name="ObjectShortName">counter[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mem_wait" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mem_wait</obj_property>
+      <obj_property name="ObjectShortName">mem_wait</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/ctrl/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffff00</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/ram/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffa500</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/clk50MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50MHz</obj_property>
+      <obj_property name="ObjectShortName">clk50MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/baddr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">baddr[19:0]</obj_property>
+      <obj_property name="ObjectShortName">baddr[19:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/mdata_reg" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">mdata_reg[15:0]</obj_property>
+      <obj_property name="ObjectShortName">mdata_reg[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/bwe" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bwe</obj_property>
+      <obj_property name="ObjectShortName">bwe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/burst_length" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">burst_length[1:0]</obj_property>
+      <obj_property name="ObjectShortName">burst_length[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/errors" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">errors[1:0]</obj_property>
+      <obj_property name="ObjectShortName">errors[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/DATA_1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DATA_1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_1[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/DATA_2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DATA_2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_2[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/DATA_3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DATA_3[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_3[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_micron_controller/DATA_4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DATA_4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_4[31:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -13,7 +13,8 @@ module micron_sram #(parameter D_WIDTH = 16,
                      output mem_wait,
                      inout[D_WIDTH-1:0] data,
                      input ub_L,
-                     input lb_L);
+                     input lb_L,
+                     input mcre);
                      
 parameter LATENCY = 4;
                      
@@ -148,7 +149,9 @@ always@(*) begin
         STATE_READ_DATA: begin
             data_reg <= mem[currentAddr];
             mem_wait_en <= DEASSERT;
-            data_out_en <= ASSERT;
+            if (oe_L == ASSERT_L) begin
+                data_out_en <= ASSERT;
+            end
             
             //counters
             wait_load <= DEASSERT;
