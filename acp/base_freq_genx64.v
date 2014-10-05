@@ -60,25 +60,25 @@ begin
 	if(note_in <= 63 && note_in > 47)
 	begin
 
-		offset <= 13;
+		offset <= 1;
 
 	end
 	else if(note_in <= 47 && note_in > 31)
 	begin
 
-		offset <= 5;
+		offset <= 2;
 
 	end 
 	else if(note_in <= 31 && note_in > 15)
 	begin
 		
-		offset <= 2;
+		offset <= 5;
 
 	end
 	else if(note_in <= 15)
 	begin
 		
-		offset <= 1; 
+		offset <= 13; 
 
 	end
 /*
