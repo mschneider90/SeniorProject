@@ -104,8 +104,8 @@ always@(*) begin
             end
         end
         STATE_READ_WAIT: begin
-            if (waitCounter == LATENCY - 2) begin
-                nextState <= STATE_READ_DATA;
+            if (waitCounter == LATENCY - 2) begin //Read first data at the BEGINNING
+                nextState <= STATE_READ_DATA;     //of the fifth cycle
             end
         end
         STATE_READ_DATA: begin
@@ -114,8 +114,8 @@ always@(*) begin
             end
         end
         STATE_WRITE_WAIT: begin
-            if (waitCounter == LATENCY - 2) begin 
-                nextState <= STATE_WRITE_DATA;
+            if (waitCounter == LATENCY - 2) begin //Write first data at the BEGINNING
+                nextState <= STATE_WRITE_DATA;    //of the fifth cycle
             end
         end
         STATE_WRITE_DATA: begin
@@ -151,6 +151,9 @@ always@(*) begin
             mem_wait_en <= DEASSERT;
             if (oe_L == ASSERT_L) begin
                 data_out_en <= ASSERT;
+            end
+            else begin
+                data_out_en <= DEASSERT;
             end
             
             //counters
