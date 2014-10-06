@@ -3,117 +3,16 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/acp/sqgendemo_test_isim_beh.wdb" id="1" type="auto">
+      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/acp/bfg_test_isim_beh.wdb" id="1" type="auto">
          <top_modules>
+            <top_module name="bfg_test" />
             <top_module name="glbl" />
-            <top_module name="sqgendemo_test" />
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="18" />
-   <wvobject fp_name="/sqgendemo_test/audio_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">audio_out[7:0]</obj_property>
-      <obj_property name="ObjectShortName">audio_out[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/clk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/butt_1" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">butt_1</obj_property>
-      <obj_property name="ObjectShortName">butt_1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/oct" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">oct[5:0]</obj_property>
-      <obj_property name="ObjectShortName">oct[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/volsel" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">volsel[1:0]</obj_property>
-      <obj_property name="ObjectShortName">volsel[1:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/en" type="logic" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">en</obj_property>
-      <obj_property name="ObjectShortName">en</obj_property>
-      <obj_property name="label">porta_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/en_flag" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">en_flag</obj_property>
-      <obj_property name="ObjectShortName">en_flag</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/note_in" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
-      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/note_in" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
-      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
-      <obj_property name="label">porta_note_in</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#00ffff</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/current_note" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">current_note[5:0]</obj_property>
-      <obj_property name="ObjectShortName">current_note[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ff0000</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/note_out" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">note_out[5:0]</obj_property>
-      <obj_property name="ObjectShortName">note_out[5:0]</obj_property>
-      <obj_property name="label">porta_note_out</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ffffff</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/prev_note_A" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">prev_note_A[5:0]</obj_property>
-      <obj_property name="ObjectShortName">prev_note_A[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ffff00</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/prev_note" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">prev_note[5:0]</obj_property>
-      <obj_property name="ObjectShortName">prev_note[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/note_clk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">note_clk</obj_property>
-      <obj_property name="ObjectShortName">note_clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/freqgen/freq_out" type="logic" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">freq_out</obj_property>
-      <obj_property name="ObjectShortName">freq_out</obj_property>
-      <obj_property name="label">base_freq_output</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/StateCtr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">StateCtr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">StateCtr[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ffff00</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/subdiv" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">subdiv[5:0]</obj_property>
-      <obj_property name="ObjectShortName">subdiv[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sqgendemo_test/UUT/porta1/distance" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">distance[5:0]</obj_property>
-      <obj_property name="ObjectShortName">distance[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   <WVObjectSize size="1" />
+   <wvobject fp_name="/bfg_test/clk50mhz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50mhz</obj_property>
+      <obj_property name="ObjectShortName">clk50mhz</obj_property>
    </wvobject>
 </wave_config>

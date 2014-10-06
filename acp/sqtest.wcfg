@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/acp/SquareGenTest_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="SquareGenTest" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/SquareGenTest/square_out" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">square_out</obj_property>
+      <obj_property name="ObjectShortName">square_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/freq" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">freq</obj_property>
+      <obj_property name="ObjectShortName">freq</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/note_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
+      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/offset_multiplier" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">offset_multiplier[2:0]</obj_property>
+      <obj_property name="ObjectShortName">offset_multiplier[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/offset_direction" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">offset_direction</obj_property>
+      <obj_property name="ObjectShortName">offset_direction</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/freqgen/base_freq" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">base_freq[31:0]</obj_property>
+      <obj_property name="ObjectShortName">base_freq[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/freqgen/count" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">count[15:0]</obj_property>
+      <obj_property name="ObjectShortName">count[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SquareGenTest/freqgen/base_freq_wire" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">base_freq_wire[31:0]</obj_property>
+      <obj_property name="ObjectShortName">base_freq_wire[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>
