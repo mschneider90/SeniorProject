@@ -72,7 +72,7 @@ initial begin
     nextState <= STATE_IDLE;
     data_reg <= 0;
     for (i = 0; i<64; i = i + 1) begin
-        mem[i] <= 0;
+        mem[i] <= i;
     end
 end
 
@@ -138,7 +138,12 @@ always@(*) begin
             addr_en <= ASSERT;
         end
         STATE_READ_WAIT: begin
-            mem_wait_en <= ASSERT;
+            if (waitCounter <= LATENCY - 2) begin
+                mem_wait_en <= ASSERT;
+            end
+            else begin
+                mem_wait_en <= DEASSERT;
+            end
             data_out_en <= DEASSERT;
             
             //counters
@@ -162,7 +167,12 @@ always@(*) begin
             addr_en <= ASSERT;
         end
         STATE_WRITE_WAIT: begin
-            mem_wait_en <= ASSERT;
+            if (waitCounter <= LATENCY - 2) begin
+                mem_wait_en <= ASSERT;
+            end
+            else begin
+                mem_wait_en <= DEASSERT;
+            end
             data_out_en <= DEASSERT;
             
             //counters
