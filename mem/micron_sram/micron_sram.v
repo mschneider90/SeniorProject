@@ -72,7 +72,7 @@ initial begin
     nextState <= STATE_IDLE;
     data_reg <= 0;
     for (i = 0; i<64; i = i + 1) begin
-        mem[i] <= i;
+        mem[i] <= 0;
     end
 end
 

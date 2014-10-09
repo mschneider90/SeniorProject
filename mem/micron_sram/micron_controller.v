@@ -13,7 +13,7 @@ module micron_controller #(parameter A_WIDTH = 24,
                            output [BUS_WIDTH-1:0] bus_data_out,
                            input bus_ack,
                            inout  [D_WIDTH-1:0] mem_data,
-                           output[A_WIDTH-1:0] maddr,
+                           output reg[A_WIDTH-1:0] maddr,
                            output moe_L,  //output enable
                            output reg mwe_L,  //write enable
                            output reg madv_L, //address valid
@@ -104,10 +104,6 @@ assign mclk = (mclk_en == ASSERT)? clk50MHz : DEASSERT;
 //TODO this doesn't need to be like this
 reg bwait_en;
 assign bus_wait_out = (bwait_en == ASSERT)? ASSERT : DEASSERT;
-
-//Pass addr bus straight through
-//Memory device will only look at this when ADV is asserted
-assign maddr = bus_data_in;
                        
 //These aren't used
 assign mub_L = DEASSERT_L;
@@ -147,12 +143,12 @@ always@(*) begin
         end
         STATE_READ_WAIT: begin
             if (cycle_count_geq) begin
-                if (burst_length == 1) begin
-                    nextState <= STATE_FINISH;
-                end
-                else begin
+             //   if (burst_length == 1) begin
+             //       nextState <= STATE_FINISH;
+              //  end
+              //  else begin
                     nextState <= STATE_READ_DATA;
-                end
+              //  end
             end
         end
         STATE_READ_DATA: begin
@@ -165,12 +161,12 @@ always@(*) begin
         end
         STATE_WRITE_WAIT: begin
             if (cycle_count_geq) begin
-                if (burst_length == 1) begin
-                    nextState <= STATE_FINISH;
-                end
-                else begin
+               // if (burst_length == 1) begin
+               //     nextState <= STATE_FINISH;
+               // end
+               // else begin
                     nextState <= STATE_WRITE_DATA;
-                end
+               // end
              end
         end
         STATE_WRITE_DATA: begin
@@ -198,10 +194,11 @@ always@(*) begin
         STATE_IDLE: begin
             //Outputs
             mwe_L <= ~bus_we;
-            if (bus_ack == ASSERT) begin
+            if (bus_ack == ASSERT) begin //Address and control signals valid
                 madv_L <= ASSERT_L;
                 mce_L <= ASSERT_L;
                 bus_burst <= bus_ctrl_in[4:2];
+                maddr <= bus_data_in;
             end
             else begin
                 madv_L <= DEASSERT_L;

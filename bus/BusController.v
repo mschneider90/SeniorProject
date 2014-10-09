@@ -96,6 +96,18 @@ BusMux #(.D_WIDTH(CTRL_WIDTH)) bus_ctrl_mux
                  .in_7(ctrl_in_7),
                  .sel(ack),
                  .out(ctrl_mux_out));
+
+// Holds the address for one cycle longer so that the slave can see it
+reg[BUS_WIDTH-1:0] previousData;
+reg sel_current;
+always@(posedge clk) begin
+    previousData <= bus_out;
+end
+mux21 #(.D_WIDTH(BUS_WIDTH)) final_bus_mux
+       (.in_a(previousData),
+        .in_b(addr_mux_out),
+        .sel(sel_current),
+        .out(bus_out));
  
 // Used to assert "WAIT" and "WE" (maybe) while the slave device is ACKed 
 parameter FORCE_WAIT = 1;
@@ -110,11 +122,12 @@ mux21 #(.D_WIDTH(CTRL_WIDTH)) ctrl_out_mux
 // Data on the bus can either be an address or data. If it's an address, we need
 // it to go through the BusAddressTranslator. If not, it's sent straight through.
 wire [BUS_WIDTH-1:0] phys_addr;
+wire [BUS_WIDTH-1:0] addr_mux_out;
 reg addr_mux_sel;    
 mux21 addr_mux (.in_a(phys_addr),
                 .in_b(bus_mux_out),
                 .sel(addr_mux_sel),
-                .out(bus_out));
+                .out(addr_mux_out));
 
 parameter ADDR = 0;
 parameter DATA = 1;
@@ -169,7 +182,8 @@ always@(*) begin
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
-            pri_en = 1;
+            pri_en <= 1;
+            sel_current <= 1;
         end
         STATE_ACK: begin
             // Reg transfers
@@ -180,7 +194,8 @@ always@(*) begin
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
-            pri_en = 0;
+            pri_en <= 0;
+            sel_current <= 1;
         end
         STATE_ADDR: begin
             // Reg transfers
@@ -192,7 +207,8 @@ always@(*) begin
             writeSlaveDevice <= 1;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
-            pri_en = 0;
+            pri_en <= 0;
+            sel_current <= 1;
         end
         STATE_ACK_SLAVE: begin
             // Control signals
@@ -201,7 +217,8 @@ always@(*) begin
             resetSlaveDevice <= 0;
             ctrlControl <= SLAVE;
             ctrlOutMuxSel <= FORCE_WAIT;
-            pri_en = 0;
+            pri_en <= 0;
+            sel_current <= 0; // hold address for slave device to see
         end
         STATE_BUSY: begin
             // Control signals
@@ -210,7 +227,8 @@ always@(*) begin
             resetSlaveDevice <= 0;
             ctrlControl <= SLAVE;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
-            pri_en = 0;
+            pri_en <= 0;
+            sel_current <= 1;
             
             if (isWriteTransfer) begin
                 busControl <= MASTER;
