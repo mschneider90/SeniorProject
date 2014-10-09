@@ -1,41 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    15:09:32 09/28/2014 
-// Design Name: 
-// Module Name:    FX_vibrato 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
-
-
-
-/*
-FX_vibrato sq_vibra (
-	.note_in		(note_in),  //6 bits
-	.note_clk	(note_clk), //1 bit
-	.note_out	(vibra_out), //6 bits
-	.speed		(vibra_speed),  //speed: two bits FXA
-	.depth		(vibra_depth),   //depth: two bits FXB
-	.offset_mul	(vibra_offset_mul), //3 bits
-	.offset_dir	(vibra_offset_dir), //1 bit
-	.en			(vibra_en), //1 bit
-	.clk50mhz	(clk50mhz) //1 bit
-);
-
-*/
-
 
 module FX_vibrato(
 						note_in,
