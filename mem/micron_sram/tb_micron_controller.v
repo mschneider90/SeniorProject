@@ -14,10 +14,22 @@ wire [7:0] req;
 assign req[6:0] = 0;
 
 wire [7:0] ack;
+
+//Signals to memory
+wire[19:0] maddr;
+wire[15:0] mdata;
+wire moe_L;
+wire mwe_L;
+wire madv_L;
+wire mclk;
+wire mub_L;
+wire mlb_L;
+wire mce_L;
+wire mcre;
       
 wire [BUS_WIDTH-1:0] master_out; 
 wire [CTRL_WIDTH-1:0] master_ctrl_out;                   
-tb_test_master #(.WRITE_TRANSFER(0)) master(.bus_in(bus),
+tb_test_master #(.WRITE_TRANSFER(1)) master(.bus_in(bus),
                       .ack(ack[7]),
                       .clk(clk50MHz),
                       .req(req[7]),
@@ -55,18 +67,6 @@ BusController controller(.req(req),
                          .ctrl_in_0(slave_ctrl_out),
                          .ctrl_in_7(master_ctrl_out),
                          .ctrl_out(ctrl));
-                         
-//Signals to memory
-wire[19:0] maddr;
-wire[15:0] mdata;
-wire moe_L;
-wire mwe_L;
-wire madv_L;
-wire mclk;
-wire mub_L;
-wire mlb_L;
-wire mce_L;
-wire mcre;
                                          
 micron_sram ram (.clk(mclk),
                  .addr(maddr),
