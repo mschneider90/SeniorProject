@@ -30,7 +30,7 @@ reg writeSlaveDevice;
 reg resetSlaveDevice;
 wire [NUM_DEVICES-1:0] slaveDeviceEn;
 wire [NUM_DEVICES-1:0] device_en;
-d_reg slaveDevice(.clk(clk),
+d_reg #(.WIDTH(NUM_DEVICES))slaveDevice(.clk(clk),
                   .en(writeSlaveDevice),
                   .reset(resetSlaveDevice),
                   .d(device_en),
@@ -45,8 +45,17 @@ reg [2:0] burstLength;
 // a simple priority
 wire [NUM_DEVICES-1:0] pri_out;
 reg pri_en;
-reg [NUM_DEVICES-1:0] initiatingDevice;
 PriorityGen pri(.pri_in(req), .clk(clk), .en(pri_en), .pri_out(pri_out));
+
+// Captures the master that initiated the transfer
+reg writeInitiatingDevice;
+wire [NUM_DEVICES-1:0] initiatingDevice;
+d_reg #(.WIDTH(NUM_DEVICES)) initiatingDeviceReg 
+       (.clk(clk),
+        .en(writeInitiatingDevice),
+        .reset(0),
+        .d(pri_out),
+        .q(initiatingDevice));
      
 // There are two possible devices that need to control the bus
 //   a. The master which initiated the transfer
@@ -96,6 +105,16 @@ BusMux #(.D_WIDTH(CTRL_WIDTH)) bus_ctrl_mux
                  .in_7(ctrl_in_7),
                  .sel(ack),
                  .out(ctrl_mux_out));
+                 
+// Data on the bus can either be an address or data. If it's an address, we need
+// it to go through the BusAddressTranslator. If not, it's sent straight through.
+wire [BUS_WIDTH-1:0] phys_addr;
+wire [BUS_WIDTH-1:0] addr_mux_out;
+reg addr_mux_sel;    
+mux21 addr_mux (.in_a(phys_addr),
+                .in_b(bus_mux_out),
+                .sel(addr_mux_sel),
+                .out(addr_mux_out));
 
 // Holds the address for one cycle longer so that the slave can see it
 reg[BUS_WIDTH-1:0] previousData;
@@ -119,15 +138,7 @@ mux21 #(.D_WIDTH(CTRL_WIDTH)) ctrl_out_mux
         .sel(ctrlOutMuxSel),
         .out(ctrl_out));
     
-// Data on the bus can either be an address or data. If it's an address, we need
-// it to go through the BusAddressTranslator. If not, it's sent straight through.
-wire [BUS_WIDTH-1:0] phys_addr;
-wire [BUS_WIDTH-1:0] addr_mux_out;
-reg addr_mux_sel;    
-mux21 addr_mux (.in_a(phys_addr),
-                .in_b(bus_mux_out),
-                .sel(addr_mux_sel),
-                .out(addr_mux_out));
+
 
 parameter ADDR = 0;
 parameter DATA = 1;
@@ -172,7 +183,6 @@ end
 always@(*) begin
     case (currentState)
         STATE_IDLE: begin
-            // Reg transfers
             busControl <= MASTER;
             ctrlControl <= MASTER;
             isWriteTransfer <= 0;
@@ -184,11 +194,9 @@ always@(*) begin
             ctrlOutMuxSel <= ORIGINAL_CTRL;
             pri_en <= 1;
             sel_current <= 1;
+            writeInitiatingDevice <= 0;
         end
         STATE_ACK: begin
-            // Reg transfers
-            initiatingDevice <= pri_out;
-            
             // Control signals
             addr_mux_sel <= ADDR;
             writeSlaveDevice <= 0;
@@ -196,6 +204,7 @@ always@(*) begin
             ctrlOutMuxSel <= ORIGINAL_CTRL;
             pri_en <= 0;
             sel_current <= 1;
+            writeInitiatingDevice <= 1;
         end
         STATE_ADDR: begin
             // Reg transfers
@@ -209,6 +218,7 @@ always@(*) begin
             ctrlOutMuxSel <= ORIGINAL_CTRL;
             pri_en <= 0;
             sel_current <= 1;
+            writeInitiatingDevice <= 0;
         end
         STATE_ACK_SLAVE: begin
             // Control signals
@@ -219,6 +229,7 @@ always@(*) begin
             ctrlOutMuxSel <= FORCE_WAIT;
             pri_en <= 0;
             sel_current <= 0; // hold address for slave device to see
+            writeInitiatingDevice <= 0;
         end
         STATE_BUSY: begin
             // Control signals
@@ -229,6 +240,7 @@ always@(*) begin
             ctrlOutMuxSel <= ORIGINAL_CTRL;
             pri_en <= 0;
             sel_current <= 1;
+            writeInitiatingDevice <= 0;
             
             if (isWriteTransfer) begin
                 busControl <= MASTER;
@@ -239,7 +251,8 @@ always@(*) begin
         end
         STATE_FINISH: begin
             resetSlaveDevice <= 1;
-            pri_en = 1;
+            pri_en <= 1;
+            writeInitiatingDevice <= 0;
         end
     endcase
 end
