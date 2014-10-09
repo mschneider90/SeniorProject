@@ -24,6 +24,16 @@ module BusController #(parameter NUM_DEVICES = 8,
                        input  [BUS_WIDTH-1:0] bus_in_6,
                        input  [BUS_WIDTH-1:0] bus_in_7,                       
                        output [BUS_WIDTH-1:0] bus_out);
+                       
+// Bus Control signals are defined as:
+// Wait: ctrl[0]
+// WE  : ctrl[1]
+// Burst: ctrl[4:2]
+// Reserved: ctrl[7:5]
+wire we;
+assign we = ctrl_out[1];
+wire [2:0] burst;
+assign burst = ctrl_out[4:2];
 
 // Stores the slave device
 reg writeSlaveDevice;
@@ -145,9 +155,7 @@ mux21 #(.D_WIDTH(CTRL_WIDTH)) ctrl_out_mux
         .in_b({3'b000, burstLength, isWriteTransfer, 1'b1}),
         .sel(ctrlOutMuxSel),
         .out(ctrl_out));
-    
-
-
+   
 parameter ADDR = 0;
 parameter DATA = 1;
 
@@ -156,17 +164,7 @@ parameter DATA = 1;
 BusAddressTranslator bat(.virtual_addr(bus_mux_out), 
                          .phys_addr(phys_addr),
                          .device_en(device_en));
-
-// Bus Control signals are defined as:
-// Wait: ctrl[0]
-// WE  : ctrl[1]
-// Burst: ctrl[4:2]
-// Reserved: ctrl[7:5]
-wire we;
-assign we = ctrl_out[1];
-wire [2:0] burst;
-assign burst = ctrl_out[4:2];
-                                      
+                         
 // States                  
 reg [2:0] currentState;
 reg [2:0] nextState;
