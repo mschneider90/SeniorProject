@@ -38,8 +38,16 @@ d_reg #(.WIDTH(NUM_DEVICES))slaveDevice(.clk(clk),
                   
 // Stores whether or not the transfer is a write
 reg isWriteTransfer;
+
 // Stores the burst length
-reg [2:0] burstLength;
+wire [2:0] burstLength;
+reg writeBurstLength;
+d_reg #(.WIDTH(3)) burstLengthReg
+                 (.clk(clk),
+                  .en(writeBurstLength),
+                  .reset(0),
+                  .d(burst),
+                  .q(burstLength));
                        
 // In the case of multiple REQs at the same time, this chooses one based on 
 // a simple priority
@@ -195,6 +203,7 @@ always@(*) begin
             pri_en <= 1;
             sel_current <= 1;
             writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
         end
         STATE_ACK: begin
             // Control signals
@@ -205,11 +214,11 @@ always@(*) begin
             pri_en <= 0;
             sel_current <= 1;
             writeInitiatingDevice <= 1;
+            writeBurstLength <= 1;
         end
         STATE_ADDR: begin
             // Reg transfers
             isWriteTransfer <= we;
-            burstLength <= burst;
             
             // Control signals
             addr_mux_sel <= ADDR;
@@ -219,6 +228,7 @@ always@(*) begin
             pri_en <= 0;
             sel_current <= 1;
             writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
         end
         STATE_ACK_SLAVE: begin
             // Control signals
@@ -230,6 +240,7 @@ always@(*) begin
             pri_en <= 0;
             sel_current <= 0; // hold address for slave device to see
             writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
         end
         STATE_BUSY: begin
             // Control signals
@@ -241,6 +252,7 @@ always@(*) begin
             pri_en <= 0;
             sel_current <= 1;
             writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
             
             if (isWriteTransfer) begin
                 busControl <= MASTER;
@@ -253,6 +265,7 @@ always@(*) begin
             resetSlaveDevice <= 1;
             pri_en <= 1;
             writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
         end
     endcase
 end
