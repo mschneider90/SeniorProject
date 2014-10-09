@@ -13,6 +13,7 @@ always@(*) begin
     case (sel)
         SEL_A: out <= in_a;
         SEL_B: out <= in_b;
+        default: out <= 0;
     endcase
 end
 
