@@ -281,6 +281,7 @@ always@(*) begin
 
             addr_mux_sel <= DATA;
             resetSlaveDevice <= 1;
+            writeSlaveDevice <= 0;
             pri_en <= 1;
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
