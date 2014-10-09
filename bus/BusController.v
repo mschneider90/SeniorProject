@@ -282,6 +282,7 @@ always@(*) begin
             addr_mux_sel <= DATA;
             resetSlaveDevice <= 1;
             writeSlaveDevice <= 0;
+            sel_current <= 1;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
             pri_en <= 1;
             writeInitiatingDevice <= 0;
