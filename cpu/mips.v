@@ -1,15 +1,14 @@
-module mips #(parameter dwidth = 16,
+module mips #(parameter dwidth = 32,
               parameter awidth = 32,
-              parameter iwidth = 32)
+              parameter iwidth = 32,
+              parameter cwidth = 8)
            (input clk, reset,
             output [iwidth-1:0] pc,       //TODO remove pc and instr once we support reading
             input  [iwidth-1:0] instr,    //from ROM over bus interface
-            input               bus_wait,
+            input  [cwidth-1:0] bus_ctrl_in,
             input               bus_ack,
             input  [4:0]        debug_ra4,
-            output              bus_write,
-            output [1:0]        bus_burst_length,
-            output [awidth-1:0] bus_addr,
+            output [cwidth-1:0] bus_ctrl_out,
             output              bus_req,
             output [dwidth-1:0] debug_rd4,
             input  [dwidth-1:0] bus_data_in,
@@ -23,30 +22,37 @@ module mips #(parameter dwidth = 16,
   wire [dwidth-1:0] readdata;
   wire [dwidth-1:0] writedata;
   wire pc_stall;
+  wire bus_write;
   
-  assign bus_burst_length = 2'b00; //Always read/write one word at a time
-  
-  assign bus_data_out = writedata;
+  assign bus_ctrl_out = {3'b000, //not used 
+                         3'b000, //burst length of 1
+                         bus_write,
+                         1'b0 }; //wait
+                         
+  // Selects between outputting address and data
+  wire [dwidth-1:0] bus_addr;
+  wire data_out;
+  mux2 #(.WIDTH(dwidth)) data_addr_mux (.in_a(bus_addr),
+                                   .in_b(writedata),
+                                   .mux_sel(data_out),
+                                   .mux_out(bus_data_out));
+
+  assign bus_wait = bus_ctrl_in[0];
   
   //Delay bus data by three clock cycles to correctly interface with bus
+  //TODO figure out if this still makes sense
   wire [dwidth-1:0] bus_data_delayed;
   wire [dwidth-1:0] bus_data_delayed_2;
   d_reg #(dwidth) read_data_delay_1(.clk(clk),
                                   .reset(reset),
                                   .en(1),
                                   .d(bus_data_in),
-                                  .q(bus_data_delayed));
+                                  .q(readdata));
 
-  d_reg #(dwidth) read_data_delay_2(.clk(clk),
+  /*d_reg #(dwidth) read_data_delay_2(.clk(clk),
                                   .reset(reset),
                                   .en(1),
                                   .d(bus_data_delayed),
-                                  .q(readdata));
-                                  
-  /*d_reg #(dwidth) read_data_delay_3(.clk(clk),
-                                  .reset(reset),
-                                  .en(1),
-                                  .d(bus_data_delayed_2),
                                   .q(readdata)); */
  
   cpuBusInterface bus_if(.clk(clk),
@@ -54,7 +60,8 @@ module mips #(parameter dwidth = 16,
                          .bus_ack(bus_ack),
                          .bus_wait(bus_wait),
                          .bus_req(bus_req),
-                         .pc_stall(pc_stall));
+                         .pc_stall(pc_stall),
+                         .data_out(data_out));
   
   controller c(.op(instr[31:26]),
                .funct(instr[5:0]),

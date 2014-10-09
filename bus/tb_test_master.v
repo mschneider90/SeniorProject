@@ -16,7 +16,6 @@ parameter STATE_WRITE_DATA = 3;
 parameter STATE_READ_DATA = 4;
 parameter STATE_IDLE = 5;
 
-// Use this to test a write or read transfer
 parameter BURST_LENGTH = 4;
 
 reg [3:0] nextState;

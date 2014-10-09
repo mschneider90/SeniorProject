@@ -27,7 +27,7 @@ assign ctrl_out = {7'b0,
                    wait_out
                   };
 
-reg [2:0] burst_length;
+reg [3:0] burst_length;
 
 reg [3:0] counter;
 reg [3:0] latencyCounter;
@@ -67,12 +67,14 @@ always@(*) begin
     case (currentState)
         STATE_WAIT_FOR_ACK: begin
             if (ack) begin
-                counter <= bus_in;
+                counter <= bus_in; //starting address
                 burst_length <= ctrl_in[4:2];
             end
             latency_counter_en <= 0;
             counter_en <= 0;
             wait_out <= 0;
+            latencyCounter <= 0;
+            counter <= 0;
         end
         STATE_READ_WAIT: begin
             latency_counter_en <= 1;
@@ -150,14 +152,14 @@ always@(*) begin
         end
         STATE_WRITE_DATA: begin
             if (counter == (1 << burst_length) - 1) begin
-                nextState <= STATE_IDLE;
+                nextState <= STATE_WAIT_FOR_ACK;
             end
             else begin
                 nextState <= STATE_WRITE_DATA;
             end
         end
         STATE_IDLE: begin
-            nextState <= STATE_IDLE;
+            nextState <= STATE_WAIT_FOR_ACK;
         end
     endcase
 end

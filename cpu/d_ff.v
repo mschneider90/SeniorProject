@@ -11,5 +11,8 @@ always @(posedge clk, posedge reset)
         if (en) begin
             q <= d;
         end
+        else begin
+            q <= q;
+        end
     end
 endmodule

@@ -29,6 +29,7 @@ module BusController #(parameter NUM_DEVICES = 8,
 reg writeSlaveDevice;
 reg resetSlaveDevice;
 wire [NUM_DEVICES-1:0] slaveDeviceEn;
+wire [NUM_DEVICES-1:0] device_en;
 d_reg slaveDevice(.clk(clk),
                   .en(writeSlaveDevice),
                   .reset(resetSlaveDevice),
@@ -43,8 +44,9 @@ reg [2:0] burstLength;
 // In the case of multiple REQs at the same time, this chooses one based on 
 // a simple priority
 wire [NUM_DEVICES-1:0] pri_out;
+reg pri_en;
 reg [NUM_DEVICES-1:0] initiatingDevice;
-PriorityGen pri(.pri_in(req), .clk(clk), .pri_out(pri_out));
+PriorityGen pri(.pri_in(req), .clk(clk), .en(pri_en), .pri_out(pri_out));
      
 // There are two possible devices that need to control the bus
 //   a. The master which initiated the transfer
@@ -107,6 +109,7 @@ mux21 #(.D_WIDTH(CTRL_WIDTH)) ctrl_out_mux
     
 // Data on the bus can either be an address or data. If it's an address, we need
 // it to go through the BusAddressTranslator. If not, it's sent straight through.
+wire [BUS_WIDTH-1:0] phys_addr;
 reg addr_mux_sel;    
 mux21 addr_mux (.in_a(phys_addr),
                 .in_b(bus_mux_out),
@@ -118,8 +121,6 @@ parameter DATA = 1;
 
 // Translates addresses from the unified virtual address space to each device's
 // physical address space
-wire [BUS_WIDTH-1:0] phys_addr;
-wire [NUM_DEVICES-1:0] device_en;
 BusAddressTranslator bat(.virtual_addr(bus_mux_out), 
                          .phys_addr(phys_addr),
                          .device_en(device_en));
@@ -168,6 +169,7 @@ always@(*) begin
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en = 1;
         end
         STATE_ACK: begin
             // Reg transfers
@@ -178,6 +180,7 @@ always@(*) begin
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en = 0;
         end
         STATE_ADDR: begin
             // Reg transfers
@@ -189,6 +192,7 @@ always@(*) begin
             writeSlaveDevice <= 1;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en = 0;
         end
         STATE_ACK_SLAVE: begin
             // Control signals
@@ -197,6 +201,7 @@ always@(*) begin
             resetSlaveDevice <= 0;
             ctrlControl <= SLAVE;
             ctrlOutMuxSel <= FORCE_WAIT;
+            pri_en = 0;
         end
         STATE_BUSY: begin
             // Control signals
@@ -205,6 +210,7 @@ always@(*) begin
             resetSlaveDevice <= 0;
             ctrlControl <= SLAVE;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en = 0;
             
             if (isWriteTransfer) begin
                 busControl <= MASTER;
@@ -215,6 +221,7 @@ always@(*) begin
         end
         STATE_FINISH: begin
             resetSlaveDevice <= 1;
+            pri_en = 1;
         end
     endcase
 end

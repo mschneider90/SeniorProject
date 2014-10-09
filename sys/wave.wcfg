@@ -10,12 +10,10 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="25" />
+   <WVObjectSize size="15" />
    <wvobject fp_name="/tb_System/clk50MHz" type="logic" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">clk50MHz</obj_property>
       <obj_property name="ObjectShortName">clk50MHz</obj_property>
-      <obj_property name="label">clk50MHz</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_System/reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset</obj_property>
@@ -31,18 +29,6 @@
       <obj_property name="ObjectShortName">instr[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/memop" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">memop</obj_property>
-      <obj_property name="ObjectShortName">memop</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/bus_if/pc_stall" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">pc_stall</obj_property>
-      <obj_property name="ObjectShortName">pc_stall</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/bus_wait" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_wait</obj_property>
-      <obj_property name="ObjectShortName">bus_wait</obj_property>
-   </wvobject>
    <wvobject fp_name="/tb_System/sys/bus_req" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">bus_req[7:0]</obj_property>
       <obj_property name="ObjectShortName">bus_req[7:0]</obj_property>
@@ -51,87 +37,49 @@
       <obj_property name="ElementShortName">bus_ack[7:0]</obj_property>
       <obj_property name="ObjectShortName">bus_ack[7:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/tb_System/sys/bus_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_data[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_System/sys/bus_ctrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_ctrl[7:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_ctrl[7:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/tb_System/sys/cpu/bus_if/currentState" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">currentState[1:0]</obj_property>
-      <obj_property name="ObjectShortName">currentState[1:0]</obj_property>
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_System/sys/device_en" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">device_en[7:0]</obj_property>
-      <obj_property name="ObjectShortName">device_en[7:0]</obj_property>
+   <wvobject fp_name="/tb_System/sys/cpu/bus_wait" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_wait</obj_property>
+      <obj_property name="ObjectShortName">bus_wait</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_System/sys/bus_addr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">bus_addr[31:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/bus_data_in" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_data_in[15:0]</obj_property>
-      <obj_property name="ObjectShortName">bus_data_in[15:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+   <wvobject fp_name="/tb_System/sys/bus_ctrller/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_System/sys/cpu/bus_data_out" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">bus_data_out[15:0]</obj_property>
       <obj_property name="ObjectShortName">bus_data_out[15:0]</obj_property>
+      <obj_property name="label">CPUbus_data_out[15:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/bus_data_delayed" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_data_delayed[15:0]</obj_property>
-      <obj_property name="ObjectShortName">bus_data_delayed[15:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/readdata" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">readdata[15:0]</obj_property>
-      <obj_property name="ObjectShortName">readdata[15:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/bus_write" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_write</obj_property>
-      <obj_property name="ObjectShortName">bus_write</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/dp/rf/we3" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">we3</obj_property>
-      <obj_property name="ObjectShortName">we3</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/dp/rf/rf[4]" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">[4,31:0]</obj_property>
-      <obj_property name="ObjectShortName">rf[4,31:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/cpu/dp/rf/rf[8]" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">[8,31:0]</obj_property>
-      <obj_property name="ObjectShortName">rf[8,31:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/clk50MHz" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_System/sys/sram_ctrl/bus_data_out" type="array" db_ref_id="1">
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">clk50MHz</obj_property>
-      <obj_property name="ObjectShortName">clk50MHz</obj_property>
-      <obj_property name="label">clk50MHz</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/sys/sram_ctrl/currentState" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
-      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="ElementShortName">bus_data_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_data_out[31:0]</obj_property>
+      <obj_property name="label">SRAMbus_data_out[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
-      <obj_property name="label">CTRLcurrentState[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_System/sys/sram_ctrl/moe_L" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">moe_L</obj_property>
-      <obj_property name="ObjectShortName">moe_L</obj_property>
+   <wvobject fp_name="/tb_System/sys/cpu/bus_req" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_req</obj_property>
+      <obj_property name="ObjectShortName">bus_req</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_System/ram/currentState" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
-      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-      <obj_property name="label">MEMcurrentState[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_System/ram/data" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">data[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data[15:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-      <obj_property name="label">MEMdata[15:0]</obj_property>
+   <wvobject fp_name="/tb_System/sys/bus_ctrller/req" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req[7:0]</obj_property>
+      <obj_property name="ObjectShortName">req[7:0]</obj_property>
    </wvobject>
 </wave_config>
