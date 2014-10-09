@@ -340,6 +340,9 @@ always@(*) begin
         STATE_FINISH: begin
             nextState <= STATE_IDLE;
         end
+        default: begin
+            nextState <= STATE_IDLE;
+        end
     endcase
 end
 
