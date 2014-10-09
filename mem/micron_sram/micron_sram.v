@@ -72,7 +72,7 @@ initial begin
     nextState <= STATE_IDLE;
     data_reg <= 0;
     for (i = 0; i<64; i = i + 1) begin
-        mem[i] <= 0;
+        mem[i] <= i;
     end
 end
 
@@ -104,8 +104,8 @@ always@(*) begin
             end
         end
         STATE_READ_WAIT: begin
-            if (waitCounter == LATENCY - 2) begin
-                nextState <= STATE_READ_DATA;
+            if (waitCounter == LATENCY - 2) begin //Read first data at the BEGINNING
+                nextState <= STATE_READ_DATA;     //of the fifth cycle
             end
         end
         STATE_READ_DATA: begin
@@ -114,8 +114,8 @@ always@(*) begin
             end
         end
         STATE_WRITE_WAIT: begin
-            if (waitCounter == LATENCY - 2) begin 
-                nextState <= STATE_WRITE_DATA;
+            if (waitCounter == LATENCY - 2) begin //Write first data at the BEGINNING
+                nextState <= STATE_WRITE_DATA;    //of the fifth cycle
             end
         end
         STATE_WRITE_DATA: begin
@@ -138,7 +138,12 @@ always@(*) begin
             addr_en <= ASSERT;
         end
         STATE_READ_WAIT: begin
-            mem_wait_en <= ASSERT;
+            if (waitCounter <= LATENCY - 2) begin
+                mem_wait_en <= ASSERT;
+            end
+            else begin
+                mem_wait_en <= DEASSERT;
+            end
             data_out_en <= DEASSERT;
             
             //counters
@@ -152,6 +157,9 @@ always@(*) begin
             if (oe_L == ASSERT_L) begin
                 data_out_en <= ASSERT;
             end
+            else begin
+                data_out_en <= DEASSERT;
+            end
             
             //counters
             wait_load <= DEASSERT;
@@ -159,7 +167,12 @@ always@(*) begin
             addr_en <= ASSERT;
         end
         STATE_WRITE_WAIT: begin
-            mem_wait_en <= ASSERT;
+            if (waitCounter <= LATENCY - 2) begin
+                mem_wait_en <= ASSERT;
+            end
+            else begin
+                mem_wait_en <= DEASSERT;
+            end
             data_out_en <= DEASSERT;
             
             //counters

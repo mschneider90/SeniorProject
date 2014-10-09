@@ -3,16 +3,16 @@
 //Controller for Micron MT45W8 pseudo-SRAM device
 
 module micron_controller #(parameter A_WIDTH = 24,
-                           parameter D_WIDTH = 16)
+                           parameter D_WIDTH = 16,
+                           parameter BUS_WIDTH = 32,
+                           parameter BUS_CTRL = 8)
                           (input clk50MHz,
-                           input[A_WIDTH-1:0] baddr,
-                           input [1:0] bburst,
-                           input bwe,
-                           input benable,
-                           input  [D_WIDTH-1:0] bus_data_in,
-                           output [D_WIDTH-1:0] bus_data_out,
+                           input  [BUS_CTRL-1:0] bus_ctrl_in,
+                           output [BUS_CTRL-1:0] bus_ctrl_out,
+                           input  [BUS_WIDTH-1:0] bus_data_in,
+                           output [BUS_WIDTH-1:0] bus_data_out,
+                           input bus_ack,
                            inout  [D_WIDTH-1:0] mem_data,
-                           output bwait,
                            output[A_WIDTH-1:0] maddr,
                            output moe_L,  //output enable
                            output reg mwe_L,  //write enable
@@ -45,7 +45,19 @@ assign bus_data_out = mem_data;
 //See: micron_ram.pdf (datasheet), pg. 29
 //Default read/write latency is 4 cycles
 //This also allows us to operate up to 52MHz - convenient
-parameter RW_LATENCY_CYCLES = 4;
+parameter RW_LATENCY_CYCLES = 3;
+
+//Make the control signals more readable
+wire bus_we;
+assign bus_we = bus_ctrl_in[1];
+
+reg [2:0] bus_burst;
+
+wire bus_wait_out;
+assign bus_ctrl_out = {3'b000, //not used
+                       3'b000, //not used (burst length)
+                       1'b0,   //not used (we)
+                       bus_wait_out };
 
 //Local reset for counters
 reg reset;
@@ -75,11 +87,11 @@ count_reg b_counter(.count_load(0),
                     .load(DEASSERT));
 reg[2:0] burst_length;
 always@(*) begin
-    case (bburst) 
-        2'b00: burst_length = 1;
-        2'b01: burst_length = 2;
-        2'b10: burst_length = 4;
-        2'b11: burst_length = 8;
+    case (bus_burst) 
+        3'b000: burst_length = 1;
+        3'b001: burst_length = 2;
+        3'b010: burst_length = 4;
+        3'b011: burst_length = 8;
     endcase
 end
 assign burst_count_geq = (burst_counter >= burst_length - 1) ? ASSERT : DEASSERT;
@@ -91,10 +103,11 @@ assign mclk = (mclk_en == ASSERT)? clk50MHz : DEASSERT;
 //Wait output
 //TODO this doesn't need to be like this
 reg bwait_en;
-assign bwait = (bwait_en == ASSERT)? ASSERT : DEASSERT;
+assign bus_wait_out = (bwait_en == ASSERT)? ASSERT : DEASSERT;
 
 //Pass addr bus straight through
-assign maddr = baddr;
+//Memory device will only look at this when ADV is asserted
+assign maddr = bus_data_in;
                        
 //These aren't used
 assign mub_L = DEASSERT_L;
@@ -103,7 +116,8 @@ assign mlb_L = DEASSERT_L;
 reg[3:0] currentState;
 reg[3:0] nextState;
 
-assign moe_L = (cycle_count_geq & currentState == STATE_READ_WAIT)?
+assign moe_L = (cycle_count_geq & currentState == STATE_READ_WAIT || 
+                currentState == STATE_READ_DATA)?
                 ASSERT_L : DEASSERT_L;
 
 initial begin
@@ -119,8 +133,8 @@ end
 always@(*) begin
     case (currentState)
         STATE_IDLE: begin
-            if (benable == ASSERT) begin
-                if (bwe == ASSERT) begin
+            if (bus_ack == ASSERT) begin
+                if (bus_we == ASSERT) begin
                     nextState <= STATE_WRITE_WAIT;
                 end
                 else begin
@@ -168,7 +182,7 @@ always@(*) begin
             end
         end
         STATE_FINISH: begin
-            if (benable) begin
+            if (bus_ack) begin
                 nextState <= STATE_FINISH;
             end
             else begin
@@ -183,10 +197,11 @@ always@(*) begin
     case (currentState) 
         STATE_IDLE: begin
             //Outputs
-            mwe_L <= ~bwe;
-            if (benable == ASSERT) begin
+            mwe_L <= ~bus_we;
+            if (bus_ack == ASSERT) begin
                 madv_L <= ASSERT_L;
                 mce_L <= ASSERT_L;
+                bus_burst <= bus_ctrl_in[4:2];
             end
             else begin
                 madv_L <= DEASSERT_L;
@@ -206,7 +221,12 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-            bwait_en <= ASSERT;
+            if (cycle_counter <= RW_LATENCY_CYCLES - 2) begin
+                bwait_en <= ASSERT;
+            end
+            else begin
+                bwait_en <= DEASSERT;
+            end
             mclk_en <= ASSERT;
             
             //Local signals
@@ -232,7 +252,12 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= DEASSERT_L;
             mce_L <= ASSERT_L;
-            bwait_en <= ASSERT;
+            if (cycle_counter <= RW_LATENCY_CYCLES - 2) begin
+                bwait_en <= ASSERT;
+            end
+            else begin
+                bwait_en <= DEASSERT;
+            end
             mclk_en <= ASSERT;
             
             //Local signals
