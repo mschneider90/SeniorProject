@@ -199,8 +199,6 @@ always@(*) begin
         STATE_IDLE: begin
             busControl <= MASTER;
             ctrlControl <= MASTER;
-            
-            // Control signals
             addr_mux_sel <= ADDR;
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
@@ -281,11 +279,25 @@ always@(*) begin
             end
             ctrlControl <= SLAVE;
 
+            addr_mux_sel <= DATA;
             resetSlaveDevice <= 1;
             pri_en <= 1;
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 1;
+        end
+        default: begin //shouldn't happen
+            busControl <= MASTER;
+            ctrlControl <= MASTER;
+            addr_mux_sel <= ADDR;
+            writeSlaveDevice <= 0;
+            resetSlaveDevice <= 0;
+            ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 1;
+            sel_current <= 1;
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 0;
         end
     endcase
 end
