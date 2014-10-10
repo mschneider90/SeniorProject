@@ -1,4 +1,6 @@
 NET "clk50MHz" LOC = "B8";
+# Timing constraing for clock @ 50MHz
+NET "clk50MHz" PERIOD = 20;
 
 //Micron SRAM control signals
 NET "moe_L" LOC = "T2";

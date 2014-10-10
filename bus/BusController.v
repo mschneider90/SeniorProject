@@ -24,27 +24,64 @@ module BusController #(parameter NUM_DEVICES = 8,
                        input  [BUS_WIDTH-1:0] bus_in_6,
                        input  [BUS_WIDTH-1:0] bus_in_7,                       
                        output [BUS_WIDTH-1:0] bus_out);
+                       
+// Bus Control signals are defined as:
+// Wait: ctrl[0]
+// WE  : ctrl[1]
+// Burst: ctrl[4:2]
+// Reserved: ctrl[7:5]
+wire we;
+assign we = ctrl_out[1];
+wire [2:0] burst;
+assign burst = ctrl_out[4:2];
 
 // Stores the slave device
 reg writeSlaveDevice;
 reg resetSlaveDevice;
 wire [NUM_DEVICES-1:0] slaveDeviceEn;
-d_reg slaveDevice(.clk(clk),
+wire [NUM_DEVICES-1:0] device_en;
+d_reg #(.WIDTH(NUM_DEVICES))slaveDevice(.clk(clk),
                   .en(writeSlaveDevice),
                   .reset(resetSlaveDevice),
                   .d(device_en),
                   .q(slaveDeviceEn));
                   
 // Stores whether or not the transfer is a write
-reg isWriteTransfer;
+reg writeWriteTransfer;
+wire isWriteTransfer;
+d_reg #(.WIDTH(1)) isWriteTransferReg
+                 (.clk(clk),
+                  .en(writeWriteTransfer),
+                  .reset(0),
+                  .d(we),
+                  .q(isWriteTransfer));
+
+
 // Stores the burst length
-reg [2:0] burstLength;
+wire [2:0] burstLength;
+reg writeBurstLength;
+d_reg #(.WIDTH(3)) burstLengthReg
+                 (.clk(clk),
+                  .en(writeBurstLength),
+                  .reset(0),
+                  .d(burst),
+                  .q(burstLength));
                        
 // In the case of multiple REQs at the same time, this chooses one based on 
 // a simple priority
 wire [NUM_DEVICES-1:0] pri_out;
-reg [NUM_DEVICES-1:0] initiatingDevice;
-PriorityGen pri(.pri_in(req), .clk(clk), .pri_out(pri_out));
+reg pri_en;
+PriorityGen pri(.pri_in(req), .clk(clk), .en(pri_en), .pri_out(pri_out));
+
+// Captures the master that initiated the transfer
+reg writeInitiatingDevice;
+wire [NUM_DEVICES-1:0] initiatingDevice;
+d_reg #(.WIDTH(NUM_DEVICES)) initiatingDeviceReg 
+       (.clk(clk),
+        .en(writeInitiatingDevice),
+        .reset(0),
+        .d(pri_out),
+        .q(initiatingDevice));
      
 // There are two possible devices that need to control the bus
 //   a. The master which initiated the transfer
@@ -94,6 +131,28 @@ BusMux #(.D_WIDTH(CTRL_WIDTH)) bus_ctrl_mux
                  .in_7(ctrl_in_7),
                  .sel(ack),
                  .out(ctrl_mux_out));
+                 
+// Data on the bus can either be an address or data. If it's an address, we need
+// it to go through the BusAddressTranslator. If not, it's sent straight through.
+wire [BUS_WIDTH-1:0] phys_addr;
+wire [BUS_WIDTH-1:0] addr_mux_out;
+reg addr_mux_sel;    
+mux21 addr_mux (.in_a(phys_addr),
+                .in_b(bus_mux_out),
+                .sel(addr_mux_sel),
+                .out(addr_mux_out));
+
+// Holds the address for one cycle longer so that the slave can see it
+reg[BUS_WIDTH-1:0] previousData;
+reg sel_current;
+always@(posedge clk) begin
+    previousData <= bus_out;
+end
+mux21 #(.D_WIDTH(BUS_WIDTH)) final_bus_mux
+       (.in_a(previousData),
+        .in_b(addr_mux_out),
+        .sel(sel_current),
+        .out(bus_out));
  
 // Used to assert "WAIT" and "WE" (maybe) while the slave device is ACKed 
 parameter FORCE_WAIT = 1;
@@ -104,36 +163,16 @@ mux21 #(.D_WIDTH(CTRL_WIDTH)) ctrl_out_mux
         .in_b({3'b000, burstLength, isWriteTransfer, 1'b1}),
         .sel(ctrlOutMuxSel),
         .out(ctrl_out));
-    
-// Data on the bus can either be an address or data. If it's an address, we need
-// it to go through the BusAddressTranslator. If not, it's sent straight through.
-reg addr_mux_sel;    
-mux21 addr_mux (.in_a(phys_addr),
-                .in_b(bus_mux_out),
-                .sel(addr_mux_sel),
-                .out(bus_out));
-
+   
 parameter ADDR = 0;
 parameter DATA = 1;
 
 // Translates addresses from the unified virtual address space to each device's
 // physical address space
-wire [BUS_WIDTH-1:0] phys_addr;
-wire [NUM_DEVICES-1:0] device_en;
 BusAddressTranslator bat(.virtual_addr(bus_mux_out), 
                          .phys_addr(phys_addr),
                          .device_en(device_en));
-
-// Bus Control signals are defined as:
-// Wait: ctrl[0]
-// WE  : ctrl[1]
-// Burst: ctrl[4:2]
-// Reserved: ctrl[7:5]
-wire we;
-assign we = ctrl_out[1];
-wire [2:0] burst;
-assign burst = ctrl_out[4:2];
-                                      
+                         
 // States                  
 reg [2:0] currentState;
 reg [2:0] nextState;
@@ -158,63 +197,110 @@ end
 always@(*) begin
     case (currentState)
         STATE_IDLE: begin
-            // Reg transfers
             busControl <= MASTER;
             ctrlControl <= MASTER;
-            isWriteTransfer <= 0;
-            
-            // Control signals
             addr_mux_sel <= ADDR;
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 1;
+            sel_current <= 1;
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 0;
         end
         STATE_ACK: begin
-            // Reg transfers
-            initiatingDevice <= pri_out;
-            
-            // Control signals
+            busControl <= MASTER;
+            ctrlControl <= MASTER;
             addr_mux_sel <= ADDR;
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 0;
+            sel_current <= 1;
+            writeInitiatingDevice <= 1;
+            writeBurstLength <= 1;
+            writeWriteTransfer <= 1;
         end
         STATE_ADDR: begin
-            // Reg transfers
-            isWriteTransfer <= we;
-            burstLength <= burst;
+            //isWriteTransfer <= we;
             
-            // Control signals
+            busControl <= MASTER;
+            ctrlControl <= MASTER;
             addr_mux_sel <= ADDR;
             writeSlaveDevice <= 1;
             resetSlaveDevice <= 0;
             ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 0;
+            sel_current <= 1;
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 0;
         end
         STATE_ACK_SLAVE: begin
-            // Control signals
+            busControl <= MASTER;
+            ctrlControl <= SLAVE;
             addr_mux_sel <= DATA;
             writeSlaveDevice <= 0;
             resetSlaveDevice <= 0;
-            ctrlControl <= SLAVE;
             ctrlOutMuxSel <= FORCE_WAIT;
+            pri_en <= 0;
+            sel_current <= 0; // hold address for slave device to see
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 0;
         end
         STATE_BUSY: begin
-            // Control signals
-            addr_mux_sel <= DATA;
-            writeSlaveDevice <= 0;
-            resetSlaveDevice <= 0;
-            ctrlControl <= SLAVE;
-            ctrlOutMuxSel <= ORIGINAL_CTRL;
-            
             if (isWriteTransfer) begin
                 busControl <= MASTER;
             end
             else begin 
                 busControl <= SLAVE;
             end
+            ctrlControl <= SLAVE;
+            
+            addr_mux_sel <= DATA;
+            writeSlaveDevice <= 0;
+            resetSlaveDevice <= 0;
+            ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 0;
+            sel_current <= 1;
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 0;
+
         end
         STATE_FINISH: begin
+            if (isWriteTransfer) begin
+                busControl <= MASTER;
+            end
+            else begin 
+                busControl <= SLAVE;
+            end
+            ctrlControl <= SLAVE;
+
+            addr_mux_sel <= DATA;
             resetSlaveDevice <= 1;
+            writeSlaveDevice <= 0;
+            sel_current <= 1;
+            ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 1;
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 1;
+        end
+        default: begin //shouldn't happen
+            busControl <= MASTER;
+            ctrlControl <= MASTER;
+            addr_mux_sel <= ADDR;
+            writeSlaveDevice <= 0;
+            resetSlaveDevice <= 0;
+            ctrlOutMuxSel <= ORIGINAL_CTRL;
+            pri_en <= 1;
+            sel_current <= 1;
+            writeInitiatingDevice <= 0;
+            writeBurstLength <= 0;
+            writeWriteTransfer <= 0;
         end
     endcase
 end
@@ -252,6 +338,9 @@ always@(*) begin
             end
         end
         STATE_FINISH: begin
+            nextState <= STATE_IDLE;
+        end
+        default: begin
             nextState <= STATE_IDLE;
         end
     endcase

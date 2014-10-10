@@ -13,7 +13,7 @@ module micron_controller #(parameter A_WIDTH = 24,
                            output [BUS_WIDTH-1:0] bus_data_out,
                            input bus_ack,
                            inout  [D_WIDTH-1:0] mem_data,
-                           output[A_WIDTH-1:0] maddr,
+                           output [A_WIDTH-1:0] maddr,
                            output moe_L,  //output enable
                            output reg mwe_L,  //write enable
                            output reg madv_L, //address valid
@@ -38,6 +38,9 @@ parameter STATE_WRITE_WAIT = 3;
 parameter STATE_WRITE_DATA = 4;
 parameter STATE_FINISH = 5;
 
+reg[3:0] currentState;
+reg[3:0] nextState;
+
 //Unidirectional bus to tristate bus conversion
 assign mem_data = (moe_L == ASSERT_L)? 'bz : bus_data_in;
 assign bus_data_out = mem_data;
@@ -50,8 +53,6 @@ parameter RW_LATENCY_CYCLES = 3;
 //Make the control signals more readable
 wire bus_we;
 assign bus_we = bus_ctrl_in[1];
-
-reg [2:0] bus_burst;
 
 wire bus_wait_out;
 assign bus_ctrl_out = {3'b000, //not used
@@ -75,6 +76,15 @@ count_reg c_counter(.count_load(0),
 //Zero indexed so subtract 1
 assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEASSERT;
 
+// Stores the burst length
+wire [2:0] bus_burst;
+d_reg #(.WIDTH(3)) burstReg
+       (.clk(clk50MHz),
+        .reset(0),
+        .en(bus_ack == ASSERT && currentState == STATE_IDLE),
+        .d(bus_ctrl_in[4:2]),
+        .q(bus_burst));
+
 //Counter for burst length - support length of up to 8
 reg burst_count_en;
 wire burst_count_geq;
@@ -92,9 +102,18 @@ always@(*) begin
         3'b001: burst_length = 2;
         3'b010: burst_length = 4;
         3'b011: burst_length = 8;
+        default: burst_length = 1;
     endcase
 end
 assign burst_count_geq = (burst_counter >= burst_length - 1) ? ASSERT : DEASSERT;
+        
+// Stores the starting memory address
+d_reg #(.WIDTH(A_WIDTH)) maddrReg
+       (.clk(clk50MHz),
+        .reset(0),
+        .en(bus_ack == ASSERT && currentState == STATE_IDLE),
+        .d(bus_data_in),
+        .q(maddr));
 
 //Generate memory clock
 reg mclk_en;
@@ -104,17 +123,10 @@ assign mclk = (mclk_en == ASSERT)? clk50MHz : DEASSERT;
 //TODO this doesn't need to be like this
 reg bwait_en;
 assign bus_wait_out = (bwait_en == ASSERT)? ASSERT : DEASSERT;
-
-//Pass addr bus straight through
-//Memory device will only look at this when ADV is asserted
-assign maddr = bus_data_in;
                        
 //These aren't used
 assign mub_L = DEASSERT_L;
 assign mlb_L = DEASSERT_L;
-
-reg[3:0] currentState;
-reg[3:0] nextState;
 
 assign moe_L = (cycle_count_geq & currentState == STATE_READ_WAIT || 
                 currentState == STATE_READ_DATA)?
@@ -147,12 +159,10 @@ always@(*) begin
         end
         STATE_READ_WAIT: begin
             if (cycle_count_geq) begin
-                if (burst_length == 1) begin
-                    nextState <= STATE_FINISH;
-                end
-                else begin
-                    nextState <= STATE_READ_DATA;
-                end
+                nextState <= STATE_READ_DATA;
+            end
+            else begin
+                nextState <= STATE_READ_WAIT;
             end
         end
         STATE_READ_DATA: begin
@@ -165,13 +175,11 @@ always@(*) begin
         end
         STATE_WRITE_WAIT: begin
             if (cycle_count_geq) begin
-                if (burst_length == 1) begin
-                    nextState <= STATE_FINISH;
-                end
-                else begin
-                    nextState <= STATE_WRITE_DATA;
-                end
-             end
+                nextState <= STATE_WRITE_DATA;
+            end
+            else begin
+                nextState <= STATE_WRITE_WAIT;
+            end
         end
         STATE_WRITE_DATA: begin
             if (burst_count_geq) begin
@@ -189,6 +197,9 @@ always@(*) begin
                 nextState <= STATE_IDLE;
             end
         end
+        default: begin
+            nextState <= STATE_IDLE;
+        end
     endcase
 end
 
@@ -198,10 +209,9 @@ always@(*) begin
         STATE_IDLE: begin
             //Outputs
             mwe_L <= ~bus_we;
-            if (bus_ack == ASSERT) begin
+            if (bus_ack == ASSERT) begin //Address and control signals valid
                 madv_L <= ASSERT_L;
                 mce_L <= ASSERT_L;
-                bus_burst <= bus_ctrl_in[4:2];
             end
             else begin
                 madv_L <= DEASSERT_L;
@@ -285,6 +295,19 @@ always@(*) begin
             mce_L <= DEASSERT_L;
             bwait_en <= DEASSERT;
             mclk_en <= ASSERT;
+            
+            //Local signals
+            reset <= ASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
+        end
+        default: begin
+            //Outputs
+            mwe_L <= DEASSERT_L;
+            madv_L <= DEASSERT_L;
+            mce_L <= DEASSERT_L;
+            bwait_en <= DEASSERT;
+            mclk_en <= DEASSERT;
             
             //Local signals
             reset <= ASSERT;

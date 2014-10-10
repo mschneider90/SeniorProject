@@ -2,8 +2,8 @@
 .globl main 
 .text  
 main:  
-      # addi $sp, $0, 48          not for SPIM 
   addi $a0, $0, 4   # set arg 
+  addi $sp, $sp, 8  # EDIT FOR TESTING: keep stack in range of test memory device
   jal factorial     # compute the factorial  
   add $s0, $v0, $0  # move result into $s0 
   j end  

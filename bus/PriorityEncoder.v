@@ -2,13 +2,20 @@
 
 module PriorityGen (input [7:0] pri_in,
                     input clk,
+                    input en,
                     output reg [7:0] pri_out); 
+                    
+reg [7:0] pri;
                              
 always@(posedge clk) begin
-    pri_out <= pri;
+    if (en) begin
+        pri_out <= pri;
+    end
+    else begin
+        pri_out <= pri_out;
+    end
 end
 
-reg [7:0] pri;
 always@(*) begin
     if (pri_in[0] == 1'b1) begin
         pri <= 8'b00000001;

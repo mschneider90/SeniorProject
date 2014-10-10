@@ -2,7 +2,8 @@
 
 module System #(parameter A_WIDTH = 32,
                 parameter I_WIDTH = 32,
-                parameter D_WIDTH = 16)
+                parameter D_WIDTH = 32,
+                parameter C_WIDTH = 8)
              (input clk50MHz,
               input reset,
               input [4:0] debug_ra4,
@@ -35,27 +36,21 @@ parameter CPU_BUS_ID = 7;
 wire [I_WIDTH-1:0] pc; //TODO how wide should this be?
 wire [I_WIDTH-1:0] instr;
 
-wire bus_wait;
 wire [NUM_DEVICES-1:0] bus_ack;
 wire [NUM_DEVICES-1:0] bus_req;
-wire bus_write;
-wire [1:0] bus_burst_length;
-wire [A_WIDTH-1:0] bus_addr;
-wire [NUM_DEVICES-1:0] device_en;
-wire [A_WIDTH-1:0] bus_phys_addr;
+assign bus_req[6:0] = 0;
 wire [D_WIDTH-1:0] bus_data;
-wire [7:0] bus_ctrl_sigs;
+wire [C_WIDTH-1:0] bus_ctrl;
 
-wire[D_WIDTH-1:0] cpu_data_out;
+wire[15:0] cpu_data_out;
+wire[C_WIDTH-1:0] cpu_ctrl_out;
 mips cpu(.clk(clk50MHz),
          .reset(reset),
          .pc(pc), 
          .instr(instr),
-         .bus_wait(bus_wait),
          .bus_ack(bus_ack[CPU_BUS_ID]),
-         .bus_write(bus_write),
-         .bus_burst_length(bus_burst_length), //2 bits
-         .bus_addr(bus_addr), //32 bits
+         .bus_ctrl_in(bus_ctrl),
+         .bus_ctrl_out(cpu_ctrl_out),
          .bus_req(bus_req[CPU_BUS_ID]),
          .bus_data_in(bus_data), //16 bits
          .bus_data_out(cpu_data_out),
@@ -66,12 +61,11 @@ imem instr_mem(.addr(pc[7:2]),
                .data_r(instr));
 
 wire [D_WIDTH-1:0] sram_data_out;
+wire [C_WIDTH-1:0] sram_ctrl_out;
 micron_controller sram_ctrl(.clk50MHz(clk50MHz),
-                           .baddr(bus_phys_addr), //32 bits
-                           .bburst(bus_burst_length), //2 bits
-                           .bwe(bus_write),
-                           .benable(device_en[RAM_BUS_ID]),
-                           .bwait(bus_wait),
+                           .bus_ctrl_in(bus_ctrl),
+                           .bus_ctrl_out(sram_ctrl_out),
+                           .bus_ack(bus_ack[RAM_BUS_ID]),
                            .bus_data_in(bus_data),
                            .bus_data_out(sram_data_out),
                            .mem_data(mem_data),
@@ -86,35 +80,14 @@ micron_controller sram_ctrl(.clk50MHz(clk50MHz),
                            .mcre(mcre),
                            .mwait(mwait));
 
-BusController bus_ctrl(.req(bus_req),
+BusController bus_ctrller(.req(bus_req), 
                        .clk(clk50MHz),
                        .ack(bus_ack),
-                       .virtual_addr(bus_addr),
-                       .phys_addr(bus_phys_addr),
-                       .device_en(device_en)); 
-                       
-BusMux #(D_WIDTH)  bus_data_mux 
-                   (.in_0(sram_data_out),
-                    .in_1(0),
-                    .in_2(0),
-                    .in_3(0),
-                    .in_4(0),
-                    .in_5(0),
-                    .in_6(0),
-                    .in_7(cpu_data_out),
-                    .sel(bus_ack),
-                    .out(bus_data));
-                    
-/*BusMux bus_ctrl_mux #(8)
-                   (.in_0(), //SRAM
-                    .in_1(0),
-                    .in_2(0),
-                    .in_3(0),
-                    .in_4(0),
-                    .in_5(0),
-                    .in_6(0),
-                    .in_7(), //CPU
-                    .sel(bus_ack),
-                    .out(bus_ctrl_sigs)); */
+                       .bus_in_0(sram_data_out),
+                       .ctrl_in_0(sram_ctrl_out),
+                       .bus_in_7({16'b0, cpu_data_out}),
+                       .ctrl_in_7(cpu_ctrl_out),
+                       .bus_out(bus_data),
+                       .ctrl_out(bus_ctrl)); 
 
 endmodule
