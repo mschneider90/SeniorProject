@@ -62,6 +62,9 @@ always@(*) begin
         STATE_FINISH: begin // One last state to allow the bus controller to catch up
             nextState <= STATE_IDLE;
         end
+        default: begin
+            nextState <= STATE_IDLE;
+        end
     endcase
 end
 
@@ -96,6 +99,11 @@ always@(*) begin
             bus_req <= 0;
             pc_stall_en <= 0;
             data_out <= 1;
+        end
+        default: begin
+            bus_req <= 0;
+            pc_stall_en <= 0;
+            data_out <= 0;
         end
     endcase
 end
