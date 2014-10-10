@@ -68,26 +68,11 @@ module sq_channel( 	note_in,
 	//testing specific assignments: only for testing a configuration. 
 	assign vibra_speed = 3;
 	assign vibra_depth = 3;
-/*
-	.note_in		(note_in),  //6 bits
-	.note_clk	(note_clk), //1 bit
-	.note_out	(vibra_out), //6 bits
-	.speed		(vibra_speed),  //speed: two bits FXA
-	.depth		(vibra_depth),   //depth: two bits FXB
-	.offset_mul	(vibra_offset_mul), //3 bits
-	.offset_dir	(vibra_offset_dir), //1 bit
-	.en			(vibra_en), //1 bit
-	.clk50mhz	(clk50mhz) //1 bit
-);*/
-
-
-
 
 
 initial begin
 	porta_en <= 0;
 	vibra_en <= 0;
-	
 end
 	 
 always@(posedge clk50mhz)	 	 
@@ -182,5 +167,23 @@ square_gen sqgen1 (
 	.square_out	(wave_out),
 	.en			(channel_en)
 );
+
+
+/*
+//Envelope Controller
+envelope_control(
+		.attack 		(),
+		.decay 		(),
+		.length		(),
+		.enable_out	(sq_en),
+		.rst			(channel_en),
+		.note_clk 	(),
+		.square_in	(wave_out),
+		.square_out (
+		);
+*/
+
+
+		
 
 endmodule

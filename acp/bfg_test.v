@@ -21,8 +21,6 @@
 module bfg_test(
     );
 
-
-
 reg clk50mhz;
 reg [5:0] note_in;
 reg [2:0] offset_mult;

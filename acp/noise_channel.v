@@ -180,7 +180,7 @@ begin
 	if (en) 
 	begin
 		count <= count + 1;
-		noise_out <= lsfr_data[0] << 3; //lsfr data generates random bits every bfg clock cycle
+		noise_out <= {lsfr_data[0], lsfr_data[0], lsfr_data[0], lsfr_data[0]}; //lsfr data generates random bits every bfg clock cycle
 	end
 	else
 	begin

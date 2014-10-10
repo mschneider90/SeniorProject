@@ -8,7 +8,7 @@ module FX_porta(
 	note_in,
 	note_clk,
 	note_out,
-	speed_sel,
+	speed_sel, //
 	en,
 	clk50mhz
    );
