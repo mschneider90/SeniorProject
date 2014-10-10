@@ -57,7 +57,7 @@ count_reg #(.D_WIDTH(2)) wait_counter
                        .load(wait_load),
                        .count_load(0));
 
-reg[D_WIDTH-1:0] mem[63:0];
+reg[D_WIDTH-1:0] mem[65535:0];
 reg[D_WIDTH-1:0] data_reg;
 
 reg data_out_en;
@@ -71,7 +71,7 @@ initial begin
     currentState <= STATE_IDLE;
     nextState <= STATE_IDLE;
     data_reg <= 0;
-    for (i = 0; i<64; i = i + 1) begin
+    for (i = 0; i<65536; i = i + 1) begin
         mem[i] <= 0;
     end
 end
