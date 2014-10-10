@@ -39,8 +39,7 @@ module mips #(parameter dwidth = 32,
 
   assign bus_wait = bus_ctrl_in[0];
   
-  //Delay bus data by three clock cycles to correctly interface with bus
-  //TODO figure out if this still makes sense
+  //Delay bus data by one clock cycle to correctly interface with bus
   wire [dwidth-1:0] bus_data_delayed;
   wire [dwidth-1:0] bus_data_delayed_2;
   d_reg #(dwidth) read_data_delay_1(.clk(clk),
@@ -48,12 +47,6 @@ module mips #(parameter dwidth = 32,
                                   .en(1),
                                   .d(bus_data_in),
                                   .q(readdata));
-
-  /*d_reg #(dwidth) read_data_delay_2(.clk(clk),
-                                  .reset(reset),
-                                  .en(1),
-                                  .d(bus_data_delayed),
-                                  .q(readdata)); */
  
   cpuBusInterface bus_if(.clk(clk),
                          .memop(memop),
