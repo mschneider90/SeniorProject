@@ -26,25 +26,11 @@ reg [4:0] atktime; //atktime is the proportional part of attack. multiply by 8 a
 reg [4:0] dectime;
 reg [15:0] lentime;
 
-reg atkctr;
-reg decctr;
-reg lenctr;
+//reg atkctr;
+//reg decctr;
+reg [15:0] lenctr;
 
-reg atkstate;
-
-//reg totaltime;
-
-//code to attempt if timing is bad with rst/
-//always@(posedge clk)
-/*
-begin
-	if (rst)
-	begin
-		lenrst <= 1; ?? this probabaly wouldn't work
-	end
-
-end
-*/
+//reg atkstate;
 
 always @ (posedge note_clk or posedge rst)
 begin
@@ -84,7 +70,6 @@ begin
 		5: lentime <= 64;
 		6: lentime <= 128;
 		7: lentime <= 256;
-		8: lentime <= 512; 
 		default: lentime <=  32;
 	endcase
 	
@@ -101,20 +86,31 @@ begin
 			env_vol <= 7; 
 		end
 	   else 
-		begin
-		if (lenctr % atktime == 0)
-			begin
-			   if( env_vol < 7) 
-				begin
-					env_vol <= env_vol + 1;
+		begin													//atktime << 3 instead of atktime * 8; this is atktime multiplied by the number of steps
+		if (lenctr % atktime == 0 && lenctr <= (atktime << 3)  ) //lenctr <= atktime * 8; this sets the first step of the envelope  
+			begin                                  //it also prevents the atk function from adding if the lenctr is greater than
+			   if( env_vol < 7)                    // the expected attack period.
+				begin											// if total length is less than the total expected attack time, 
+					env_vol <= env_vol + 1;          //there should be no decay. 
 				end
 			end
 		end
 	 //end code for attack time 
-	 
-	 
-	 
-	end	
+	if ( lenctr >= atktime << 3 && dectime != 0 ) //if the note position is greater than the time it takes to reach max volume
+	begin									 //then we can start the decay part. otherwise, decay is cut off. 
+		if ( lentime - lenctr <= (dectime << 3))			//decay starts just before the note ends.  (decaytime before the note ends)
+			begin													   //what if the decay time starts before the attk ends? 
+				if (lentime % dectime == 0)
+				begin
+					if ( env_vol > 0 )
+					begin
+						env_vol <= env_vol - 1;
+					end 
+				end
+			end
+	end
+			
+	end	//end lenctr conditional blocks. 
 	else
 	begin
 		enable_out <= 0; //disable the channel when the length goes to 0. 
@@ -143,36 +139,10 @@ begin
 	end
 	//end volume control. 
 	
-	
+
 	// we need to have an  "envelope period" in order to apply the envelope. 
 	// it is possible to derive this from the length. 
-	
-	//also need to determine how the envelope will be applied on only the top part of the square wave.
-	//if sq_in == 4'b0000 then sq_out <= 4'b0000 else sq_out = envelope value.  
-	
-	
-	/* this code won't work. we need to trigger the attack at a time right after the note starts 
-	if (atktime == 0) 
-	begin
-		square_out <= square_in;	
-	endcase
-	end
-	else if (atktime > 0)
-	begin 
-	
-	end */ 
-	/*
-	else if (atktime == 2)
-	begin
-	
-	
-	end
-	else if (atktime == 3)
-	begin
-	
-	
-	end
-	*/
+
 
 
 
