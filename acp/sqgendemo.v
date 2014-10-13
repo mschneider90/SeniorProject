@@ -81,6 +81,14 @@ integer note_clk_count;
 reg note_clk;
 
 
+//need to add: 10/5/2014
+//envelope controller
+//length counter with EN mux to route signals from two different places. 
+/////acp only really needs r/w access on 1 bit: 4 "2-1" 1-bit muxes?
+/////how? 
+//combining the signals into 16 bit registers as stated in ref. doc. 
+//separate out wave chan. from the rest of the sound channels for modularity. 
+
 sq_channel sq_ch1(
 	.note_in 	(note_in),
 	.note_clk	(note_clk),
@@ -90,7 +98,7 @@ sq_channel sq_ch1(
 	.fx_optB		(FX1_optB),
 	.clk50mhz	(clk),
 	.wave_out	(sq1)
-    );
+ );
 	 
 	 /*
 sq_channel sq_ch2(
@@ -172,9 +180,22 @@ begin
 	FX1_optA <= oct[1:0];
 	FX1_optB <= oct[3:2];
 	
-	//this routine creates generates a note clock -- timing for the actual notes. This determines the tempo. 
+	//this routine creates generates a note clock -- sub-note timing for FX. Actual length: 1/256th note in 120bpm. (390625 clocks). Thus, 
+	//2 note clocks: 128th note
+	//4 note clocks: 64th note
+	//8 note clocks: 32nd note
+	//16 note clocks: 16th note
+	//32 note clocks: 8th note
+	//64 note clocks: 1/4 note
+	//128 note clocks: 1/2 note
+	//256 note clocks: whole note
+	// however, distinction should be made with the posedge. if using a posedge triggered note clock, 
+	//then half the first number (number of note clocks) to obtain the desired note length. 
+	// should note clk change based on tempo? 
+	// nah. doesn't really matter that much (unless tempo-dependent things rely on it)
+	//note length: if based on note_clk, then note length will not change when tempo changes. 
 	note_clk_count <= note_clk_count + 1;
-	if (note_clk_count >= 318750) //implementation value: 3187500 OR//796875 //testbench value: 318750
+	if (note_clk_count >= 390625) //implementation value: 390625 //////////////3187500 OR//796875 //testbench value: 318750. NO idea where these numbers came from. Close: 1/16th (387500) and 1/64th (718750)  
 	begin
 		note_clk_count <= 0;
 		note_clk <= ~note_clk;
@@ -182,7 +203,7 @@ begin
 
 
 	//the following two if blocks determine the timing of the states. 
-	if(oct[0]) //button 4 is being reassigned as an "RST COUNTER" button.
+	if(oct[0])
 	begin
 		SecondCtr <= 0;
 		StateCtr <= 0;
@@ -193,10 +214,8 @@ begin
 	SecondCtr <= SecondCtr + 1;
 	end
 
-
-
 	//this if  block sets a number of predetermined states for testing purposes. 
-	if (SecondCtr >= 6000000) //implementation value: 6,000,000 (about 1/8 s = 125bpm (0,4,8,12) to 50,000,000 //test value: 100,000 //this sets the time it takes for the state to transition
+	if (SecondCtr >= 6000000) //implementation value: 6,000,000 (125bpm (0,4,8,12) to 50,000,000 //test value: 100,000 //this sets the time it takes for the state to transition
 	begin
 		SECCTR <= ~SECCTR; //SECCTR blinks the led once per clock cycle. 
 		StateCtr <= StateCtr + 1;
