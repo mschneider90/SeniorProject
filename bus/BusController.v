@@ -311,6 +311,7 @@ always@(*) begin
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 0;
+            pri_reset <= 0;
         end
     endcase
 end

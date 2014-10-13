@@ -359,6 +359,20 @@ always@(*) begin
                     mce_L <= DEASSERT_L;
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
+                    
+                    //Local signals
+                    cycle_count_en <= DEASSERT;
+                    burst_count_en <= DEASSERT;
+                end
+                default: begin
+                    //Outputs
+                    mwe_L <= DEASSERT_L;
+                    madv_L <= DEASSERT_L;
+                    mce_L <= DEASSERT_L;
+                    bwait_en <= DEASSERT;
+                    mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;

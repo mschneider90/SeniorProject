@@ -65,7 +65,7 @@ always@(posedge clk) begin
     end
 end
 
-always@(*) begin
+always@(debug_sel, data[0], data[1], data[2], data[3]) begin
     debug_out <= data[debug_sel];
 end
 
@@ -136,6 +136,12 @@ always@(*) begin
             data_we <= 0;
             bus_data_sel <= 0;
         end
+        default: begin
+            req <= 0;
+            counter_en <= 0;
+            data_we <= 0;
+            bus_data_sel <= 0;
+        end
     endcase
 end
 
@@ -193,6 +199,7 @@ always@(*) begin
         STATE_FINISH: begin
             nextState <= STATE_IDLE;
         end
+        default: nextState <= STATE_IDLE;
     endcase
 end
 

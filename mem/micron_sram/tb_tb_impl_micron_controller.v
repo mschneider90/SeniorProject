@@ -48,19 +48,19 @@ initial begin
     sw_6 <= 1;
     #300
     sw_6 <= 0;
-    #200
+    #400
     sw_0 <= 1;
     sw_1 <= 0;
-    #10
+    #20
     sw_0 <= 0;
     sw_1 <= 1;
-    #10
+    #20
     sw_0 <= 1;
     sw_1 <= 1;
 end
 
 always begin
-    #5 clk50MHz = ~clk50MHz;
+    #10 clk50MHz = ~clk50MHz;
 end
 
 micron_sram #(.NUM_ELEMENTS(8)) ram (.clk(mclk),

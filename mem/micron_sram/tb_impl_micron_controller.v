@@ -13,7 +13,7 @@ module tb_impl_micron_controller(input clk50MHz,
                                  output mlb_L,
                                  output mce_L,
                                  output mcre,
-                                 output [22:0] maddr,
+                                 output [23:0] maddr,
                                  output [7:0] debug_out,
                                  inout [15:0] mdata
                                  );
