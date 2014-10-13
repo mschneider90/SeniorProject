@@ -71,7 +71,12 @@ d_reg #(.WIDTH(3)) burstLengthReg
 // a simple priority
 wire [NUM_DEVICES-1:0] pri_out;
 reg pri_en;
-PriorityGen pri(.pri_in(req), .clk(clk), .en(pri_en), .pri_out(pri_out));
+reg pri_reset;
+PriorityGen pri(.pri_in(req),
+                .clk(clk),
+                .en(pri_en),
+                .reset(pri_reset),
+                .pri_out(pri_out));
 
 // Captures the master that initiated the transfer
 reg writeInitiatingDevice;
@@ -208,6 +213,7 @@ always@(*) begin
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 0;
+            pri_reset <= 0;
         end
         STATE_ACK: begin
             busControl <= MASTER;
@@ -221,6 +227,7 @@ always@(*) begin
             writeInitiatingDevice <= 1;
             writeBurstLength <= 1;
             writeWriteTransfer <= 1;
+            pri_reset <= 0;
         end
         STATE_ADDR: begin
             //isWriteTransfer <= we;
@@ -236,6 +243,7 @@ always@(*) begin
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 0;
+            pri_reset <= 0;
         end
         STATE_ACK_SLAVE: begin
             busControl <= MASTER;
@@ -249,6 +257,7 @@ always@(*) begin
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 0;
+            pri_reset <= 0;
         end
         STATE_BUSY: begin
             if (isWriteTransfer) begin
@@ -268,7 +277,7 @@ always@(*) begin
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 0;
-
+            pri_reset <= 0;
         end
         STATE_FINISH: begin
             if (isWriteTransfer) begin
@@ -288,6 +297,7 @@ always@(*) begin
             writeInitiatingDevice <= 0;
             writeBurstLength <= 0;
             writeWriteTransfer <= 1;
+            pri_reset <= 1;
         end
         default: begin //shouldn't happen
             busControl <= MASTER;

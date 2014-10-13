@@ -3,124 +3,104 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="C:/Users/Michael/Documents/SeniorProject/mem/micron_sram/tb_micron_controller_isim_beh.wdb" id="1" type="auto">
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/mem/micron_sram/tb_tb_impl_micron_controller_isim_beh.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="glbl" />
-            <top_module name="tb_micron_controller" />
+            <top_module name="tb_tb_impl_micron_controller" />
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="26" />
-   <wvobject fp_name="/tb_micron_controller/bus" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus[31:0]</obj_property>
-      <obj_property name="ObjectShortName">bus[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/sramctrl/currentState" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
-      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/sramctrl/burst_counter" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">burst_counter[2:0]</obj_property>
-      <obj_property name="ObjectShortName">burst_counter[2:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ctrl" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ctrl[7:0]</obj_property>
-      <obj_property name="ObjectShortName">ctrl[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/req" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">req[7:0]</obj_property>
-      <obj_property name="ObjectShortName">req[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ack" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ack[7:0]</obj_property>
-      <obj_property name="ObjectShortName">ack[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/master_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">master_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">master_out[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/master_ctrl_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">master_ctrl_out[7:0]</obj_property>
-      <obj_property name="ObjectShortName">master_ctrl_out[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/slave_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">slave_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">slave_out[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/slave_ctrl_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">slave_ctrl_out[7:0]</obj_property>
-      <obj_property name="ObjectShortName">slave_ctrl_out[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/maddr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">maddr[19:0]</obj_property>
-      <obj_property name="ObjectShortName">maddr[19:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mdata" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">mdata[15:0]</obj_property>
-      <obj_property name="ObjectShortName">mdata[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ram/currentState" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
-      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/ram/currentAddr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">currentAddr[15:0]</obj_property>
-      <obj_property name="ObjectShortName">currentAddr[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/moe_L" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">moe_L</obj_property>
-      <obj_property name="ObjectShortName">moe_L</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mwe_L" type="logic" db_ref_id="1">
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mwe_L" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mwe_L</obj_property>
       <obj_property name="ObjectShortName">mwe_L</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/madv_L" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/moe_L" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">moe_L</obj_property>
+      <obj_property name="ObjectShortName">moe_L</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/madv_L" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">madv_L</obj_property>
       <obj_property name="ObjectShortName">madv_L</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mclk" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mclk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mclk</obj_property>
       <obj_property name="ObjectShortName">mclk</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mub_L" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mub_L" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mub_L</obj_property>
       <obj_property name="ObjectShortName">mub_L</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mlb_L" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mlb_L" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mlb_L</obj_property>
       <obj_property name="ObjectShortName">mlb_L</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mce_L" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mce_L" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mce_L</obj_property>
       <obj_property name="ObjectShortName">mce_L</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mcre" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mcre" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mcre</obj_property>
       <obj_property name="ObjectShortName">mcre</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/mem_wait" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/maddr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">maddr[23:0]</obj_property>
+      <obj_property name="ObjectShortName">maddr[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/debug_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">debug_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">debug_out[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mdata" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">mdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">mdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/mem_wait" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mem_wait</obj_property>
       <obj_property name="ObjectShortName">mem_wait</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/clk50MHz" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb_tb_impl_micron_controller/clk50MHz" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk50MHz</obj_property>
       <obj_property name="ObjectShortName">clk50MHz</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/BUS_WIDTH" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">BUS_WIDTH[31:0]</obj_property>
-      <obj_property name="ObjectShortName">BUS_WIDTH[31:0]</obj_property>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ram/mem[3]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[3,15:0]</obj_property>
+      <obj_property name="ObjectShortName">mem[3,15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_micron_controller/CTRL_WIDTH" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">CTRL_WIDTH[31:0]</obj_property>
-      <obj_property name="ObjectShortName">CTRL_WIDTH[31:0]</obj_property>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ctrl/master/ack" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ack</obj_property>
+      <obj_property name="ObjectShortName">ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ctrl/master/req" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">req</obj_property>
+      <obj_property name="ObjectShortName">req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ctrl/master/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="label">MASTERCS</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ctrl/sramctrl/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ram/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="label">MEMCS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_micron_controller/ctrl/controller/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
+      <obj_property name="label">BUSCS</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
 </wave_config>

@@ -1,5 +1,6 @@
 # See Nexys2 manual for pin assignments
 NET "clk50MHz" LOC = "B8";
+NET "clk50MHz" PERIOD = "20";
 
 NET "moe_L" LOC = "T2";
 NET "mwe_L" LOC = "N7";
@@ -26,14 +27,14 @@ NET "maddr<12>" LOC = "G5";
 NET "maddr<13>" LOC = "G4";
 NET "maddr<14>" LOC = "F2";
 NET "maddr<15>" LOC = "E1";
-#NET "baddr<16>" = "M5";
-#NET "baddr<17>" = "E2";
-#NET "baddr<18>" = "C2";
-#NET "baddr<19>" = "C1";
-#NET "baddr<20>" = "D2";
-#NET "baddr<21>" = "K3";
-#NET "baddr<22>" = "D1";
-#NET "baddr<23>" = "K6";
+NET "maddr<16>" LOC = "M5";
+NET "maddr<17>" LOC = "E2";
+NET "maddr<18>" LOC = "C2";
+NET "maddr<19>" LOC = "C1";
+NET "maddr<20>" LOC = "D2";
+NET "maddr<21>" LOC = "K3";
+NET "maddr<22>" LOC = "D1";
+NET "maddr<23>" LOC = "K6";
 
 #Data bus
 NET "mdata<0>" LOC = "L1";
@@ -63,5 +64,8 @@ NET "data_out<5>" LOC = "K15";
 NET "data_out<6>" LOC = "J15";
 NET "data_out<7>" LOC = "J14";
 
-#Button
-NET "button_1" LOC = "H13";
+#Switches
+NET "sw_7" LOC = "R17";
+NET "sw_6" LOC = "N17";
+NET "sw_1" LOC = "H18";
+NET "sw_0" LOC = "G18";
