@@ -3,7 +3,7 @@ module tb_test_slave #(parameter BUS_WIDTH = 32,
                     (input [BUS_WIDTH-1:0] bus_in,
                      input ack,
                      input clk,
-                     output reg [BUS_WIDTH-1:0] bus_out,
+                     output [BUS_WIDTH-1:0] bus_out,
                      input [CTRL_WIDTH-1:0] ctrl_in,
                      output [CTRL_WIDTH-1:0] ctrl_out);
                      
@@ -17,7 +17,7 @@ parameter STATE_WRITE_WAIT = 1;
 parameter STATE_READ_WAIT = 2;
 parameter STATE_READ_DATA = 3;
 parameter STATE_WRITE_DATA = 4;
-parameter STATE_IDLE = 5;
+parameter STATE_FINISH = 5;
 
 wire we;
 assign we = ctrl_in[1];
@@ -33,52 +33,87 @@ reg [3:0] counter;
 reg [3:0] latencyCounter;
 
 reg [31:0] data [7:0];
+reg data_we;
 
-integer i;
 initial begin
     currentState <= 0;
     nextState <= 0;
     counter <= 0;
     latencyCounter <= 0;
-    
-    for (i = 0; i < 8; i = i + 1) begin
-        data[i] = i;
-    end
 end
 
 always@(posedge clk) begin
     currentState <= nextState;
 end
 
+reg latency_counter_en;
+reg counter_en;
+
 //counters
+reg addr_write;
 always@(posedge clk) begin
     if (counter_en) begin
-        counter <= counter + 1;
+        if (addr_write) begin
+            counter <= bus_in;
+        end
+        else begin
+            counter <= counter + 1;
+        end
     end
+    else begin
+        counter <= counter;
+    end
+end
+
+always@(posedge clk) begin
     if (latency_counter_en) begin
         latencyCounter <= latencyCounter + 1;
+    end
+    else begin
+        latencyCounter <= latencyCounter;
+    end
+end
+
+reg burst_write;
+always@(posedge clk) begin
+    if (burst_write) begin
+        burst_length <= ctrl_in[4:2];
+    end
+    else begin
+        burst_length <= burst_length;
+    end
+end
+
+//Data R/W
+assign bus_out = data[counter];
+
+always@(posedge clk) begin
+    if (data_we) begin
+        data[counter] <= bus_in;
+    end
+    else begin
+        data[counter] <= data[counter];
     end
 end
 
 // Outputs
-reg latency_counter_en;
-reg counter_en;
 always@(*) begin
     case (currentState)
         STATE_WAIT_FOR_ACK: begin
-            if (ack) begin
-                counter <= bus_in; //starting address
-                burst_length <= ctrl_in[4:2];
-            end
+            addr_write <= 1;
+            burst_write <= 1;
             latency_counter_en <= 0;
-            counter_en <= 0;
+            counter_en <= 1;
             wait_out <= 0;
-            latencyCounter <= 0;
-            counter <= 0;
+            data_we <= 0;
         end
         STATE_READ_WAIT: begin
+            addr_write <= 0;
+            burst_write <= 0;
             latency_counter_en <= 1;
             counter_en <= 0;
+            data_we <= 0;
+            
             if (latencyCounter <= LATENCY - 2) begin
                 wait_out <= 1;
             end
@@ -87,8 +122,12 @@ always@(*) begin
             end
         end
         STATE_WRITE_WAIT: begin
+            addr_write <= 0;
+            burst_write <= 0;
             latency_counter_en <= 1;
             counter_en <= 0;
+            data_we <= 0;
+            
             if (latencyCounter <= LATENCY - 2) begin
                 wait_out <= 1;
             end
@@ -97,21 +136,36 @@ always@(*) begin
             end
         end
         STATE_READ_DATA: begin
+            addr_write <= 0;
+            burst_write <= 0;
             counter_en <= 1;
             latency_counter_en <= 0;
-            bus_out <= data[counter];
             wait_out <= 0;
+            data_we <= 0;
         end
         STATE_WRITE_DATA: begin
+            addr_write <= 0;
+            burst_write <= 0;
             counter_en <= 1;
             latency_counter_en <= 0;
-            data[counter] <= bus_in;
             wait_out <= 0;
+            data_we <= 1;
         end
-        STATE_IDLE: begin
+        STATE_FINISH: begin
+            addr_write <= 0;
+            burst_write <= 0;
             latency_counter_en <= 0;
             counter_en <= 0;
             wait_out <= 0;
+            data_we <= 0;
+        end
+        default: begin
+            addr_write <= 0;
+            burst_write <= 0;
+            latency_counter_en <= 0;
+            counter_en <= 0;
+            wait_out <= 0;
+            data_we <= 0;
         end
     endcase
 end
@@ -136,15 +190,21 @@ always@(*) begin
             if (latencyCounter == LATENCY - 1) begin
                 nextState <= STATE_READ_DATA;
             end
+            else begin
+                nextState <= STATE_READ_WAIT;
+            end
         end
         STATE_WRITE_WAIT: begin
             if (latencyCounter == LATENCY- 1) begin
                 nextState <= STATE_WRITE_DATA;
             end 
+            else begin
+                nextState <= STATE_WRITE_WAIT;
+            end
         end
         STATE_READ_DATA: begin
             if (counter == (1 << burst_length) - 1) begin
-                nextState <= STATE_IDLE;
+                nextState <= STATE_FINISH;
             end
             else begin
                 nextState <= STATE_READ_DATA;
@@ -152,14 +212,19 @@ always@(*) begin
         end
         STATE_WRITE_DATA: begin
             if (counter == (1 << burst_length) - 1) begin
-                nextState <= STATE_WAIT_FOR_ACK;
+                nextState <= STATE_FINISH;
             end
             else begin
                 nextState <= STATE_WRITE_DATA;
             end
         end
-        STATE_IDLE: begin
-            nextState <= STATE_WAIT_FOR_ACK;
+        STATE_FINISH: begin
+            if (ack) begin
+                nextState <= STATE_FINISH;
+            end
+            else begin
+                nextState <= STATE_WAIT_FOR_ACK;
+            end
         end
     endcase
 end
