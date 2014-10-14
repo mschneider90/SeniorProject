@@ -1,3 +1,10 @@
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+// OUT OF DATE
+// SEE tb_impl_test_master.v
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 module tb_test_master #(parameter BUS_WIDTH = 32,
                      parameter CTRL_WIDTH = 8,
                      parameter WRITE_TRANSFER = 1)
