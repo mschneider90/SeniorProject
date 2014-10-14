@@ -39,7 +39,6 @@ initial begin
     currentState <= 0;
     nextState <= 0;
     counter <= 0;
-    latencyCounter <= 0;
 end
 
 always@(posedge clk) begin
@@ -65,12 +64,18 @@ always@(posedge clk) begin
     end
 end
 
+reg latency_counter_reset;
 always@(posedge clk) begin
-    if (latency_counter_en) begin
-        latencyCounter <= latencyCounter + 1;
+    if (latency_counter_reset) begin
+        latencyCounter <= 0;
     end
     else begin
-        latencyCounter <= latencyCounter;
+        if (latency_counter_en) begin
+            latencyCounter <= latencyCounter + 1;
+        end
+        else begin
+            latencyCounter <= latencyCounter;
+        end
     end
 end
 
@@ -103,6 +108,7 @@ always@(*) begin
             addr_write <= 1;
             burst_write <= 1;
             latency_counter_en <= 0;
+            latency_counter_reset <= 1;
             counter_en <= 1;
             wait_out <= 0;
             data_we <= 0;
@@ -111,6 +117,7 @@ always@(*) begin
             addr_write <= 0;
             burst_write <= 0;
             latency_counter_en <= 1;
+            latency_counter_reset <= 0;
             counter_en <= 0;
             data_we <= 0;
             
@@ -125,6 +132,7 @@ always@(*) begin
             addr_write <= 0;
             burst_write <= 0;
             latency_counter_en <= 1;
+            latency_counter_reset <= 0;
             counter_en <= 0;
             data_we <= 0;
             
@@ -140,6 +148,7 @@ always@(*) begin
             burst_write <= 0;
             counter_en <= 1;
             latency_counter_en <= 0;
+            latency_counter_reset <= 0;
             wait_out <= 0;
             data_we <= 0;
         end
@@ -148,6 +157,7 @@ always@(*) begin
             burst_write <= 0;
             counter_en <= 1;
             latency_counter_en <= 0;
+            latency_counter_reset <= 0;
             wait_out <= 0;
             data_we <= 1;
         end
@@ -155,6 +165,7 @@ always@(*) begin
             addr_write <= 0;
             burst_write <= 0;
             latency_counter_en <= 0;
+            latency_counter_reset <= 0;
             counter_en <= 0;
             wait_out <= 0;
             data_we <= 0;
@@ -163,6 +174,7 @@ always@(*) begin
             addr_write <= 0;
             burst_write <= 0;
             latency_counter_en <= 0;
+            latency_counter_reset <= 0;
             counter_en <= 0;
             wait_out <= 0;
             data_we <= 0;

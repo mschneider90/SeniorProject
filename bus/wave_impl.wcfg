@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/bus/tb_tb_impl_bus_controller_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_tb_impl_bus_controller" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/tb_tb_impl_bus_controller/debug_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">debug_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">debug_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/clk50MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50MHz</obj_property>
+      <obj_property name="ObjectShortName">clk50MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/sw_0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sw_0</obj_property>
+      <obj_property name="ObjectShortName">sw_0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/sw_1" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sw_1</obj_property>
+      <obj_property name="ObjectShortName">sw_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/sw_6" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sw_6</obj_property>
+      <obj_property name="ObjectShortName">sw_6</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/sw_7" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sw_7</obj_property>
+      <obj_property name="ObjectShortName">sw_7</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/bus_test/master/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="label">MasterCS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/bus_test/slave/bus_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_in[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tb_impl_bus_controller/bus_test/slave/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="label">SlaveCS</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>

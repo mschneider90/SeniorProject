@@ -1,0 +1,19 @@
+# See Nexys2 manual for pin assignments
+NET "clk50MHz" LOC = "B8";
+NET "clk50MHz" PERIOD = 20;
+
+#LED out
+NET "debug_out<0>" LOC = "R4";
+NET "debug_out<1>" LOC = "F4";
+NET "debug_out<2>" LOC = "P15";
+NET "debug_out<3>" LOC = "E17";
+NET "debug_out<4>" LOC = "K14"; 
+NET "debug_out<5>" LOC = "K15";
+NET "debug_out<6>" LOC = "J15";
+NET "debug_out<7>" LOC = "J14";
+
+#Switches
+NET "sw_7" LOC = "R17"; # enable (??)
+NET "sw_6" LOC = "N17"; # write
+NET "sw_1" LOC = "H18"; # reg MSb
+NET "sw_0" LOC = "G18"; # reg LSb
