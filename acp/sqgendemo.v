@@ -12,7 +12,6 @@ module sqgendemo(clk,
 output reg SECCTR;
 input clk;
 input butt_1, butt_2, butt_3, butt_4;
-
 //input wavesel;
 //input wavesel;
 input [1:0] volsel;
@@ -92,7 +91,7 @@ reg note_clk;
 sq_channel sq_ch1(
 	.note_in 	(note_in),
 	.note_clk	(note_clk),
-	.channel_en	(sq1_en & butt_1),
+	.note_rst 	(sq1_en & butt_1),
 	.fx_sel		(FX1_sel),
 	.fx_optA		(FX1_optA),
 	.fx_optB		(FX1_optB),

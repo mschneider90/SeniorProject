@@ -48,7 +48,7 @@ begin
 //subdiv <= 0;
 //distance <= 1;
 //up <= 0;
-speed <= 4;
+speed <= 1;
 //count <= 0;
 //freq_out = 0;
 note_out <= 0;
