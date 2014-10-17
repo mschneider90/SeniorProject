@@ -107,11 +107,13 @@ begin
 				note_in1 <= 0;
 			end
 		end 
-				if (butt_3)
+		if (butt_3)
 		begin
+				//ADD A COUNTER TO MAKE THE EFFECT SLOWER OR LOOP OR WHATEVER
+			
 			if (note_in1 > 0)  
 			begin
-				note_in1 <= note_in1 + 12;  //ppeeeooowww peeeowww
+				note_in1 <= note_in1 - 1;  //ppeeeooowww peeeowww
 			end else
 			begin
 				note_in1 <= 63;
