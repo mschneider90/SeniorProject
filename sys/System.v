@@ -90,4 +90,17 @@ BusController bus_ctrller(.req(bus_req),
                        .bus_out(bus_data),
                        .ctrl_out(bus_ctrl)); 
 
+					   
+/* updated 10.19
+AudioCopper acp(
+				.clk50MHz	(),
+				.m_bus_in	(), 	//[31:0]
+				.m_ack		(),
+				.m_ctrl_in	(), 	//[7:0]
+				.m_ctrl_out (), 	//[7:0]
+				.audio_out 	() 		//[7:0] see acp.ucf for NET list
+);
+*/ 					   
+					   
+					   
 endmodule
