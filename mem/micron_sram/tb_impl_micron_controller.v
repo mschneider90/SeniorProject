@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_impl_micron_controller(input clk50MHz,
+module test_impl_micron_controller(input clk50MHz,
                                  input sw_7,
                                  input sw_6,
                                  input sw_1,
@@ -13,11 +13,29 @@ module tb_impl_micron_controller(input clk50MHz,
                                  output mlb_L,
                                  output mce_L,
                                  output mcre,
-                                 output [23:0] maddr,
+                                 input mwait,
+                                 output ready,
+                                 //output reg clk_slow,
+                                 output [22:0] maddr,
                                  output [7:0] debug_out,
-                                 inout [15:0] mdata
+                                 inout [15:0] mem_data
                                  );
-                              
+         
+/*reg [31:0] cntr;        
+initial begin
+    cntr <= 0;
+    clk_slow <= 0;
+end
+
+always@(posedge clk50MHz) begin
+    cntr <= cntr + 1;
+    if (cntr == 50000000) begin
+        cntr <= 0;
+        clk_slow <= ~clk_slow;
+    end
+end */
+    
+                             
 parameter BUS_WIDTH = 32;
 parameter CTRL_WIDTH = 8;
 
@@ -28,24 +46,15 @@ wire [7:0] req;
 assign req[6:0] = 0;
 
 wire [7:0] ack;
-wire ready;
 wire [BUS_WIDTH-1:0] master_out; 
-wire [CTRL_WIDTH-1:0] master_ctrl_out;                   
-tb_impl_test_master master(.bus_in(bus),
-                      .ack(ack[7]),
-                      .clk(clk50MHz),
-                      .req(req[7]),
-                      .ready_in(ready),
-                      .writeTransfer(sw_6),
-                      .en(sw_7),
-                      .debug_sel({sw_1, sw_0}),
-                      .bus_out(master_out),
-                      .ctrl_in(ctrl),
-                      .ctrl_out(master_ctrl_out),
-                      .debug_out(debug_out));
-                     
-wire [BUS_WIDTH-1:0] slave_out;  
+wire [CTRL_WIDTH-1:0] master_ctrl_out;    
+
+wire [BUS_WIDTH-1:0] bus_data_out;  
+wire [CTRL_WIDTH-1:0] bus_ctrl_out;  
+
+wire [BUS_WIDTH-1:0] slave_out;
 wire [CTRL_WIDTH-1:0] slave_ctrl_out;     
+
 micron_controller sramctrl(.clk50MHz(clk50MHz),
                        .bus_data_in(bus),
                        .bus_data_out(slave_out),
@@ -53,7 +62,8 @@ micron_controller sramctrl(.clk50MHz(clk50MHz),
                        .bus_ctrl_out(slave_ctrl_out),
                        .bus_ack(ack[0]),
                        .ready(ready),
-                       .mem_data(mdata),
+                       .reset_external(sw_7),
+                       .mem_data(mem_data),
                        .maddr(maddr),
                        .moe_L(moe_L),
                        .mwe_L(mwe_L),
@@ -63,9 +73,22 @@ micron_controller sramctrl(.clk50MHz(clk50MHz),
                        .mlb_L(mlb_L),
                        .mce_L(mce_L),
                        .mcre(mcre),
-                       .mwait(0)
-                      );              
-                     
+                       .mwait(mwait)
+                      ); 
+                      
+tb_impl_test_master master(.bus_in(bus),
+                      .ack(ack[7]),
+                      .clk(clk50MHz),
+                      .req(req[7]),
+                      .ready_in(ready),
+                      .writeTransfer(sw_6),
+                      .en(~sw_7),
+                      .debug_sel({sw_1, sw_0}),
+                      .bus_out(master_out),
+                      .ctrl_in(ctrl),
+                      .ctrl_out(master_ctrl_out),
+                      .debug_out(debug_out)); 
+                      
 BusController controller(.req(req),
                          .clk(clk50MHz),
                          .ack(ack),
@@ -75,6 +98,9 @@ BusController controller(.req(req),
                          .ctrl_in_0(slave_ctrl_out),
                          .ctrl_in_7(master_ctrl_out),
                          .ctrl_out(ctrl));
-                                        
-                 
-endmodule
+                     
+                     
+
+
+endmodule                      
+                   

@@ -13,9 +13,10 @@ module micron_controller #(parameter A_WIDTH = 23,
                            input  [BUS_WIDTH-1:0] bus_data_in,
                            output [BUS_WIDTH-1:0] bus_data_out,
                            input bus_ack,
+                           input reset_external,
                            inout  [D_WIDTH-1:0] mem_data,
                            output [A_WIDTH-1:0] maddr,
-                           output moe_L,  //output enable
+                           output reg moe_L,  //output enable
                            output reg mwe_L,  //write enable
                            output reg madv_L, //address valid
                            output mclk,   //memory clock
@@ -57,7 +58,7 @@ parameter STATE_WRITE_WAIT = 5;
 parameter STATE_WRITE_DATA = 6;
 parameter STATE_FINISH = 7;
 
-reg[2:0] currentState;
+wire[2:0] currentState;
 reg[2:0] nextState;
 
 //Unidirectional bus to tristate bus conversion
@@ -129,7 +130,7 @@ assign burst_count_geq = (burst_counter >= burst_length - 1) ? ASSERT : DEASSERT
 //counter for init procedure
 // See Micron CellularRAM data sheet, pg. 18
 // tCW is 70ns, so we need to wait for four cycles after adv_L is lowered
-parameter INIT_CYCLES = 6;
+parameter INIT_CYCLES = 11;
 reg init_count_en;
 wire init_count_geq;
 wire[3:0] init_counter;
@@ -171,20 +172,30 @@ reg bwait_en;
 assign bus_wait_out = (bwait_en == ASSERT)? ASSERT : DEASSERT;
                        
 //These aren't used
-assign mub_L = DEASSERT_L;
-assign mlb_L = DEASSERT_L;
+assign mub_L = ASSERT_L;
+assign mlb_L = ASSERT_L;
 
-assign moe_L = (cycle_count_geq & currentState == STATE_READ_WAIT || 
-                currentState == STATE_READ_DATA)?
-                ASSERT_L : DEASSERT_L;
-
+/*assign moe_L = ((cycle_count_geq & currentState == STATE_READ_WAIT) || 
+                ASSERT_L : DEASSERT_L; */
+                
+//Store value of control register read
+assign ctrl_reg_write = (currentState == STATE_INIT && init_counter == INIT_CYCLES - 1)? 
+                         ASSERT : DEASSERT;
+wire[D_WIDTH-1:0] ctrl_reg_val; 
+d_reg #(.WIDTH(D_WIDTH)) ctrl_reg(.clk(clk50MHz),
+                            .reset(0),
+                            .en(ctrl_reg_write),
+                            .d(mem_data),
+                            .q(ctrl_reg_val));
+                            
+d_reg #(.WIDTH(3)) currentStateReg (.clk(clk50MHz),
+                                    .reset(reset_external),
+                                    .en(1),
+                                    .d(nextState),
+                                    .q(currentState));
+                                    
 initial begin
-    currentState <= STATE_RESET;
     nextState <= STATE_RESET;
-end
-
-always@(posedge clk50MHz) begin
-    currentState <= nextState;
 end
 
 //Next state logic
@@ -272,6 +283,7 @@ always@(*) begin
             mclk_en <= DEASSERT;
             mcre <= DEASSERT;
             ready <= DEASSERT;
+            moe_L <= DEASSERT_L;
             
             //Local signals
             reset <= ASSERT;
@@ -295,6 +307,7 @@ always@(*) begin
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
@@ -308,6 +321,7 @@ always@(*) begin
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= ASSERT;
+                    moe_L <= DEASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
@@ -321,6 +335,7 @@ always@(*) begin
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
@@ -334,12 +349,27 @@ always@(*) begin
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
                     burst_count_en <= DEASSERT;
                 end
-                4: begin //CE low, WE low
+                4: begin //CE low, WE low (cycle 1)
+                    //Outputs
+                    mwe_L <= ASSERT_L; //WE must be low for min 45ns => 3 cycles
+                    madv_L <= DEASSERT_L;
+                    mce_L <= ASSERT_L;
+                    bwait_en <= ASSERT;
+                    mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
+                    
+                    //Local signals
+                    cycle_count_en <= DEASSERT;
+                    burst_count_en <= DEASSERT;
+                end
+                5: begin //CE low, WE low (cycle 2)
                     //Outputs
                     mwe_L <= ASSERT_L;
                     madv_L <= DEASSERT_L;
@@ -347,12 +377,41 @@ always@(*) begin
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
                     burst_count_en <= DEASSERT;
                 end
-                5: begin //CE high
+                6: begin //CE low, WE low (cycle 3)
+                    //Outputs
+                    mwe_L <= ASSERT_L;
+                    madv_L <= DEASSERT_L;
+                    mce_L <= ASSERT_L;
+                    bwait_en <= ASSERT;
+                    mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
+                    
+                    //Local signals
+                    cycle_count_en <= DEASSERT;
+                    burst_count_en <= DEASSERT;
+                end
+                7: begin //CE low, WE low (cycle 4)
+                    //Outputs
+                    mwe_L <= ASSERT_L;
+                    madv_L <= DEASSERT_L;
+                    mce_L <= ASSERT_L;
+                    bwait_en <= ASSERT;
+                    mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
+                    
+                    //Local signals
+                    cycle_count_en <= DEASSERT;
+                    burst_count_en <= DEASSERT;
+                end
+                8: begin //CE high
                     //Outputs
                     mwe_L <= DEASSERT_L;
                     madv_L <= DEASSERT_L;
@@ -360,6 +419,35 @@ always@(*) begin
                     bwait_en <= ASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
+                    
+                    //Local signals
+                    cycle_count_en <= DEASSERT;
+                    burst_count_en <= DEASSERT;
+                end
+                9: begin //read control reg
+                    //Outputs 
+                    mwe_L <= DEASSERT_L;
+                    madv_L <= ASSERT_L;
+                    mce_L <= ASSERT_L;
+                    bwait_en <= ASSERT;
+                    mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
+                    moe_L <= ASSERT_L;
+                    
+                    //Local signals
+                    cycle_count_en <= DEASSERT;
+                    burst_count_en <= DEASSERT;
+                end
+                10: begin //read control reg (ADV high)
+                    //Outputs 
+                    mwe_L <= DEASSERT_L;
+                    madv_L <= DEASSERT_L;
+                    mce_L <= ASSERT_L;
+                    bwait_en <= ASSERT;
+                    mclk_en <= DEASSERT;
+                    mcre <= DEASSERT;
+                    moe_L <= ASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
@@ -373,6 +461,7 @@ always@(*) begin
                     bwait_en <= DEASSERT;
                     mclk_en <= DEASSERT;
                     mcre <= DEASSERT;
+                    moe_L <= DEASSERT_L;
                     
                     //Local signals
                     cycle_count_en <= DEASSERT;
@@ -394,7 +483,9 @@ always@(*) begin
             bwait_en <= DEASSERT;
             mclk_en <= DEASSERT;
             mcre <= DEASSERT;
+            //ready <= (ctrl_reg_val == BCR_CONFIG[D_WIDTH-1:0]);
             ready <= ASSERT;
+            moe_L <= DEASSERT_L;
             
             //Local signals
             reset <= ASSERT;
@@ -417,6 +508,12 @@ always@(*) begin
             mclk_en <= ASSERT;
             mcre <= DEASSERT;
             ready <= ASSERT;
+            if (cycle_count_geq) begin
+                moe_L <= ASSERT_L;
+            end
+            else begin
+                moe_L <= DEASSERT_L;
+            end
             
             //Local signals
             reset <= DEASSERT;
@@ -434,6 +531,7 @@ always@(*) begin
             mclk_en <= ASSERT;
             mcre <= DEASSERT;
             ready <= ASSERT;
+            moe_L <= ASSERT_L;
             
             //Local signals
             reset <= DEASSERT;
@@ -456,6 +554,7 @@ always@(*) begin
             mclk_en <= ASSERT;
             mcre <= DEASSERT;
             ready <= ASSERT;
+            moe_L <= DEASSERT_L;
             
             //Local signals
             reset <= DEASSERT;
@@ -473,6 +572,7 @@ always@(*) begin
             mclk_en <= ASSERT;
             mcre <= DEASSERT;
             ready <= ASSERT;
+            moe_L <= DEASSERT_L;
             
             //Local signals
             reset <= DEASSERT;
@@ -490,6 +590,7 @@ always@(*) begin
             mclk_en <= ASSERT;
             mcre <= DEASSERT;
             ready <= ASSERT;
+            moe_L <= DEASSERT_L;
             
             //Local signals
             reset <= ASSERT;
@@ -507,6 +608,7 @@ always@(*) begin
             mclk_en <= DEASSERT;
             mcre <= DEASSERT;
             ready <= ASSERT;
+            moe_L <= DEASSERT_L;
             
             //Local signals
             reset <= ASSERT;
