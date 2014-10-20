@@ -1,0 +1,33 @@
+
+NET clk50MHz LOC = B8;
+
+//NET butt_1 LOC = H13;
+//NET butt_2 LOC = E18;
+//NET butt_3 LOC = D18;
+//NET butt_4 LOC = B18;
+
+//NET switch<0> LOC = G18;
+//NET switch<1> LOC = H18;
+//NET switch<2> LOC = K18;
+//NET switch<3> LOC = K17;
+//NET switch<4> LOC = L14;
+//NET switch<5> LOC = L13;
+//NET switch<6> LOC = N17;
+//NET switch<7> LOC = R17;
+
+
+//NET volsel<0> LOC = N17;
+//NET volsel<1> LOC = R17;
+
+//NET SECCTR LOC = J14;
+
+//NET wavesel LOC = R17;
+
+NET audio_out<0> LOC = M15; //(pmod 4
+NET audio_out<1> LOC = L17; //pmod 3 
+NET audio_out<2> LOC = K12; //pmod 2
+NET audio_out<3> LOC = L15; //pmod 1
+NET audio_out<4> LOC = K13; //pmod 7
+NET audio_out<5> LOC = L16; //pmod 8
+NET audio_out<6> LOC = M14; //pmod 9
+NET audio_out<7> LOC = M16; //pmod 10

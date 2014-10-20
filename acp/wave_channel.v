@@ -55,8 +55,8 @@ module sq_channel( 	note_in,
 		 
 	//porta module specific wires	 
 	reg porta_en;
-	wire [1:0] porta_speed_sel;
-	assign porta_speed_sel = 1;
+	//wire [1:0] porta_speed_sel;
+	//assign porta_speed_sel = 1;
 	wire [5:0] porta_out;
 	 
 
@@ -64,16 +64,16 @@ module sq_channel( 	note_in,
 	//vibrato module specific wires
 	
 	wire [5:0] vibra_out;
-	wire [1:0] vibra_speed;
-	wire [1:0] vibra_depth;
+	//wire [1:0] vibra_speed;
+	//wire [1:0] vibra_depth;
 	wire [2:0] vibra_offset_mul;
 	wire vibra_offset_dir;
 	wire [3:0] vib_offset_mux_out;	 
 	reg vibra_en;
 
 	//testing specific assignments: only for testing a configuration. 
-	assign vibra_speed = 3;
-	assign vibra_depth = 3;
+	//assign vibra_speed = 3;
+	//assign vibra_depth = 3;
 
 
 initial begin

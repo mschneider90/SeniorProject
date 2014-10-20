@@ -1,11 +1,20 @@
-module tb_test_slave #(parameter BUS_WIDTH = 32,
+////////////////////////////////////////////////////////////////////////////////////
+// Engineer: Michael Schneider. Modified for use with moosebox ACP by paul mayzeles
+// Module Name:    acp: the moosebox Audio Co-Processor
+// (C) Paul Mayzeles and Michael Schneider. 2014. 
+// This code may be used freely as long as the original authors are credited. 
+// You may also send us gifts or money if you'd like. 
+
+module acp_mem_interface #(parameter BUS_WIDTH = 32,
                      parameter CTRL_WIDTH = 8)
                     (input [BUS_WIDTH-1:0] bus_in,
                      input ack,
                      input clk,
-                     output [BUS_WIDTH-1:0] bus_out,
+                     //output [BUS_WIDTH-1:0] bus_out,
                      input [CTRL_WIDTH-1:0] ctrl_in,
-                     output [CTRL_WIDTH-1:0] ctrl_out);
+                     output [CTRL_WIDTH-1:0] ctrl_out,
+							output reg addr_write,
+							output reg data_we);
                      
 reg [3:0] currentState;
 reg [3:0] nextState;
@@ -33,7 +42,7 @@ reg [3:0] counter;
 reg [3:0] latencyCounter;
 
 reg [31:0] data [7:0];
-reg data_we;
+//reg data_we;
 
 initial begin
     currentState <= 0;
@@ -49,7 +58,7 @@ reg latency_counter_en;
 reg counter_en;
 
 //counters
-reg addr_write;
+//output reg addr_write;
 always@(posedge clk) begin
     if (counter_en) begin
         if (addr_write) begin
@@ -90,8 +99,9 @@ always@(posedge clk) begin
 end
 
 //Data R/W
-assign bus_out = data[counter];
+//assign bus_out = data[counter];
 
+/* 
 always@(posedge clk) begin
     if (data_we) begin
         data[counter] <= bus_in;
@@ -100,6 +110,7 @@ always@(posedge clk) begin
         data[counter] <= data[counter];
     end
 end
+*/ 
 
 // Outputs
 always@(*) begin
