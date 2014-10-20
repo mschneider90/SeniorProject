@@ -19,7 +19,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 module sq_channel( 	note_in,
 							note_clk,
-							channel_en,
+							note_rst,
+							note_length,
+							env_atk, //envelope attack and decay
+							env_dec,
 							fx_sel,
 							fx_optA,
 							fx_optB,
@@ -28,17 +31,20 @@ module sq_channel( 	note_in,
     );
 	 
 	 input [5:0] note_in;
+	 input [2:0] note_length; 	 
+	 input [1:0] env_atk;
+	 input [1:0] env_dec;
 	 input note_clk;
-	 input channel_en;
+	 input note_rst;
 	 input [1:0] fx_sel;
 	 input [1:0] fx_optA;
 	 input [1:0] fx_optB; 
 	 
 	 input clk50mhz;
 	 
-	 
+	 wire sq_en;
 	 output wire [3:0] wave_out;
-	 
+	 wire [3:0] sq_out;
 
 
 	 wire [5:0] fx_mux_out;
@@ -49,8 +55,8 @@ module sq_channel( 	note_in,
 		 
 	//porta module specific wires	 
 	reg porta_en;
-	wire [1:0] porta_speed_sel;
-	assign porta_speed_sel = 1;
+	//wire [1:0] porta_speed_sel;
+	//assign porta_speed_sel = 1;
 	wire [5:0] porta_out;
 	 
 
@@ -58,16 +64,16 @@ module sq_channel( 	note_in,
 	//vibrato module specific wires
 	
 	wire [5:0] vibra_out;
-	wire [1:0] vibra_speed;
-	wire [1:0] vibra_depth;
+	//wire [1:0] vibra_speed;
+	//wire [1:0] vibra_depth;
 	wire [2:0] vibra_offset_mul;
 	wire vibra_offset_dir;
 	wire [3:0] vib_offset_mux_out;	 
 	reg vibra_en;
 
 	//testing specific assignments: only for testing a configuration. 
-	assign vibra_speed = 3;
-	assign vibra_depth = 3;
+	//assign vibra_speed = 3;
+	//assign vibra_depth = 3;
 
 
 initial begin
@@ -118,7 +124,6 @@ FX_porta sq_porta (
 	);
 	
 	
-	///9/24/2014: work on this. This is the declaration for the vibrato effect. Ensure it's correct then begin building the vibrato module. 
 FX_vibrato sq_vibra (
 	.note_in		(note_in),  //6 bits
 	.note_clk	(note_clk), //1 bit
@@ -139,8 +144,6 @@ mux4to1 sq_FX_mux (
 	.mux_sel	(fx_sel),
 	.mux_out	(fx_mux_out)
 );
-
-
 
 mux_4to1_4bit vibrato_offset_mux (
 	.in_a		(4'b0),
@@ -164,26 +167,20 @@ BUFG freq1_bufg (.I (basefreq), .O (buffreq)); //a clock buffer?
 //SQUARE WAVE CHANNEL
 square_gen sqgen1 ( 	
 	.base_freq	(buffreq),
-	.square_out	(wave_out),
-	.en			(channel_en)
+	.square_out	(sq_out),
+	.en			(sq_en) ///////////////////////CHANGE THIS; link to envelope controller 
 );
 
-
-/*
 //Envelope Controller
-envelope_control(
-		.attack 		(),
-		.decay 		(),
-		.length		(),
+envelope_control envelope_sq(
+		.attack 		(env_atk),
+		.decay 		(env_dec),
+		.length		(note_length),
 		.enable_out	(sq_en),
-		.rst			(channel_en),
-		.note_clk 	(),
-		.square_in	(wave_out),
-		.square_out (
-		);
-*/
-
-
-		
+		.rst			(note_rst),
+		.note_clk 	(note_clk),
+		.square_in	(sq_out),
+		.square_out (wave_out)
+);
 
 endmodule

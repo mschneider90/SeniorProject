@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/acp/sq_channel_test_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="sq_channel_test" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="21" />
+   <wvobject fp_name="/sq_channel_test/square_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">square_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">square_out[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/sqgen1/base_freq" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">base_freq</obj_property>
+      <obj_property name="ObjectShortName">base_freq</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/sqgen1/square_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">square_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">square_out[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/note_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
+      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/note_clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">note_clk</obj_property>
+      <obj_property name="ObjectShortName">note_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/note_length" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">note_length[2:0]</obj_property>
+      <obj_property name="ObjectShortName">note_length[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/env_atk" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">env_atk[1:0]</obj_property>
+      <obj_property name="ObjectShortName">env_atk[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/env_dec" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">env_dec[1:0]</obj_property>
+      <obj_property name="ObjectShortName">env_dec[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/attack" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">attack[1:0]</obj_property>
+      <obj_property name="ObjectShortName">attack[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/atktime" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">atktime[4:0]</obj_property>
+      <obj_property name="ObjectShortName">atktime[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/decay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">decay[1:0]</obj_property>
+      <obj_property name="ObjectShortName">decay[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/dectime" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dectime[4:0]</obj_property>
+      <obj_property name="ObjectShortName">dectime[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/length" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">length[2:0]</obj_property>
+      <obj_property name="ObjectShortName">length[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/lentime" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">lentime[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lentime[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/lenctr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">lenctr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lenctr[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/enable_out" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">enable_out</obj_property>
+      <obj_property name="ObjectShortName">enable_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/decctr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">decctr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">decctr[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/env_vol" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">env_vol[2:0]</obj_property>
+      <obj_property name="ObjectShortName">env_vol[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sq_channel_test/UUT3/envelope_sq/rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+</wave_config>

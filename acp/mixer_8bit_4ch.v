@@ -55,12 +55,12 @@ begin
 	ch1 <= in1 << 1;
 	ch2 <= in2 << 1;
 end
-2'b11: //11: 3/4
+2'b10: //11: 3/4
 begin
 	ch1 <= (in1) + (in1 << 1);
 	ch2 <= (in2) + (in2 << 1);
 end
-2'b10: //10: full volume 
+2'b11: //10: full volume 
 begin
 	ch1 <= in1 << 2;
 	ch2 <= in2 << 2;

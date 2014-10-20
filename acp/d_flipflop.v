@@ -1,19 +1,19 @@
-//d_flipflop.v
-//N-input d-flipflop w/o enable
 
-`timescale 1ns / 1ps
 
-module d_flipflop #(parameter width = 8)
-                   (input      [width-1:0] d_in, 
-						  input      clk, 
-						  output reg [width-1:0] q_out);
+module d_reg #(parameter WIDTH = 16)
+              (input      clk, 
+				   input      reset, 
+					input      en,
+               input      [WIDTH-1:0] d, 
+               output reg [WIDTH-1:0] q);
 
-initial begin
-	q_out <= 0;
-end
-
-always@(clk) begin
-	 q_out <= d_in;
-end
-
+always @(posedge clk, posedge reset)
+    if (reset) begin 
+        q <= 0;
+    end
+    else begin
+        if (en) begin
+            q <= d;
+        end
+    end
 endmodule
