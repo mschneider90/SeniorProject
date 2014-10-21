@@ -5,8 +5,7 @@
 module micron_sram_async #(parameter D_WIDTH = 16,
                      parameter A_WIDTH = 23,
                      parameter NUM_ELEMENTS = 65536)
-                    (input clk,
-                     input[A_WIDTH-1:0] addr,
+                     (input[A_WIDTH-1:0] addr,
                      input adv_L,
                      input ce_L,
                      input oe_L,
@@ -33,27 +32,6 @@ parameter DEASSERT_L = 1;
 reg[3:0] currentState;
 reg[3:0] nextState;
 
-wire[A_WIDTH-1:0] currentAddr;
-reg addr_load;
-reg addr_en;
-count_reg #(.D_WIDTH(A_WIDTH)) addr_counter 
-                      (.en(addr_en),
-                       .rst(reset),
-                       .clk(clk),
-                       .count(currentAddr),
-                       .load(addr_load),
-                       .count_load(addr));
-
-wire[1:0] waitCounter;
-reg wait_load;
-count_reg #(.D_WIDTH(2)) wait_counter 
-                      (.en(ASSERT),
-                       .rst(reset),
-                       .clk(clk),
-                       .count(waitCounter),
-                       .load(wait_load),
-                       .count_load(0));
-
 reg[D_WIDTH-1:0] mem[NUM_ELEMENTS-1:0];
 
 reg [D_WIDTH-1:0] data_out;
@@ -64,20 +42,13 @@ assign mem_wait = (mem_wait_en)? ASSERT : DEASSERT;
 
 integer i;
 initial begin
-    currentState <= STATE_IDLE;
-    nextState <= STATE_IDLE;
-    //data_reg <= 0;
     for (i = 0; i<NUM_ELEMENTS; i = i + 1) begin
         mem[i] <= 0;
     end
 end
-
-always@(posedge clk) begin
-    currentState <= nextState;
-end
    
 //Single word read/write  
-always@(posedge clk) begin
+always@(negedge adv_L) begin
     if (ce_L == ASSERT_L) begin
         if (adv_L == ASSERT_L) begin
             if (we_L == ASSERT_L) begin
@@ -89,22 +60,5 @@ always@(posedge clk) begin
         end
     end
 end
-
-always@(*) begin
-    case (currentState) 
-        STATE_IDLE: begin
-            mem_wait_en <= DEASSERT;
-            data_out_en <= DEASSERT;
-            
-            //counters
-            wait_load <= ASSERT;
-            addr_load <= ASSERT;
-            addr_en <= ASSERT;
-        end
-    endcase
-end
-
-
-
 
 endmodule

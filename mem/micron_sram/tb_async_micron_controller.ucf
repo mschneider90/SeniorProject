@@ -56,8 +56,12 @@ NET "mem_data<13>" LOC = "N4";
 NET "mem_data<14>" LOC = "R3";
 NET "mem_data<15>" LOC = "T1";
 
-NET "ready" LOC = "R4";
 NET "sw_7" LOC = "R17";
 NET "sw_6" LOC = "N17";
 NET "sw_1" LOC = "H18";
 NET "sw_0" LOC = "G18";
+
+NET "debug_out<0>" LOC = "J14";
+NET "debug_out<1>" LOC = "J15";
+NET "debug_out<2>" LOC = "K15";
+NET "debug_out<3>" LOC = "K14";

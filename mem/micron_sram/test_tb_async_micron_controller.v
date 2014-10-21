@@ -10,7 +10,6 @@ reg sw_7;
 wire mwe_L;
 wire moe_L;
 wire madv_L;
-wire mclk;
 wire mub_L;
 wire mlb_L;
 wire mce_L;
@@ -28,8 +27,6 @@ tb_async_micron_controller ctrl(.clk50MHz(clk50MHz),
                                .mwe_L(mwe_L),
                                .moe_L(moe_L),
                                .madv_L(madv_L),
-                               .mclk(mclk),
-                               .ready(ready),
                                .mub_L(mub_L),
                                .mlb_L(mlb_L),
                                .mce_L(mce_L),
@@ -64,8 +61,8 @@ always begin
     #10 clk50MHz = ~clk50MHz;
 end
 
-micron_sram #(.NUM_ELEMENTS(8)) ram (.clk(mclk),
-                 .addr(maddr),
+micron_sram_async #(.NUM_ELEMENTS(8)) ram 
+                (.addr(maddr),
                  .adv_L(madv_L),
                  .ce_L(mce_L),
                  .oe_L(moe_L),

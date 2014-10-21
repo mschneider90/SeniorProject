@@ -18,8 +18,8 @@ module micron_controller_async #(parameter A_WIDTH = 23,
                            output reg mwe_L,  //write enable
                            output reg madv_L, //address valid
                            output mclk,   //memory clock
-                           output mub_L,  //upper byte
-                           output mlb_L,  //lower byte
+                           output reg mub_L,  //upper byte
+                           output reg mlb_L,  //lower byte
                            output reg mce_L,  //chip enable
                            output reg mcre,   //control register enable
                            input  mwait); //wait
@@ -31,14 +31,14 @@ parameter ASSERT_L = 0;
 parameter DEASSERT_L = 1;
 
 //States
-parameter STATE_IDLE = 1;
-parameter STATE_READ_SINGLE_WAIT = 2;
-parameter STATE_READ_SINGLE_DATA = 3;
-parameter STATE_READ_PAGE_WAIT = 4;
-parameter STATE_READ_PAGE_DATA = 5;
-parameter STATE_WRITE_WAIT = 6;
-parameter STATE_WRITE_DATA = 7;
-parameter STATE_FINISH = 8;
+parameter STATE_IDLE = 0;
+parameter STATE_READ_SINGLE_WAIT = 1;
+parameter STATE_READ_SINGLE_DATA = 2;
+parameter STATE_READ_PAGE_WAIT = 3;
+parameter STATE_READ_PAGE_DATA = 4;
+parameter STATE_WRITE_WAIT = 5;
+parameter STATE_WRITE_DATA = 6;
+parameter STATE_FINISH = 7;
 
 reg[3:0] currentState;
 reg[3:0] nextState;
@@ -117,14 +117,15 @@ d_reg #(.WIDTH(A_WIDTH)) maddrReg
         .en(addr_write_en),
         .d(bus_data_in),
         .q(addr_reg_out));
+        
+assign maddr = addr_reg_out;
 
 //Wait output
 reg bwait_en;
 assign bus_wait_out = (bwait_en == ASSERT)? ASSERT : DEASSERT;
                        
 //These aren't used
-assign mub_L = ASSERT_L;
-assign mlb_L = ASSERT_L;
+assign mclk = DEASSERT;
                                                       
 initial begin
     nextState <= STATE_IDLE;
@@ -209,6 +210,8 @@ always@(*) begin
             bwait_en <= DEASSERT;
             mcre <= DEASSERT;
             moe_L <= DEASSERT_L;
+            mlb_L <= DEASSERT_L;
+            mub_L <= DEASSERT_L;
             
             //Local signals
             reset <= ASSERT;
@@ -221,17 +224,29 @@ always@(*) begin
             mwe_L <= DEASSERT_L;
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
-            bwait_en <= ASSERT;
+            if (cycle_count_geq) begin //end WAIT one cycle before state transition
+                bwait_en <= DEASSERT;
+            end
+            else begin
+                bwait_en <= ASSERT;
+            end
             mcre <= DEASSERT;
-            moe_L <= ASSERT_L;
+            if (cycle_count_geq) begin
+                moe_L <= ASSERT_L;
+            end
+            else begin
+                moe_L <= DEASSERT_L;
+            end
+            mlb_L <= ASSERT_L;
+            mub_L <= ASSERT_L;
             
             //Local signals
-            reset <= ASSERT;
-            cycle_count_en <= DEASSERT;
+            reset <= DEASSERT;
+            cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
         end
-        STATE_READ_SINGLE_DATA: begin //Data valid at the end of this cycle
+        STATE_READ_SINGLE_DATA: begin //Data valid
             //Outputs
             mwe_L <= DEASSERT_L;
             madv_L <= ASSERT_L;
@@ -239,39 +254,55 @@ always@(*) begin
             bwait_en <= DEASSERT;
             mcre <= DEASSERT;
             moe_L <= ASSERT_L;
+            mlb_L <= ASSERT_L;
+            mub_L <= ASSERT_L;
             
             //Local signals
-            reset <= ASSERT;
+            reset <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
         end
         STATE_WRITE_WAIT: begin
             //Outputs
-            mwe_L <= ASSERT_L;
+            if (cycle_counter == 0) begin //tWPH, hold mwe high for min 10ns
+                mwe_L <= DEASSERT_L;
+            end
+            else begin
+                mwe_L <= ASSERT_L;
+            end
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
-            bwait_en <= ASSERT;
+            if (cycle_count_geq) begin //end WAIT one cycle before state transition
+                bwait_en <= DEASSERT;
+            end
+            else begin
+                bwait_en <= ASSERT;
+            end
             mcre <= DEASSERT;
-            moe_L <= ASSERT_L;
+            moe_L <= DEASSERT_L;
+            mlb_L <= ASSERT_L;
+            mub_L <= ASSERT_L;
             
             //Local signals
-            reset <= ASSERT;
-            cycle_count_en <= DEASSERT;
+            reset <= DEASSERT;
+            cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
         end
-        STATE_WRITE_DATA: begin //Data valid at the end of this cycle
+        STATE_WRITE_DATA: begin //Data valid
             //Outputs
             mwe_L <= ASSERT_L;
             madv_L <= ASSERT_L;
             mce_L <= ASSERT_L;
             bwait_en <= DEASSERT;
             mcre <= DEASSERT;
-            moe_L <= ASSERT_L;
+            moe_L <= DEASSERT_L;
+            mlb_L <= ASSERT_L;
+            mub_L <= ASSERT_L;
             
             //Local signals
-            reset <= ASSERT;
+            reset <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
@@ -284,6 +315,8 @@ always@(*) begin
             bwait_en <= DEASSERT;
             mcre <= DEASSERT;
             moe_L <= DEASSERT_L;
+            mlb_L <= DEASSERT_L;
+            mub_L <= DEASSERT_L;
             
             //Local signals
             reset <= ASSERT;
