@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/uart/tb_uart_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_uart" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="14" />
+   <wvobject fp_name="/tb_uart/rx" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx</obj_property>
+      <obj_property name="ObjectShortName">rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/clk50MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50MHz</obj_property>
+      <obj_property name="ObjectShortName">clk50MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/tx" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx</obj_property>
+      <obj_property name="ObjectShortName">tx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/UART_BAUD" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">UART_BAUD[31:0]</obj_property>
+      <obj_property name="ObjectShortName">UART_BAUD[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/INPUT_CLOCK" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">INPUT_CLOCK[31:0]</obj_property>
+      <obj_property name="ObjectShortName">INPUT_CLOCK[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/CLOCKS_BETWEEN_BITS" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">CLOCKS_BETWEEN_BITS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLOCKS_BETWEEN_BITS[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/data_we" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">data_we</obj_property>
+      <obj_property name="ObjectShortName">data_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/bitCount" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bitCount[3:0]</obj_property>
+      <obj_property name="ObjectShortName">bitCount[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/cycleCount" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cycleCount[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cycleCount[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/rxData/serial_in" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">serial_in</obj_property>
+      <obj_property name="ObjectShortName">serial_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/rxData/en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart/uartModule/data_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">data_valid</obj_property>
+      <obj_property name="ObjectShortName">data_valid</obj_property>
+   </wvobject>
+</wave_config>
