@@ -29,6 +29,12 @@
 !*.h
 !*.hpp
 
+#cSharp
+!*.cs
+
+#Any executables in the "tools" dir
+!/tools/*/*.exe
+
 #asm
 !*.asm
 
