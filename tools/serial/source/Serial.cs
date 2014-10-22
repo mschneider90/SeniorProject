@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Ports;
 using System.Globalization;
+using System.Security;
 
 namespace MooseboxSerial
 {
@@ -9,50 +10,60 @@ namespace MooseboxSerial
     {
         public static void Main()
         {
-            Console.WriteLine("MooseBox Serial Communicator MK.I");
-            Console.WriteLine("Enter the name of a serial port from the list below");
+            Console.WriteLine("- > MooseBox Serial Communicator MK.I");
+            Console.WriteLine("- > Enter the name of a serial port from the list below");
+
             string[] portNames = SerialPort.GetPortNames();
+            if (portNames.Length == 0)
+            {
+                Console.WriteLine("- > ERROR: No serial ports found. Press enter to exit");
+                Console.ReadLine();
+                return;
+            }
+
             for (int i = 0; i < portNames.Length; i++)
             {
-                Console.WriteLine("  {0}", portNames[i]);
+                Console.WriteLine("    {0}", portNames[i]);
             }
-            Console.Write("> ");
+            Console.Write("- > ");
 
             String portName = Console.ReadLine();
 
             // UART settings. These must match the UART transceiver module (uart.v)
-            const int baudRate = 9600;
-            const Parity parity = Parity.None;
-            const int dataBits = 8;
-            const StopBits stopBits = StopBits.One;
+            const int BAUD_RATE = 9600;
+            const Parity PARITY = Parity.None;
+            const int DATA_BITS = 8;
+            const StopBits STOP_BITS = StopBits.One;
+
+            // Read timeout 500ms
+            const int READ_TIMEOUT = 500;
            
-            SerialPort serial = new SerialPort(portName, baudRate, parity, dataBits, stopBits);
+            SerialPort serial = new SerialPort(portName, BAUD_RATE, PARITY, DATA_BITS, STOP_BITS);
+            serial.ReadTimeout = READ_TIMEOUT;
             if (!openSerialPort(serial))
             {
                 return; //Failed to open serial
             }
+            Console.WriteLine("- > Serial port opened successfully");
 
             bool exit = false;
             String input;
             while (!exit)
             {
-                Console.Clear();
-                Console.WriteLine("MooseBox Serial Communicator MK.I");
-                Console.WriteLine("Enter a command, or type 'help'");
-                Console.Write("> ");
+                Console.WriteLine("- > Enter a command, or type 'help'");
+                Console.Write("- > ");
                 input = Console.ReadLine();
                 if (input.Equals("help"))
                 {
-                    Console.WriteLine("List of commands");
-                    Console.WriteLine("   read (Reads a single byte)");
-                    Console.WriteLine("   write (Writes a single byte)");
-                    Console.WriteLine("   file (Writes an entire file)");
-                    Console.WriteLine("   exit (Exits Moosebox Serial Communicator)");
+                    Console.WriteLine("- HELP > List of commands");
+                    Console.WriteLine("         read (Reads a single byte)");
+                    Console.WriteLine("         write (Writes a single byte)");
+                    Console.WriteLine("         file (Writes an entire file)");
+                    Console.WriteLine("         exit (Exits Moosebox Serial Communicator)");
                 }
                 else if (input.Equals("read"))
                 {
-                    Console.WriteLine("Enter address to read from");
-                    Console.Write("> ");
+                    Console.Write("- READ > Enter address to read from: ");
 
                     int addr = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
                     int rxData;
@@ -64,38 +75,60 @@ namespace MooseboxSerial
                         rxData = serialRead(serial, addr);
                     } catch (TimeoutException)
                     {
-                        Console.WriteLine("ERROR: read timed out");
-                        break;
+                        Console.WriteLine("- READ > ERROR: read timed out");
+                        continue;
                     }
 
-                    Console.WriteLine("Received data: {0:X}", rxData);
+                    Console.WriteLine("- READ > Received data: {0:X}", rxData);
                 }
                 else if (input.Equals("write"))
                 {
-                    Console.WriteLine("Enter address to write to");
-                    Console.Write("> ");
-
+                    Console.Write("- WRITE > Enter address to write to: ");
                     int addr = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
 
-                    Console.WriteLine("Enter data to write");
-                    Console.Write("> ");
-
+                    Console.Write("- WRITE > Enter data to write: ");
                     int data = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
 
                     if (serialWrite(serial, addr, data))
                     {
-                        Console.WriteLine("Write completed successfully");
+                        Console.WriteLine("- WRITE > Write completed successfully");
                     }
                     else
                     {
-                        Console.WriteLine("ERROR: Write failed");
+                        Console.WriteLine("- WRITE > ERROR: Write failed");
                     }
                     
                 }
                 else if (input.Equals("file"))
                 {
-                    // TODO
-                    Console.WriteLine("Not yet implemented");
+                    Console.Write("- FILE > Enter name of file to write from: ");
+                    string filePath = Console.ReadLine();
+
+                    Console.Write("- FILE > Enter starting address: ");
+                    int startingAddr = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+
+                    string[] lines;
+                    try
+                    {
+                        lines = readFile(filePath);
+                    }
+                    catch (IOException)
+                    {
+                        Console.WriteLine("- FILE > Failed to open file");
+                        continue;
+                    }
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        int addr = startingAddr + i;
+                        int data = int.Parse(lines[i], NumberStyles.AllowHexSpecifier);
+
+                        Console.WriteLine("- FILE > Writing {0:X} to address {1:X}...", data, addr); 
+                        if (!serialWrite(serial, addr, data))
+                        {
+                            Console.WriteLine("- FILE > File write failed");
+                            break;
+                        }
+                    }
                 }
                 else if (input.Equals("exit"))
                 {
@@ -104,15 +137,60 @@ namespace MooseboxSerial
                 }
                 else
                 {
-                    Console.WriteLine("Invalid command!");
-                }
-
-                if (!exit)
-                {
-                    Console.WriteLine("Press enter to continue");
-                    Console.ReadLine();
+                    Console.WriteLine("- > Invalid command!");
                 }
             }
+        }
+
+        static string[] readFile(string filePath)
+        {
+            string[] lines;
+            try
+            {
+                lines = System.IO.File.ReadAllLines(filePath);
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine("- FILE > Invalid pathname");
+                throw new IOException();
+            }
+            catch (PathTooLongException)
+            {
+                Console.WriteLine("- FILE > Path too long");
+                throw new IOException();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine("- FILE > Can't find directory");
+                throw new IOException();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("- FILE > Do not have permission to read this file");
+                throw new IOException();
+            }
+            catch (FileNotFoundException)
+            {   
+                Console.WriteLine("- FILE > Can't find file");
+                throw new IOException();
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("- FILE > IO failed in reading this file");
+                throw new IOException();
+            }
+            catch (NotSupportedException)
+            {
+                Console.WriteLine("- FILE > Path is in an invalid format");
+                throw new IOException();
+            }
+            catch (SecurityException)
+            {
+                Console.WriteLine("- FILE > Do not have permission to read this file");
+                throw new IOException();
+            }
+
+            return lines;
         }
 
         static int serialRead(SerialPort serial, int addr)
@@ -150,12 +228,20 @@ namespace MooseboxSerial
 
             // Check that value was successfully written by reading it back
             serial.DiscardInBuffer();
-            if (data == serialRead(serial, addr))
+            try
             {
-                return true;
+                if (data == serialRead(serial, addr))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (TimeoutException)
             {
+                Console.WriteLine("- WRITE > ERROR: Verification read timed out");
                 return false;
             }
         }
