@@ -3,6 +3,7 @@
 module uart(input clk50MHz,
             input rx,
             output tx,
+            output reg busy,
             output [7:0] data_out,
             output reg data_out_valid,
             input [7:0] data_in,
@@ -106,6 +107,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 0;
             start <= 0;
+            busy <= 1;
         end
         STATE_IDLE: begin
             sample_cycle_count_en <= 1;
@@ -119,6 +121,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 0;
             start <= 0;
+            busy <= 0;
             
             if (sampleCycleCount == CLOCKS_BETWEEN_SAMPLES) begin
                 sample_we <= 1;
@@ -140,6 +143,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 0;
             start <= 0;
+            busy <= 1;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 data_we <= 1;
@@ -164,6 +168,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 1;
             start <= 1;
+            busy <= 1;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 cycle_count_en <= 0;
@@ -186,6 +191,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 1;
             start <= 0;
+            busy <= 1;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 cycle_count_rst <= 1;
@@ -208,6 +214,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 0;
             start <= 0;
+            busy <= 1;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 cycle_count_en <= 0;
@@ -229,6 +236,7 @@ always@(*) begin
             bit_count_en <= 0;
             oe <= 0;
             start <= 0;
+            busy <= 1;
             
             if (cycleCount == 1) begin //Send a "data valid" pulse near the beginning of this state
                 data_out_valid <= 1;
@@ -258,6 +266,7 @@ always@(*) begin
             oe <= 0;
             start <= 0;
             data_out_valid <= 0;
+            busy <= 1;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 cycle_count_en <= 0;
@@ -282,6 +291,7 @@ always@(*) begin
             data_out_valid <= 0;
             oe <= 0;
             start <= 0;
+            busy <= 1;
         end
    endcase
 end
