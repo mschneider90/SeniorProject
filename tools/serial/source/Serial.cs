@@ -73,7 +73,7 @@ namespace MooseboxSerial
                     Console.WriteLine("   read (Reads a single byte)");
                     Console.WriteLine("   write (Writes a single byte)");
                     Console.WriteLine("   file (Writes an entire file)");
-                    Console.WriteLine("   exit (Exits Moosebox Serial Communicator");
+                    Console.WriteLine("   exit (Exits Moosebox Serial Communicator)");
                 }
                 else if (input.Equals("read"))
                 {

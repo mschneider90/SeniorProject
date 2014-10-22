@@ -3,11 +3,10 @@
 module uart(input clk50MHz,
             input rx,
             output tx,
-            output [7:0] data,
-            output reg data_valid);
-            
-//TODO
-assign tx = 1;
+            output [7:0] data_out,
+            output reg data_out_valid,
+            input [7:0] data_in,
+            input data_in_valid);
 
 parameter UART_BAUD = 9600;
 parameter INPUT_CLOCK = 50000000;
@@ -35,12 +34,12 @@ shift_reg_uart #(.WIDTH(8)) rxData(.serial_in(rx),
                                    .en(data_we),
                                    .clk(clk50MHz),
                                    .rst(data_rst),
-                                   .parallel_out(data));
+                                   .parallel_out(data_out));
                     
-wire [15:0] cycleCount;
+wire [19:0] cycleCount;
 reg cycle_count_en;
 reg cycle_count_rst;
-count_reg #(.D_WIDTH(16)) cycleCounter (.en(cycle_count_en),
+count_reg #(.D_WIDTH(20)) cycleCounter (.en(cycle_count_en),
                                         .rst(cycle_count_rst),
                                         .clk(clk50MHz),
                                         .count(cycleCount));
@@ -60,13 +59,24 @@ count_reg #(.D_WIDTH(16)) sampleCycleCounter (.en(sample_cycle_count_en),
                                         .rst(sample_cycle_count_rst),
                                         .clk(clk50MHz),
                                         .count(sampleCycleCount));
+                                        
+//Mux between start bit (0) and data bits
+wire tx_out;
+reg start;
+assign tx_out = (start)? 0 : data_in[bitCount];
 
+//Keep tx high when not in use
+reg oe;       
+assign tx = (oe)? tx_out : 1;
 
 parameter STATE_RESET = 0;
 parameter STATE_IDLE = 1;
-parameter STATE_DATA= 2;
-parameter STATE_PARITY = 3;
-parameter STATE_FINISH = 4;
+parameter STATE_READ_DATA = 2;
+parameter STATE_WRITE_START = 3;
+parameter STATE_WRITE_DATA = 4;
+parameter STATE_PARITY = 5;
+parameter STATE_FINISH_READ = 6;
+parameter STATE_FINISH_WRITE = 7;
 
 reg [2:0] currentState;
 reg [2:0] nextState;
@@ -93,7 +103,9 @@ always@(*) begin
             data_rst <= 1;
             bit_count_rst <= 1;
             bit_count_en <= 0;
-            data_valid <= 0;
+            data_out_valid <= 0;
+            oe <= 0;
+            start <= 0;
         end
         STATE_IDLE: begin
             sample_cycle_count_en <= 1;
@@ -104,7 +116,9 @@ always@(*) begin
             data_rst <= 0;
             bit_count_rst <= 0;
             bit_count_en <= 0;
-            data_valid <= 0;
+            data_out_valid <= 0;
+            oe <= 0;
+            start <= 0;
             
             if (sampleCycleCount == CLOCKS_BETWEEN_SAMPLES) begin
                 sample_we <= 1;
@@ -115,7 +129,7 @@ always@(*) begin
                 sample_cycle_count_rst <= 0;
             end
         end
-        STATE_DATA: begin
+        STATE_READ_DATA: begin
             sample_cycle_count_en <= 0;
             sample_cycle_count_rst <= 0;
             sample_we <= 0;
@@ -123,7 +137,9 @@ always@(*) begin
             sample_rst <= 0;
             data_rst <= 0;
             bit_count_rst <= 0;
-            data_valid <= 0;
+            data_out_valid <= 0;
+            oe <= 0;
+            start <= 0;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 data_we <= 1;
@@ -132,6 +148,50 @@ always@(*) begin
             end
             else begin
                 data_we <= 0;
+                cycle_count_rst <= 0;
+                bit_count_en <= 0;
+            end
+        end
+        STATE_WRITE_START: begin
+            sample_cycle_count_en <= 0;
+            sample_cycle_count_rst <= 0;
+            sample_we <= 0;
+            sample_rst <= 0;
+            data_we <= 0;
+            data_rst <= 0;
+            bit_count_rst <= 0;
+            bit_count_en <= 0;
+            data_out_valid <= 0;
+            oe <= 1;
+            start <= 1;
+            
+            if (cycleCount == CLOCKS_BETWEEN_BITS) begin
+                cycle_count_en <= 0;
+                cycle_count_rst <= 1;
+            end
+            else begin
+                cycle_count_en <= 1;
+                cycle_count_rst <= 0;
+            end
+        end
+        STATE_WRITE_DATA: begin
+            sample_cycle_count_en <= 0;
+            sample_cycle_count_rst <= 0;
+            sample_we <= 0;
+            cycle_count_en <= 1;
+            sample_rst <= 0;
+            data_we <= 0;
+            data_rst <= 0;
+            bit_count_rst <= 0;
+            data_out_valid <= 0;
+            oe <= 1;
+            start <= 0;
+            
+            if (cycleCount == CLOCKS_BETWEEN_BITS) begin
+                cycle_count_rst <= 1;
+                bit_count_en <= 1;
+            end
+            else begin
                 cycle_count_rst <= 0;
                 bit_count_en <= 0;
             end
@@ -145,7 +205,9 @@ always@(*) begin
             data_rst <= 0;
             bit_count_rst <= 0;
             bit_count_en <= 0;
-            data_valid <= 0;
+            data_out_valid <= 0;
+            oe <= 0;
+            start <= 0;
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 cycle_count_en <= 0;
@@ -156,7 +218,7 @@ always@(*) begin
                 cycle_count_rst <= 0;
             end
         end
-        STATE_FINISH: begin //Waits for a full bit cycle so that we don't accidentally start again
+        STATE_FINISH_READ: begin //Waits for a full bit cycle so that we don't start again
             sample_cycle_count_en <= 0;
             sample_cycle_count_rst <= 1;
             sample_we <= 0;
@@ -165,15 +227,43 @@ always@(*) begin
             data_rst <= 0;
             bit_count_rst <= 1;
             bit_count_en <= 0;
+            oe <= 0;
+            start <= 0;
             
+            if (cycleCount == 1) begin //Send a "data valid" pulse near the beginning of this state
+                data_out_valid <= 1;
+            end
+            else begin
+                data_out_valid <= 0;
+            end
             
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
-                data_valid <= 1;
                 cycle_count_en <= 0;
                 cycle_count_rst <= 1;
             end
             else begin
-                data_valid <= 0;
+                cycle_count_en <= 1;
+                cycle_count_rst <= 0;
+            end
+        end
+        STATE_FINISH_WRITE: begin //Waits for a full bit cycle so that we don't start again
+            sample_cycle_count_en <= 0;
+            sample_cycle_count_rst <= 1;
+            sample_we <= 0;
+            sample_rst <= 1;
+            data_we <= 0;
+            data_rst <= 0;
+            bit_count_rst <= 1;
+            bit_count_en <= 0;
+            oe <= 0;
+            start <= 0;
+            data_out_valid <= 0;
+            
+            if (cycleCount == CLOCKS_BETWEEN_BITS) begin
+                cycle_count_en <= 0;
+                cycle_count_rst <= 1;
+            end
+            else begin
                 cycle_count_en <= 1;
                 cycle_count_rst <= 0;
             end
@@ -189,7 +279,9 @@ always@(*) begin
             data_rst <= 0;
             bit_count_rst <= 0;
             bit_count_en <= 0;
-            data_valid <= 0;
+            data_out_valid <= 0;
+            oe <= 0;
+            start <= 0;
         end
    endcase
 end
@@ -200,35 +292,64 @@ always@(*) begin
             nextState <= STATE_IDLE;
         end
         STATE_IDLE: begin
-            if (sampleOut == 0) begin
-                nextState <= STATE_DATA;
+            if (data_in_valid) begin
+                nextState <= STATE_WRITE_START;
             end
             else begin
-                nextState <= STATE_IDLE;
+                if (sampleOut == 0) begin
+                    nextState <= STATE_READ_DATA;
+                end
+                else begin
+                    nextState <= STATE_IDLE;
+                end
             end
         end
-        STATE_DATA: begin
-            if (bitCount == 8) begin
-                nextState <= STATE_PARITY;
+        STATE_READ_DATA: begin
+            if (bitCount == 8) begin //Skip parity for now
+                nextState <= STATE_FINISH_READ;
             end
             else begin
-                nextState <= STATE_DATA;
+                nextState <= STATE_READ_DATA;
+            end
+        end
+        STATE_WRITE_START: begin
+            if (cycleCount == CLOCKS_BETWEEN_BITS) begin
+                nextState <= STATE_WRITE_DATA;
+            end
+            else begin
+                nextState <= STATE_WRITE_START;
+            end
+        end
+        STATE_WRITE_DATA: begin
+            if (bitCount == 8) begin //Skip parity for now
+                nextState <= STATE_FINISH_WRITE;
+            end
+            else begin
+                nextState <= STATE_WRITE_DATA;
             end
         end
         STATE_PARITY: begin
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
-                nextState <= STATE_FINISH;
+                nextState <= STATE_FINISH_READ; //TODO
             end
             else begin
                 nextState <= STATE_PARITY;
             end
         end
-        STATE_FINISH: begin
+        STATE_FINISH_READ: begin
             if (cycleCount == CLOCKS_BETWEEN_BITS) begin
                 nextState <= STATE_IDLE;
             end
             else begin
-                nextState <= STATE_FINISH;
+                nextState <= STATE_FINISH_READ;
+            end
+        end
+        STATE_FINISH_WRITE: begin
+            if (cycleCount == CLOCKS_BETWEEN_BITS) begin //two stop bits
+                nextState <= STATE_IDLE;
+            end
+            else begin
+                nextState <= STATE_FINISH_WRITE;
             end
         end
         default: begin
