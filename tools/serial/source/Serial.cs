@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Globalization;
 using System.Security;
+using System.Threading;
 
 namespace MooseboxSerial
 {
@@ -117,6 +118,8 @@ namespace MooseboxSerial
                         Console.WriteLine("- FILE > Failed to open file");
                         continue;
                     }
+
+                    bool failed = false;
                     for (int i = 0; i < lines.Length; i++)
                     {
                         int addr = startingAddr + i;
@@ -126,8 +129,14 @@ namespace MooseboxSerial
                         if (!serialWrite(serial, addr, data))
                         {
                             Console.WriteLine("- FILE > File write failed");
+                            failed = true;
                             break;
                         }
+                        Thread.Sleep(5);
+                    }
+                    if (!failed)
+                    {
+                        Console.WriteLine("- FILE > File write completed successfully");
                     }
                 }
                 else if (input.Equals("exit"))
@@ -199,6 +208,7 @@ namespace MooseboxSerial
             byte[] READ_COMMAND = {0x55};
 
             serial.Write(READ_COMMAND, 0, 1);
+            Thread.Sleep(1);
             serial.Write(toByteArray(addr), 0, 4);
 
             byte[] rx_data_bytes = new byte[4];
@@ -223,9 +233,12 @@ namespace MooseboxSerial
             byte[] WRITE_COMMAND = { 0x56 };
 
             serial.Write(WRITE_COMMAND, 0, 1);
+            Thread.Sleep(1);
             serial.Write(toByteArray(addr), 0, 4);
+            Thread.Sleep(1);
             serial.Write(toByteArray(data), 0, 4);
 
+            Thread.Sleep(1);
             // Check that value was successfully written by reading it back
             serial.DiscardInBuffer();
             try
@@ -236,6 +249,7 @@ namespace MooseboxSerial
                 }
                 else
                 {
+                    Console.WriteLine("- WRITE > ERROR: Verification read did not match");
                     return false;
                 }
             }
