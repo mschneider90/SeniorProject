@@ -37,10 +37,10 @@ shift_reg_uart #(.WIDTH(8)) rxData(.serial_in(rx),
                                    .rst(data_rst),
                                    .parallel_out(data_out));
                     
-wire [19:0] cycleCount;
+wire [15:0] cycleCount;
 reg cycle_count_en;
 reg cycle_count_rst;
-count_reg #(.D_WIDTH(20)) cycleCounter (.en(cycle_count_en),
+count_reg #(.D_WIDTH(16)) cycleCounter (.en(cycle_count_en),
                                         .rst(cycle_count_rst),
                                         .clk(clk50MHz),
                                         .count(cycleCount));
@@ -268,7 +268,7 @@ always@(*) begin
             data_out_valid <= 0;
             busy <= 1;
             
-            if (cycleCount == CLOCKS_BETWEEN_BITS) begin
+            if (cycleCount == CLOCKS_BETWEEN_BITS * 2) begin
                 cycle_count_en <= 0;
                 cycle_count_rst <= 1;
             end
@@ -355,7 +355,7 @@ always@(*) begin
             end
         end
         STATE_FINISH_WRITE: begin
-            if (cycleCount == CLOCKS_BETWEEN_BITS) begin //two stop bits
+            if (cycleCount == CLOCKS_BETWEEN_BITS * 2) begin //"1.5" stop bits
                 nextState <= STATE_IDLE;
             end
             else begin

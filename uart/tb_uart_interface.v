@@ -76,12 +76,13 @@ initial begin
     rx = 1; // stop 1
     
     #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     //Address 
-    // Data Byte 0: 0xFF
+    // Data Byte 0: 0x00
     rx = 0; // start
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 0; // 0
+    rx = 1; // 0
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 0; // 1
     #(CLOCKS_BETWEEN_BITS * 20)
@@ -99,6 +100,7 @@ initial begin
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // stop 1
     
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     // Data Byte 1: 0x00
@@ -123,6 +125,7 @@ initial begin
     rx = 1; // stop 1
     
     #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     // Data Byte 2: 0xFF
     rx = 0; // start
@@ -145,6 +148,7 @@ initial begin
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // stop 1
     
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     // Data Byte 3: 0x00
@@ -169,6 +173,7 @@ initial begin
     rx = 1; // stop 1
     
     
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     //Data
@@ -194,6 +199,7 @@ initial begin
     rx = 1; // stop 1
     
     #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     // Data Byte 1: 0x00
     rx = 0; // start
@@ -217,6 +223,7 @@ initial begin
     rx = 1; // stop 1
     
     #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
     
     // Data Byte 2: 0xFF
     rx = 0; // start
@@ -236,6 +243,127 @@ initial begin
     rx = 1; // 6
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 3: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Read command (0x55)
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+     //Address 
+    // Data Byte 0: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 1: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 2: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // stop 1
     
@@ -261,8 +389,7 @@ initial begin
     rx = 0; // 7
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // stop 1
-    
-    
+
 end
 
 always begin

@@ -10,12 +10,13 @@ module uartInterface #(parameter BUS_WIDTH = 32,
                        output[BUS_WIDTH-1:0] bus_out,
                        output[CTRL_WIDTH-1:0] ctrl_out,
                        input rx,
-                       output tx);
+                       output tx,
+                       output[7:0] debug_out);
                        
 wire bus_wait_in;
 assign bus_wait_in = ctrl_in[0];
                        
-reg we;
+wire we;
 assign ctrl_out = {3'b000,
                    3'b000, //burst length = 1
                    we,
@@ -32,12 +33,21 @@ count_reg #(.D_WIDTH(3)) byteCounter   (.en(byte_count_en),
 wire [BUS_WIDTH-1:0] bus_data; 
 reg busData_we;
 reg busData_rst;                              
-d_reg #(.D_WIDTH(BUS_WIDTH)) busDataReg (.clk(clk50MHz),
+d_reg #(.WIDTH(BUS_WIDTH)) busDataReg (.clk(clk50MHz),
                                          .en(busData_we),
                                          .reset(busData_rst),
                                          .d(bus_in),
                                          .q(bus_data));
-       
+assign debug_out = bus_data[7:0];
+
+reg writeTransfer;
+reg writeWEReg;
+reg resetWEReg;
+d_reg #(.WIDTH(1)) writeTransferReg(.clk(clk50MHz),
+                                    .en(writeWEReg),
+                                    .reset(0),
+                                    .d(writeTransfer),
+                                    .q(we));
 wire data_rx_valid;
 wire [7:0] data_rx;   
 wire busy;    
@@ -56,7 +66,7 @@ mux_4to1 #(.width(8)) tx_mux (.in_A(bus_data[7:0]),
                        .in_B(bus_data[15:8]),
                        .in_C(bus_data[23:16]),
                        .in_D(bus_data[31:24]),
-                       .mux_sel(byteCount[1:0]),
+                       .mux_sel(byteCount[1:0]-1), //hack to fix broken TX state machine
                        .out(data_tx));
                        
 // Address registers
@@ -224,7 +234,7 @@ always@(*) begin
             end
         end
         STATE_UART_TX_DATA: begin
-            if (byteCount == 4) begin
+            if (byteCount == 5) begin //hack, this only sends 4 bytes >.>
                 nextState <= STATE_IDLE;
             end
             else begin
@@ -250,10 +260,12 @@ always@(*) begin
             bus_req <= 0;
             data_tx_valid <= 0;
             if (data_rx == WRITE_COMMAND) begin
-                we <= 1;
+                writeTransfer <= 1;
+                writeWEReg <= 1;
             end
             else begin
-                we <= 0;
+                writeTransfer <= 0;
+                writeWEReg <= 1;
             end
             busData_rst <= 1;
             busData_we <= 0;
@@ -285,7 +297,8 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 0;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
@@ -316,7 +329,8 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 0;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
@@ -330,7 +344,8 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 1;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
@@ -344,7 +359,8 @@ always@(*) begin
             bus_out_addr <= 1;
             bus_req <= 1;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
@@ -358,7 +374,8 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 1;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
@@ -373,6 +390,9 @@ always@(*) begin
             data_tx_valid <= 0;
             busData_we <= 0;
             busData_rst <= 0;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
+            bus_out_addr <= 0;
         end 
         STATE_BUS_READ_DATA: begin
             data_we <= 4'b0;
@@ -384,7 +404,8 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 1;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 1;
             busData_rst <= 0;
         end
@@ -398,7 +419,10 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 0;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
+            busData_we <= 0;
+            busData_rst <= 0;
         end
         STATE_UART_TX_DATA: begin
             data_we <= 4'b0;
@@ -416,7 +440,8 @@ always@(*) begin
                 byte_count_en <= 0;
                 data_tx_valid <= 0;
             end
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
@@ -430,7 +455,8 @@ always@(*) begin
             bus_out_addr <= 0;
             bus_req <= 0;
             data_tx_valid <= 0;
-            we <= we;
+            writeTransfer <= 0;
+            writeWEReg <= 0;
             busData_we <= 0;
             busData_rst <= 0;
         end
