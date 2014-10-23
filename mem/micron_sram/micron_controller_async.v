@@ -31,14 +31,15 @@ parameter ASSERT_L = 0;
 parameter DEASSERT_L = 1;
 
 //States
-parameter STATE_IDLE = 0;
-parameter STATE_READ_SINGLE_WAIT = 1;
-parameter STATE_READ_SINGLE_DATA = 2;
-parameter STATE_READ_PAGE_WAIT = 3;
-parameter STATE_READ_PAGE_DATA = 4;
-parameter STATE_WRITE_WAIT = 5;
-parameter STATE_WRITE_DATA = 6;
-parameter STATE_FINISH = 7;
+parameter STATE_RESET = 0;
+parameter STATE_IDLE = 1;
+parameter STATE_READ_SINGLE_WAIT = 2;
+parameter STATE_READ_SINGLE_DATA = 3;
+parameter STATE_READ_PAGE_WAIT = 4;
+parameter STATE_READ_PAGE_DATA = 5;
+parameter STATE_WRITE_WAIT = 6;
+parameter STATE_WRITE_DATA = 7;
+parameter STATE_FINISH = 8;
 
 reg[3:0] currentState;
 reg[3:0] nextState;
@@ -111,9 +112,10 @@ assign burst_count_geq = (burst_counter >= burst_length - 1) ? ASSERT : DEASSERT
 // Stores the starting memory address
 wire [A_WIDTH-1:0] addr_reg_out;
 reg addr_write_en;
+reg addr_reset;
 d_reg #(.WIDTH(A_WIDTH)) maddrReg
        (.clk(clk50MHz),
-        .reset(reset),
+        .reset(addr_reset),
         .en(addr_write_en),
         .d(bus_data_in),
         .q(addr_reg_out));
@@ -128,8 +130,8 @@ assign bus_wait_out = (bwait_en == ASSERT)? ASSERT : DEASSERT;
 assign mclk = DEASSERT;
                                                       
 initial begin
-    nextState <= STATE_IDLE;
-    currentState <= STATE_IDLE;
+    nextState <= STATE_RESET;
+    currentState <= STATE_RESET;
 end
 
 always@(posedge clk50MHz) begin
@@ -139,6 +141,9 @@ end
 //Next state logic
 always@(*) begin
     case (currentState)
+        STATE_RESET: begin
+            nextState <= STATE_IDLE;
+        end
         STATE_IDLE: begin
             if (bus_ack == ASSERT) begin
                 if (bus_we == ASSERT) begin
@@ -202,6 +207,24 @@ end
 //Outputs
 always@(*) begin
     case (currentState) 
+       STATE_RESET: begin
+            //Outputs
+            mwe_L <= DEASSERT_L;
+            madv_L <= DEASSERT_L;
+            mce_L <= DEASSERT_L;
+            bwait_en <= DEASSERT;
+            mcre <= DEASSERT;
+            moe_L <= DEASSERT_L;
+            mlb_L <= DEASSERT_L;
+            mub_L <= DEASSERT_L;
+            
+            //Local signals
+            reset <= ASSERT;
+            addr_reset <= ASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
+            addr_write_en <= DEASSERT;
+        end
         STATE_IDLE: begin
             //Outputs
             mwe_L <= DEASSERT_L;
@@ -215,6 +238,7 @@ always@(*) begin
             
             //Local signals
             reset <= ASSERT;
+            addr_reset <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= ASSERT;
@@ -239,6 +263,7 @@ always@(*) begin
             end
             mlb_L <= ASSERT_L;
             mub_L <= ASSERT_L;
+            addr_reset <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -256,6 +281,7 @@ always@(*) begin
             moe_L <= ASSERT_L;
             mlb_L <= ASSERT_L;
             mub_L <= ASSERT_L;
+            addr_reset <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -283,6 +309,7 @@ always@(*) begin
             moe_L <= DEASSERT_L;
             mlb_L <= ASSERT_L;
             mub_L <= ASSERT_L;
+            addr_reset <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -300,6 +327,7 @@ always@(*) begin
             moe_L <= DEASSERT_L;
             mlb_L <= ASSERT_L;
             mub_L <= ASSERT_L;
+            addr_reset <= DEASSERT;
             
             //Local signals
             reset <= DEASSERT;
@@ -317,6 +345,7 @@ always@(*) begin
             moe_L <= DEASSERT_L;
             mlb_L <= DEASSERT_L;
             mub_L <= DEASSERT_L;
+            addr_reset <= DEASSERT;
             
             //Local signals
             reset <= ASSERT;

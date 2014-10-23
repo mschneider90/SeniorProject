@@ -3,10 +3,8 @@
 module test_tb_async_micron_controller();
 
 reg clk50MHz;
-reg sw_0;
-reg sw_1;
-reg sw_6;
-reg sw_7;
+reg rx;
+wire tx;
 wire mwe_L;
 wire moe_L;
 wire madv_L;
@@ -20,10 +18,6 @@ wire [7:0] debug_out;
 wire [15:0] mdata;
                                  
 tb_async_micron_controller ctrl(.clk50MHz(clk50MHz), 
-                               .sw_0(sw_0), //LSb addr
-                               .sw_1(sw_1), //MSb addr
-                               .sw_6(sw_6), //we
-                               .sw_7(sw_7), //en
                                .mwe_L(mwe_L),
                                .moe_L(moe_L),
                                .madv_L(madv_L),
@@ -32,36 +26,361 @@ tb_async_micron_controller ctrl(.clk50MHz(clk50MHz),
                                .mce_L(mce_L),
                                .mcre(mcre),
                                .maddr(maddr),
-                               .debug_out(debug_out),
-                               .mem_data(mdata));
+                               .mem_data(mdata),
+                               .rx(rx),
+                               .tx(tx));
 
+parameter UART_BAUD = 9600;
+parameter INPUT_CLOCK = 50000000;
+parameter CLOCKS_BETWEEN_BITS = INPUT_CLOCK / UART_BAUD;
+                         
 initial begin
-    clk50MHz <= 0;
-    sw_0 <= 0;
-    sw_1 <= 0;
-    sw_6 <= 0;
-    sw_7 <= 1;
-    #20
-    sw_7 <= 0;
-    sw_6 <= 1;
-    #300
-    sw_6 <= 0;
-    #400
-    sw_0 <= 1;
-    sw_1 <= 0;
-    #20
-    sw_0 <= 0;
-    sw_1 <= 1;
-    #20
-    sw_0 <= 1;
-    sw_1 <= 1;
+    clk50MHz = 0;
+    rx = 1;
+    
+    // First data: 0x56 (WRITE_COMMAND)
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    //Address 
+    // Data Byte 0: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 1: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 2: 0xFF
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 3: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    //Data
+    //Byte 0: 0xFF
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 1: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 2: 0xFF
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 3: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Read command (0x55)
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+     //Address 
+    // Data Byte 0: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 1: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 2: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+    
+    #(CLOCKS_BETWEEN_BITS * 20) //wait
+    
+    // Data Byte 3: 0x00
+    rx = 0; // start
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 0
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 1
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 2
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 3
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 4
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 5
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 6
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 0; // 7
+    #(CLOCKS_BETWEEN_BITS * 20)
+    rx = 1; // stop 1
+
 end
 
 always begin
     #10 clk50MHz = ~clk50MHz;
 end
 
-micron_sram_async #(.NUM_ELEMENTS(8)) ram 
+/*micron_sram_async #(.NUM_ELEMENTS(8)) ram 
                 (.addr(maddr),
                  .adv_L(madv_L),
                  .ce_L(mce_L),
@@ -70,6 +389,6 @@ micron_sram_async #(.NUM_ELEMENTS(8)) ram
                  .mem_wait(mem_wait),
                  .data(mdata),
                  .ub_L(mub_L),
-                 .lb_L(mlb_L));
+                 .lb_L(mlb_L)); */
                  
 endmodule

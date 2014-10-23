@@ -1,10 +1,6 @@
 `timescale 1ns / 1ps
 
 module tb_async_micron_controller(input clk50MHz,
-                                 input sw_7,
-                                 input sw_6,
-                                 input sw_1,
-                                 input sw_0,
                                  output mwe_L,
                                  output moe_L,
                                  output madv_L,
@@ -16,7 +12,9 @@ module tb_async_micron_controller(input clk50MHz,
                                  input mwait,
                                  output [22:0] maddr,
                                  output [7:0] debug_out,
-                                 inout [15:0] mem_data);
+                                 inout [15:0] mem_data,
+                                 input rx,
+                                 output tx);
 
 parameter BUS_WIDTH = 32;
 parameter CTRL_WIDTH = 8;
@@ -55,19 +53,16 @@ micron_controller_async sramctrl(.clk50MHz(clk50MHz),
                        .mcre(mcre),
                        .mwait(mwait)
                       ); 
-                      
-tb_impl_test_master master(.bus_in(bus),
-                      .ack(ack[7]),
-                      .clk(clk50MHz),
-                      .req(req[7]),
-                      .ready_in(1),
-                      .writeTransfer(sw_6),
-                      .en(~sw_7),
-                      .debug_sel({sw_1, sw_0}),
+                                       
+uartInterface master(.bus_in(bus),
+                      .bus_ack(ack[7]),
+                      .clk50MHz(clk50MHz),
+                      .bus_req(req[7]),
                       .bus_out(master_out),
                       .ctrl_in(ctrl),
                       .ctrl_out(master_ctrl_out),
-                      .debug_out(debug_out)); 
+                      .rx(rx),
+                      .tx(tx));
                       
 BusController controller(.req(req),
                          .clk(clk50MHz),
