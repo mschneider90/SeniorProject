@@ -21,7 +21,7 @@ parameter sel_5 = 8'b00100000;
 parameter sel_6 = 8'b01000000;
 parameter sel_7 = 8'b10000000;
                  
-always@(*) begin
+always@(sel, in_0, in_1, in_2, in_3, in_4, in_5, in_6, in_7) begin
     case (sel)
         sel_0: begin
             out <= in_0;

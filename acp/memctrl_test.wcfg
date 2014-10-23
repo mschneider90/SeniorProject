@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/acp/tb_acp_bus_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_acp_bus" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="31" />
+   <wvobject fp_name="/tb_acp_bus/bus" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/ctrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ctrl[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ctrl[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/req" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req[7:0]</obj_property>
+      <obj_property name="ObjectShortName">req[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/ack" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ack[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ack[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/master_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">master_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">master_out[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/master_ctrl_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">master_ctrl_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">master_ctrl_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/slave_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">slave_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/slave_ctrl_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">slave_ctrl_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_ctrl_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/debug_out" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">debug_out</obj_property>
+      <obj_property name="ObjectShortName">debug_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/audio_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">audio_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">audio_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/clk50MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50MHz</obj_property>
+      <obj_property name="ObjectShortName">clk50MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/BUS_WIDTH" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">BUS_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BUS_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/CTRL_WIDTH" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">CTRL_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CTRL_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/audio_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">audio_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">audio_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/master/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="label">master_state</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/acp_memctrl/currentState" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="label">memctrl_s_state</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/address_register/d" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">d[15:0]</obj_property>
+      <obj_property name="ObjectShortName">d[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/master/round_count_en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">round_count_en</obj_property>
+      <obj_property name="ObjectShortName">round_count_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/master/round_counter" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">round_counter[2:0]</obj_property>
+      <obj_property name="ObjectShortName">round_counter[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/address_register/q" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">q[15:0]</obj_property>
+      <obj_property name="ObjectShortName">q[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/address_decoder/select" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">select[2:0]</obj_property>
+      <obj_property name="ObjectShortName">select[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/acp_memctrl/addr_write" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">addr_write</obj_property>
+      <obj_property name="ObjectShortName">addr_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/acp_memctrl/bus_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_in[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/ch0_notereg/q" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">q[15:0]</obj_property>
+      <obj_property name="ObjectShortName">q[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="label">nreg0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/sqch0/note_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">note_in[5:0]</obj_property>
+      <obj_property name="ObjectShortName">note_in[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/sqch0/note_length" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">note_length[2:0]</obj_property>
+      <obj_property name="ObjectShortName">note_length[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/sqch0/wave_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wave_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wave_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/sqch0/envelope_sq/rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/sqch0/envelope_sq/lenctr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">lenctr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lenctr[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/AudioCopper/sqch0/envelope_sq/note_clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">note_clk</obj_property>
+      <obj_property name="ObjectShortName">note_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_acp_bus/master/addr_magazine" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">addr_magazine[3:0,31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_magazine[3:0,31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <wvobject fp_name="/tb_acp_bus/master/addr_magazine[3]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[3,31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_magazine[3,31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_acp_bus/master/addr_magazine[2]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[2,31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_magazine[2,31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_acp_bus/master/addr_magazine[1]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[1,31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_magazine[1,31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_acp_bus/master/addr_magazine[0]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[0,31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_magazine[0,31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
