@@ -19,7 +19,9 @@ module System #(parameter A_WIDTH = 32,
               output mcre,
               output mub_L,
               output mlb_L, //end SRAM specific signals
-				  output [7:0] audio_out
+		      output [7:0] audio_out,
+              input rx,
+              output tx
               );
               
 parameter NUM_DEVICES = 8;
@@ -32,6 +34,7 @@ parameter ROM_BUS_ID = 1;
 parameter VGA_BUS_ID = 2;
 parameter PS2_BUS_ID = 3;
 parameter ACP_BUS_ID = 4;
+parameter UART_BUS_ID = 6;
 parameter CPU_BUS_ID = 7;
 
 wire [I_WIDTH-1:0] pc; //TODO how wide should this be?
@@ -105,6 +108,16 @@ acp		AudioCopper(
 				.audio_out 	(audio_out) 		//[7:0] see acp.ucf for NET list
 );
 // 					   
-					   
-					   
+				
+wire [D_WIDTH-1:0] uart_bus_out;   
+wire [C_WIDTH-1:0] uart_ctrl_out;          
+uartInterface uart(.clk50MHz(clk50MHz),
+                   .bus_in(bus_data),
+                   .ctrl_in(bus_ctrl),
+                   .bus_req(bus_req[UART_BUS_ID]),
+                   .bus_ack(bus_ack[UART_BUS_ID]),
+                   .bus_out(uart_bus_out),
+                   .ctrl_out(uart_ctrl_out),
+                   .rx(rx),
+                   .tx(tx));                   
 endmodule
