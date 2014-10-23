@@ -84,7 +84,7 @@ end
 //bus data mux
 reg bus_data_sel;
 always@(*) begin
-    if (bus_data_sel == 0) begin
+    if (bus_data_sel == 0) begin //ADDRESS
         bus_out <= 1;
     end
     else begin
