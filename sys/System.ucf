@@ -74,3 +74,14 @@ NET "debug_ra4<1>" LOC = "H18";
 NET "debug_ra4<2>" LOC = "K18";
 NET "debug_ra4<3>" LOC = "K17";
 NET "debug_ra4<4>" LOC = "L14";
+
+
+#audio co-processor audio output
+NET audio_out<0> LOC = M15; //(pmod 4
+NET audio_out<1> LOC = L17; //pmod 3 
+NET audio_out<2> LOC = K12; //pmod 2
+NET audio_out<3> LOC = L15; //pmod 1
+NET audio_out<4> LOC = K13; //pmod 7
+NET audio_out<5> LOC = L16; //pmod 8
+NET audio_out<6> LOC = M14; //pmod 9
+NET audio_out<7> LOC = M16; //pmod 10

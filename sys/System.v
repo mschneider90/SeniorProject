@@ -18,7 +18,8 @@ module System #(parameter A_WIDTH = 32,
               inout [D_WIDTH-1:0] mem_data,
               output mcre,
               output mub_L,
-              output mlb_L //end SRAM specific signals
+              output mlb_L, //end SRAM specific signals
+				  output [7:0] audio_out
               );
               
 parameter NUM_DEVICES = 8;
@@ -44,6 +45,8 @@ wire [C_WIDTH-1:0] bus_ctrl;
 
 wire[15:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
+wire[C_WIDTH-1:0] acp_ctrl_out;
+
 mips cpu(.clk(clk50MHz),
          .reset(reset),
          .pc(pc), 
@@ -85,22 +88,23 @@ BusController bus_ctrller(.req(bus_req),
                        .ack(bus_ack),
                        .bus_in_0(sram_data_out),
                        .ctrl_in_0(sram_ctrl_out),
+							  .ctrl_in_4(acp_ctrl_out),
                        .bus_in_7({16'b0, cpu_data_out}),
                        .ctrl_in_7(cpu_ctrl_out),
                        .bus_out(bus_data),
                        .ctrl_out(bus_ctrl)); 
 
 					   
-/* updated 10.19
+// updated 10.19
 AudioCopper acp(
-				.clk50MHz	(),
-				.m_bus_in	(), 	//[31:0]
-				.m_ack		(),
-				.m_ctrl_in	(), 	//[7:0]
-				.m_ctrl_out (), 	//[7:0]
-				.audio_out 	() 		//[7:0] see acp.ucf for NET list
+				.clk50MHz	(clk50MHz),
+				.m_bus_in	(bus_data), 	//[31:0]
+				.m_ack		(bus_ack[ACP_BUS_ID]),
+				.m_ctrl_in	(bus_ctrl), 	//[7:0]
+				.m_ctrl_out (acp_ctrl_out), 	//[7:0]
+				.audio_out 	(audio_out) 		//[7:0] see acp.ucf for NET list
 );
-*/ 					   
+// 					   
 					   
 					   
 endmodule
