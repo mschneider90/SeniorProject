@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 20ns / 1ns
 
 module tb_acp_bus();
                         
@@ -10,6 +10,8 @@ wire [CTRL_WIDTH-1:0] ctrl;
 
 reg clk50MHz;
 
+
+wire [7:0] audio_out;
 wire [7:0] req;
 assign req[6:0] = 0;
 
@@ -46,7 +48,7 @@ BusController controller(.req(req),
                          .bus_in_0(slave_out),
                          .bus_in_7(master_out),
                          .bus_out(bus),
-                         .ctrl_in_0(slave_ctrl_out),
+                         .ctrl_in_4(slave_ctrl_out),
                          .ctrl_in_7(master_ctrl_out),
                          .ctrl_out(ctrl));
                                         

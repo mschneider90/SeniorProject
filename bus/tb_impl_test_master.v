@@ -85,10 +85,10 @@ end
 reg bus_data_sel;
 always@(*) begin
     if (bus_data_sel == 0) begin //ADDRESS
-        bus_out <= 1;
+        bus_out <= 32'h01000020;   //put adddress here
     end
     else begin
-        bus_out <= counter + 1; //ouput 1, 2, 3, 4, etc
+        bus_out <= 32'h00000CEB;//counter + 1; //ouput 1, 2, 3, 4, etc // put data here
     end
 end
 
