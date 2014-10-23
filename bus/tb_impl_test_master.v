@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module tb_impl_test_master #(parameter BUS_WIDTH = 32,
                      parameter CTRL_WIDTH = 8)
                     (input [BUS_WIDTH-1:0] bus_in,
@@ -85,30 +86,37 @@ reg [31:0] addr_magazine [3:0];
 reg [31:0] data_magazine [3:0];
 
 initial begin //init addr and data magazines
-    addr_magazine[0] <= 0;
-    addr_magazine[1] <= 1;
-    addr_magazine[2] <= 2;
-    addr_magazine[3] <= 3;
+    addr_magazine[0] <= 32'h01000020;
+    addr_magazine[1] <= 32'h01000021;
+    addr_magazine[2] <= 32'h01000022;
+    addr_magazine[3] <= 32'h01000023;
     
-    data_magazine[0] <= 0;
-    data_magazine[1] <= 1;
-    data_magazine[2] <= 2;
-    data_magazine[3] <= 3;
+    data_magazine[0] <= 32'h00000CEB;
+    data_magazine[1] <= 32'h00000000;
+    data_magazine[2] <= 32'h00000000;
+    data_magazine[3] <= 32'h00000000;
 end
 
 reg[2:0] round_counter;
+reg round_count_en;
 initial begin
     round_counter <= 0;
+	 round_count_en <= 1;
 end
 
-reg round_count_en;
+
 always@(posedge clk) begin
-    if (round_count_en) begin
-        round_counter <= round_counter + 1;
-    end
-    else begin
-        round_counter <= round_counter;
-    end
+	 if (round_counter == 2) 
+			begin
+				round_count_en <= 0;
+		 end
+//    if (round_count_en == 1) begin
+ //       round_counter <= round_counter + 1;
+ //   end
+   // else begin
+   //     round_counter <= round_counter;
+   // end
+
 end
 
 //bus data mux
@@ -130,55 +138,65 @@ always@(*) begin
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
-            round_count_en <= 0;
+            //round_count_en <= 0;
         end
         STATE_REQ: begin
             req <= 1;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
-            round_count_en <= 0;
+            //round_count_en <= 0;
         end
         STATE_PRESENT_ADDR: begin
             req <= 1;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
-            round_count_en <= 0;
+            //round_count_en <= 0;
         end
         STATE_SLAVE_WAIT: begin
             req <= 1;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
-            round_count_en <= 0;
+            //round_count_en <= 0;
         end
         STATE_WRITE_DATA: begin
             req <= 1;
             counter_en <= 1;
             data_we <= 0;
             bus_data_sel <= 1;
-            round_count_en <= 0;
+				//if (round_count_en == 1) begin
+				//	round_counter <= round_counter + 1;
+				//end
+            //round_count_en <= 0;
         end
         STATE_READ_DATA: begin
             req <= 1;
             counter_en <= 1;
             data_we <= 1;
             bus_data_sel <= 0;
-            round_count_en <= 0;
+            //round_count_en <= 0;
         end
         STATE_FINISH: begin
             req <= 0;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
-            if (round_counter == 3) begin
-                round_counter <= 3;
-            end
-            else begin
-                round_count_en <= 1;
-            end
-        end
+
+            
+				//if (round_counter == 3) 
+				//	begin
+				//		round_count_en <= 0;
+				//	end
+            
+				//else 
+				//begin
+            //    round_count_en <= 1;
+            //end
+        
+		  
+		  end
         default: begin
             req <= 0;
             counter_en <= 0;

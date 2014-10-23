@@ -1,4 +1,4 @@
-`timescale 20ns / 1ns
+`timescale 1ns / 1ps
 
 module tb_acp_bus();
                         
@@ -24,7 +24,7 @@ tb_impl_test_master master(.bus_in(bus),
                       .req(req[7]),
                       .ready_in(1),
                       .writeTransfer(1),
-                      .en(1),
+                      .en(1'b1),
                       .bus_out(master_out),
                       .ctrl_in(ctrl),
                       .ctrl_out(master_ctrl_out),
