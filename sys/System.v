@@ -96,7 +96,7 @@ BusController bus_ctrller(.req(bus_req),
 
 					   
 // updated 10.19
-AudioCopper acp(
+acp		AudioCopper(
 				.clk50MHz	(clk50MHz),
 				.m_bus_in	(bus_data), 	//[31:0]
 				.m_ack		(bus_ack[ACP_BUS_ID]),
