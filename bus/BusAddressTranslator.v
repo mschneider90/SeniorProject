@@ -5,31 +5,30 @@ module BusAddressTranslator #(parameter ADDR_WIDTH = 32,
                               output reg [NUM_DEVICES-1:0] device_en);
 
 // Define address ranges here
+// ACP - 16 x 16 bits = 32 bytes
+parameter ACP_LOW = 32'h00000000;
+parameter ACP_HIGH = 32'h0000000F;
+parameter ACP_ID = 4;
+
+// PS2 - 16 x 16 bits = 32 bytes
+parameter PS2_LOW  = 32'h00000010;
+parameter PS2_HIGH = 32'h0000001F;
+parameter PS2_ID = 3;
+
+// VGA  - 16 x 16 bits = 32 bytes
+parameter VGA_LOW  = 32'h00000020;
+parameter VGA_HIGH = 32'h0000002F;
+parameter VGA_ID = 2;
+
 // RAM - 8M x 16 bits = 16MB
-parameter RAM_LOW  = 32'h00000000;
-parameter RAM_HIGH = 32'h007FFFFF;
+parameter RAM_LOW  = 32'h00000030;
+parameter RAM_HIGH = 32'h0100002F;
 parameter RAM_ID = 0;
 
 // ROM - 8M x 16 bits = 16MB
-parameter ROM_LOW  = 32'h00800000;
-parameter ROM_HIGH = 32'h00FFFFFF;
+parameter ROM_LOW  = 32'h01000030;
+parameter ROM_HIGH = 32'h0200002F;
 parameter ROM_ID = 1;
-
-// TODO define address spaces for:
-// VGA  - 16 x 16 bits = 32 bytes
-parameter VGA_LOW  = 32'h01000000;
-parameter VGA_HIGH = 32'h0100000F;
-parameter VGA_ID = 2;
-
-// PS2 - 16 x 16 bits = 32 bytes
-parameter PS2_LOW  = 32'h01000010;
-parameter PS2_HIGH = 32'h0100001F;
-parameter PS2_ID = 3;
-
-// ACP - 16 x 16 bits = 32 bytes
-parameter ACP_LOW  = 32'h01000020;
-parameter ACP_HIGH = 32'h0100002F;
-parameter ACP_ID = 4;
 
 always@(*) begin
     if (virtual_addr >= ROM_LOW && virtual_addr <= ROM_HIGH) begin
