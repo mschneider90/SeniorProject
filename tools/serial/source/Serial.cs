@@ -43,7 +43,9 @@ namespace MooseboxSerial
             serial.ReadTimeout = READ_TIMEOUT;
             if (!openSerialPort(serial))
             {
-                return; //Failed to open serial
+                Console.WriteLine("Failed to open serial port. Press enter to exit");
+                Console.ReadLine();
+                return;
             }
             Console.WriteLine("- > Serial port opened successfully");
 
@@ -57,10 +59,10 @@ namespace MooseboxSerial
                 if (input.Equals("help"))
                 {
                     Console.WriteLine("- HELP > List of commands");
-                    Console.WriteLine("         read (Reads a single byte)");
+                    Console.WriteLine("         read  (Reads a single byte)");
                     Console.WriteLine("         write (Writes a single byte)");
-                    Console.WriteLine("         file (Writes an entire file)");
-                    Console.WriteLine("         exit (Exits Moosebox Serial Communicator)");
+                    Console.WriteLine("         file  (Writes an entire file)");
+                    Console.WriteLine("         exit  (Exits Moosebox Serial Communicator)");
                 }
                 else if (input.Equals("read"))
                 {
