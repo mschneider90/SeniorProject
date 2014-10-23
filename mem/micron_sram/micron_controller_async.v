@@ -22,7 +22,9 @@ module micron_controller_async #(parameter A_WIDTH = 23,
                            output reg mlb_L,  //lower byte
                            output reg mce_L,  //chip enable
                            output reg mcre,   //control register enable
-                           input  mwait); //wait
+                           input  mwait, //wait
+                           output[7:0] debug_out); 
+                          
             
 //Constants            
 parameter ASSERT = 1;
@@ -121,6 +123,9 @@ d_reg #(.WIDTH(A_WIDTH)) maddrReg
         .q(addr_reg_out));
         
 assign maddr = addr_reg_out;
+
+//DEBUG
+assign debug_out = addr_reg_out[7:0];
 
 //Wait output
 reg bwait_en;

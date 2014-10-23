@@ -51,7 +51,8 @@ micron_controller_async sramctrl(.clk50MHz(clk50MHz),
                        .mlb_L(mlb_L),
                        .mce_L(mce_L),
                        .mcre(mcre),
-                       .mwait(mwait)
+                       .mwait(mwait),
+                       .debug_out(debug_out)
                       ); 
                                        
 uartInterface master(.bus_in(bus),

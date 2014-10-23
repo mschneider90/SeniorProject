@@ -28,7 +28,8 @@ tb_async_micron_controller ctrl(.clk50MHz(clk50MHz),
                                .maddr(maddr),
                                .mem_data(mdata),
                                .rx(rx),
-                               .tx(tx));
+                               .tx(tx),
+                               .debug_out(debug_out));
 
 parameter UART_BAUD = 9600;
 parameter INPUT_CLOCK = 50000000;
@@ -66,21 +67,21 @@ initial begin
     // Data Byte 0: 0x00
     rx = 0; // start
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 1; // 0
+    rx = 0; // 0
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 1; // 1
+    rx = 0; // 1
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 0; // 2
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 1; // 3
+    rx = 0; // 3
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 0; // 4
+    rx = 1; // 4
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // 5
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 0; // 6
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 1; // 7
+    rx = 0; // 7
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 1; // stop 1
     
@@ -293,9 +294,9 @@ initial begin
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 0; // 3
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 0; // 4
+    rx = 1; // 4
     #(CLOCKS_BETWEEN_BITS * 20)
-    rx = 0; // 5
+    rx = 1; // 5
     #(CLOCKS_BETWEEN_BITS * 20)
     rx = 0; // 6
     #(CLOCKS_BETWEEN_BITS * 20)
