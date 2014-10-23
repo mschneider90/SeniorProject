@@ -77,10 +77,13 @@ count_reg #(.D_WIDTH(2)) wait_counter
                        .count_load(0));
 
 reg[D_WIDTH-1:0] mem[NUM_ELEMENTS-1:0];
-reg[D_WIDTH-1:0] data_reg;
+//reg[D_WIDTH-1:0] data_reg;
 
 reg data_out_en;
-assign data = (data_out_en && ce_L == ASSERT_L)? data_reg : 'bz;
+wire [D_WIDTH-1:0] data_out;
+assign data_out = (currentState == STATE_IDLE)? BCR_CONFIG : mem[currentAddr];
+//assign data = (data_out_en && ce_L == ASSERT_L)? data_out : 'bz;
+assign data = (oe_L == ASSERT_L)? data_out : 'bz;
 
 reg mem_wait_en;
 assign mem_wait = (mem_wait_en)? ASSERT : DEASSERT;
@@ -89,7 +92,7 @@ integer i;
 initial begin
     currentState <= STATE_IDLE;
     nextState <= STATE_IDLE;
-    data_reg <= 0;
+    //data_reg <= 0;
     for (i = 0; i<NUM_ELEMENTS; i = i + 1) begin
         mem[i] <= 0;
     end
@@ -171,7 +174,7 @@ always@(*) begin
             addr_en <= DEASSERT;
         end
         STATE_READ_DATA: begin
-            data_reg <= mem[currentAddr];
+            //data_reg <= mem[currentAddr];
             mem_wait_en <= DEASSERT;
             if (oe_L == ASSERT_L) begin
                 data_out_en <= ASSERT;

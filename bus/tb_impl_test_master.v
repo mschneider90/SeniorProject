@@ -21,7 +21,8 @@ parameter STATE_READ_DATA = 5;
 parameter STATE_FINISH = 6;
 parameter STATE_IDLE = 0;
 
-parameter BURST_LENGTH = 4;
+parameter BURST_LENGTH_ACTUAL = 1;
+parameter BURST_LENGTH_BUS = 3'b000; //burst of 1
 
 reg [3:0] nextState;
 reg [3:0] currentState;
@@ -37,7 +38,7 @@ always@(posedge clk) begin
     end
 end
 assign ctrl_out = {3'b000, //not used
-                   3'b010, //burst = 4
+                   BURST_LENGTH_BUS, 
                    we,     
                    1'b0 };    //wait 
                   
@@ -84,10 +85,10 @@ end
 reg bus_data_sel;
 always@(*) begin
     if (bus_data_sel == 0) begin
-        bus_out <= 0;
+        bus_out <= 1;
     end
     else begin
-        bus_out <= counter;
+        bus_out <= counter + 1; //ouput 1, 2, 3, 4, etc
     end
 end
 
@@ -181,7 +182,7 @@ always@(*) begin
             end
         end
         STATE_WRITE_DATA: begin
-            if (counter == BURST_LENGTH - 1) begin
+            if (counter == BURST_LENGTH_ACTUAL - 1) begin
                 nextState <= STATE_IDLE;
             end
             else begin
@@ -189,7 +190,7 @@ always@(*) begin
             end
         end
         STATE_READ_DATA: begin
-            if (counter == BURST_LENGTH - 1) begin
+            if (counter == BURST_LENGTH_ACTUAL - 1) begin
                 nextState <= STATE_FINISH;
             end
             else begin

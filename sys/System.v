@@ -62,7 +62,7 @@ imem instr_mem(.addr(pc[7:2]),
 
 wire [D_WIDTH-1:0] sram_data_out;
 wire [C_WIDTH-1:0] sram_ctrl_out;
-micron_controller sram_ctrl(.clk50MHz(clk50MHz),
+micron_controller_async sram_ctrl(.clk50MHz(clk50MHz),
                            .bus_ctrl_in(bus_ctrl),
                            .bus_ctrl_out(sram_ctrl_out),
                            .bus_ack(bus_ack[RAM_BUS_ID]),
