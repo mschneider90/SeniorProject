@@ -81,14 +81,44 @@ always@(posedge clk) begin
     end
 end
 
+reg [31:0] addr_magazine [3:0];
+reg [31:0] data_magazine [3:0];
+
+initial begin //init addr and data magazines
+    addr_magazine[0] <= 0;
+    addr_magazine[1] <= 1;
+    addr_magazine[2] <= 2;
+    addr_magazine[3] <= 3;
+    
+    data_magazine[0] <= 0;
+    data_magazine[1] <= 1;
+    data_magazine[2] <= 2;
+    data_magazine[3] <= 3;
+end
+
+reg[2:0] round_counter;
+initial begin
+    round_counter <= 0;
+end
+
+reg round_count_en;
+always@(posedge clk) begin
+    if (round_count_en) begin
+        round_counter <= round_counter + 1;
+    end
+    else begin
+        round_counter <= round_counter;
+    end
+end
+
 //bus data mux
 reg bus_data_sel;
 always@(*) begin
     if (bus_data_sel == 0) begin //ADDRESS
-        bus_out <= 32'h01000020;   //put adddress here
+        bus_out <= addr_magazine[round_counter];   //put adddress here
     end
     else begin
-        bus_out <= 32'h00000CEB;//counter + 1; //ouput 1, 2, 3, 4, etc // put data here
+        bus_out <= data_magazine[round_counter];//counter + 1; //ouput 1, 2, 3, 4, etc // put data here
     end
 end
 
@@ -100,48 +130,61 @@ always@(*) begin
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
+            round_count_en <= 0;
         end
         STATE_REQ: begin
             req <= 1;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
+            round_count_en <= 0;
         end
         STATE_PRESENT_ADDR: begin
             req <= 1;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
+            round_count_en <= 0;
         end
         STATE_SLAVE_WAIT: begin
             req <= 1;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
+            round_count_en <= 0;
         end
         STATE_WRITE_DATA: begin
             req <= 1;
             counter_en <= 1;
             data_we <= 0;
             bus_data_sel <= 1;
+            round_count_en <= 0;
         end
         STATE_READ_DATA: begin
             req <= 1;
             counter_en <= 1;
             data_we <= 1;
             bus_data_sel <= 0;
+            round_count_en <= 0;
         end
         STATE_FINISH: begin
             req <= 0;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
+            if (round_counter == 3) begin
+                round_counter <= 3;
+            end
+            else begin
+                round_count_en <= 1;
+            end
         end
         default: begin
             req <= 0;
             counter_en <= 0;
             data_we <= 0;
             bus_data_sel <= 0;
+            round_count_en <= 1;
         end
     endcase
 end
