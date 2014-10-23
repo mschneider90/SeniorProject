@@ -313,6 +313,13 @@ mixer_8bit_4ch mixer (
 	.out (audio_out)
 );
 
+
+initial 
+begin
+note_clk <= 0;
+note_clk_count <= 0;
+
+end
 always@ (posedge clk50MHz) 
 begin
 
