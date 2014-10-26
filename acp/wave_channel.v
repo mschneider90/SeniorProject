@@ -1,22 +1,16 @@
-`timescale 1ns / 1ns//////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    15:30:21 08/31/2014 
-// Design Name: 
-// Module Name:    wave_channel 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
+`timescale 1ns / 1ns
+
 //////////////////////////////////////////////////////////////////////////////////
+// Engineer: Paul Mayzeles
+// Create Date:    15:30:21 08/31/2014 
+// Module Name:    sq_channel: the square wave generator. 
+// (C) Paul Mayzeles and Michael Schneider. 2014. 
+// This code may be used freely as long as the original authors are credited. 
+// Fueled by coffee, breakfast bagels, and Sriracha hot sauce. 
+
+//notes: will add duty cycle modifier on FX reg if time permits. (1/16, 1/8, 1/4, 1/2 duty waves) 
+
+
 module sq_channel( 	note_in,
 							note_clk,
 							note_rst,

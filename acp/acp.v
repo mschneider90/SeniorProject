@@ -303,13 +303,44 @@ sq_channel sqch1 (
 			.wave_out	(sq1[3:0])
 );
 
+tr_channel trch2 (
+			.note_in		(ch2_notein[5:0]),
+			.note_clk	(note_clk),
+			.note_rst	(ch2_rst),
+			.note_length (ch2_len[2:0]), 
+			.env_atk		(fx2_atk[1:0]), //envelope attack and decay
+			.env_dec		(fx2_dec[1:0]),
+			.fx_sel		(fx2_sel[1:0]),
+			.fx_optA		(fx2_optA[1:0]),
+			.fx_optB		(fx2_optB[1:0]),
+			.clk50mhz	(clk50MHz),
+			.wave_out	(tr2[3:0])
+);
+
+nz_channel nzch3 (
+			.note_in		(ch3_notein[5:0]),
+			.note_clk	(note_clk),
+			.note_rst	(ch3_rst),
+			.note_length (ch3_len[2:0]), 
+			.env_atk		(fx3_atk[1:0]), //envelope attack and decay
+			.env_dec		(fx3_dec[1:0]),
+			.fx_sel		(fx3_sel[1:0]),
+			.fx_optA		(fx3_optA[1:0]),
+			.fx_optB		(fx3_optB[1:0]),
+			.clk50mhz	(clk50MHz),
+			.wave_out	(nz3[3:0])
+);
+
 
 mixer_8bit_4ch mixer (
-	.in1 (sq0[3:0]),
-	.in2 (sq1[3:0]),
-	.in3 (4'b0000),
-	.in4 (4'b0000),
-	.vol1 (ch0_vol), 
+	.in0 (sq0[3:0]),
+	.in1 (sq1[3:0]),
+	.in2 (tr2[3:0]),
+	.in3 (nz3[3:0]),
+	.vol0 (ch0_vol),
+	.vol1 (ch1_vol),
+	.vol2 (ch2_vol),
+	.vol3 (ch3_vol),
 	.out (audio_out)
 );
 
