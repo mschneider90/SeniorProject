@@ -17,6 +17,7 @@
 
 module acp(
 				input clk50MHz,
+				input clk25MHz,
 				input [31:0] m_bus_in,
 				input m_ack,
 				input [7:0] m_ctrl_in,
@@ -34,7 +35,7 @@ module acp(
 acp_mem_interface acp_memctrl(
 		.bus_in		(m_bus_in),
 		.ack			(m_ack),
-		.clk			(clk50MHz),
+		.clk			(clk25MHz),
 //		.bus_out		({16'b0, ),     //[31:0] 
 		.ctrl_in		(m_ctrl_in),
 		.ctrl_out	(m_ctrl_out),
@@ -131,7 +132,7 @@ wire [3:0] nz3;
 
 //Address register. The ACP register address being written to is loaded in here. 
 d_reg address_register(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(m_addr_we),
 	.d 		(m_bus_in[15:0]),
@@ -156,7 +157,7 @@ decoder_1to8 address_decoder(
 
 //channel 0: square wave 0 
 d_reg #(.WIDTH(16)) ch0_notereg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch0_nr_we),
 	.d 		(m_bus_in[15:0]),
@@ -166,7 +167,7 @@ d_reg #(.WIDTH(16)) ch0_notereg(
 
 
 d_reg #(.WIDTH(16)) ch0_fxreg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch0_fx_we),
 	.d 		(m_bus_in[15:0]),
@@ -186,7 +187,7 @@ assign fx0_atk = ch0_fxreg_out[1:0];
 
 //channel 1: square wave 1
 d_reg #(.WIDTH(16)) ch1_notereg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch1_nr_we),
 	.d 		(m_bus_in[15:0]),
@@ -194,7 +195,7 @@ d_reg #(.WIDTH(16)) ch1_notereg(
 );
 
 d_reg #(.WIDTH(16)) ch1_fxreg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch1_fx_we),
 	.d 		(m_bus_in[15:0]),
@@ -214,7 +215,7 @@ assign fx1_atk = ch1_fxreg_out[1:0];
 
 //channel 2: triangle wave
 d_reg #(.WIDTH(16)) ch2_notereg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch2_nr_we),
 	.d 		(m_bus_in[15:0]),
@@ -222,7 +223,7 @@ d_reg #(.WIDTH(16)) ch2_notereg(
 );
 
 d_reg #(.WIDTH(16)) ch2_fxreg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch2_fx_we),
 	.d 		(m_bus_in[15:0]),
@@ -242,7 +243,7 @@ assign fx2_atk = ch2_fxreg_out[1:0];
 
 //channel 3: noise channel 
 d_reg #(.WIDTH(16)) ch3_notereg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch3_nr_we),
 	.d 		(m_bus_in[15:0]),
@@ -250,7 +251,7 @@ d_reg #(.WIDTH(16)) ch3_notereg(
 );
 
 d_reg #(.WIDTH(16)) ch3_fxreg(
-	.clk		(clk50MHz),
+	.clk		(clk25MHz),
 	.reset	(1'b0),
 	.en		(ch3_fx_we),
 	.d 		(m_bus_in[15:0]),

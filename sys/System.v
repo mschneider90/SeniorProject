@@ -97,7 +97,8 @@ micron_controller_async sram_ctrl(.clk50MHz(clk25MHz),
 // updated 10.19
 wire[C_WIDTH-1:0] acp_ctrl_out;
 acp		AudioCopper(
-				.clk50MHz	(clk25MHz),
+				.clk50MHz	(clk50MHz),
+				.clk25MHz	(clk25MHz),
 				.m_bus_in	(bus_data), 	//[31:0]
 				.m_ack		(bus_ack[ACP_BUS_ID]),
 				.m_ctrl_in	(bus_ctrl), 	//[7:0]
