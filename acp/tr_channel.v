@@ -1,22 +1,22 @@
-`timescale 1ns / 1ns
-
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Engineer: Paul Mayzeles
-// Create Date:    15:30:21 08/31/2014 
-// Module Name:    sq_channel: the square wave generator. 
+// Create Date:    12:37:53 10/26/2014 
+// Module Name:    tr_channel: the triangle wave channel.  
 // (C) Paul Mayzeles and Michael Schneider. 2014. 
 // This code may be used freely as long as the original authors are credited. 
-// Fueled by coffee, breakfast bagels, and Sriracha hot sauce. 
+// Finding inspiration through moose-related meditation and moose accessories. 
 
-//notes: will add duty cycle modifier on FX reg if time permits. (1/16, 1/8, 1/4, 1/2 duty waves) 
+// notes: no envelope control for the triangle channel 
+// because that's how dad did it, that's how game boy did it, 
+// and it's worked out pretty well so far. 
 
-
-module sq_channel( 	note_in,
+module tr_channel( 	note_in,
 							note_clk,
 							note_rst,
 							note_length,
-							env_atk, //envelope attack and decay
-							env_dec,
+							env_atk, //envelope attack and decay are unwired in tr_channel 
+							env_dec, //env dec is unwired in tr_channel. preserved for ease of programming
 							fx_sel,
 							fx_optA,
 							fx_optB,
@@ -108,7 +108,7 @@ end
 	
 
 	
-FX_porta sq_porta (
+FX_porta tr_porta (
 	.note_in 	(note_in),
 	.note_clk	(note_clk),
 	.note_out	(porta_out),
@@ -118,7 +118,7 @@ FX_porta sq_porta (
 	);
 	
 	
-FX_vibrato sq_vibra (
+FX_vibrato tr_vibra (
 	.note_in		(note_in),  //6 bits
 	.note_clk	(note_clk), //1 bit
 	.note_out	(vibra_out), //6 bits
@@ -130,7 +130,7 @@ FX_vibrato sq_vibra (
 	.clk50mhz	(clk50mhz) //1 bit
 );
 	
-mux4to1 sq_FX_mux (
+mux4to1 tr_FX_mux (
 	.in_a		(note_in),
 	.in_b		(porta_out),
 	.in_c		(vibra_out),
@@ -139,7 +139,7 @@ mux4to1 sq_FX_mux (
 	.mux_out	(fx_mux_out)
 );
 
-mux_4to1_4bit vibrato_offset_mux (
+mux_4to1_4bit vibrato_offset_mux_tr (
 	.in_a		(4'b0),
 	.in_b		(4'b0),
 	.in_c		({{vibra_offset_dir},{vibra_offset_mul[2:0]}}),
@@ -148,7 +148,7 @@ mux_4to1_4bit vibrato_offset_mux (
 	.mux_out	(vib_offset_mux_out)
 );
 
-base_freq_genx64 sq_freqgen ( //SQUARE CHANNEL 1
+base_freq_genx64 tr_freqgen ( //SQUARE CHANNEL 1
 	.note_in		(fx_mux_out),
 	.clk50mhz	(clk50mhz),
 	.freq_out	(basefreq),
@@ -159,16 +159,16 @@ base_freq_genx64 sq_freqgen ( //SQUARE CHANNEL 1
 BUFG freq1_bufg (.I (basefreq), .O (buffreq)); //a clock buffer? 
 	 
 //SQUARE WAVE CHANNEL
-square_gen sqgen1 ( 	
+trigen triangle_generator ( 	
 	.base_freq	(buffreq),
 	.square_out	(sq_out),
-	.en			(sq_en) ///////////////////////CHANGE THIS; link to envelope controller 
+	.en			(sq_en) //CHANGE THIS; link to envelope controller 
 );
 
 //Envelope Controller
 envelope_control envelope_sq(
-		.attack 		(env_atk),
-		.decay 		(env_dec),
+		.attack 		(2'b00),  //triangle channel does not support atk/dec
+		.decay 		(2'b00),  //triangle channel does not support atk/dec 
 		.length		(note_length),
 		.enable_out	(sq_en),
 		.rst			(note_rst),
@@ -176,5 +176,8 @@ envelope_control envelope_sq(
 		.square_in	(sq_out),
 		.square_out (wave_out)
 );
+
+
+
 
 endmodule

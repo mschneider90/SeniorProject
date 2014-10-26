@@ -1,5 +1,15 @@
 `timescale 1ns / 1ns
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////
+// Engineer: Paul Mayzeles
+// Create Date:    unknown
+// Module Name:    trigen: the triangular wave generator.   
+// (C) Paul Mayzeles and Michael Schneider. 2014. 
+// This code may be used freely as long as the original authors are credited. 
+// We know we're cool. But you can tell us anyway. 
+
+// Based on the triangle wave used in the Nintendo Entertainment System. 
+// Generates a series of 4-bit samples approximating a triangle wave in 32 cycles. 
+
 
 module trigen(	base_freq,
 					triangle_out,
