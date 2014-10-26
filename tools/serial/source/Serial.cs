@@ -160,21 +160,19 @@ namespace MooseboxSerial
 
                     for (int i = 0; i < lines.Length; i++ )
                     {
-                        uint note = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
-
-                        uint note_r0 = (note >> 16);           //MSB
-                        uint note_r1 = (note  & 0x0000FFFFF);  //LSB
-                        
-                        if (note_r0 != 0)
+                        String[] regs = lines[i].Split(',');
+                        for (uint j = 0; j < regs.Length; j++)
                         {
-                            serialWrite(serial, 0, note_r0, false);
+                            uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
+                        
+                            if (!(note == 0 && j % 2 == 0)) // Only write note regs if they are non-zero
+                            {
+                                serialWrite(serial, j, note, false);
+                            }   
+                            Thread.Sleep(1);
                         }
 
-                        //Thread.Sleep(2);
-
-                        //serialWrite(serial, 1, note_r1, false);
-
-                        Thread.Sleep(112);
+                        Thread.Sleep(100);
                     }
                 }
                 else if (input.Equals("exit"))
