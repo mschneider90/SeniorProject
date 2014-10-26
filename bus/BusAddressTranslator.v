@@ -20,19 +20,19 @@ parameter VGA_LOW  = 32'h00000020;
 parameter VGA_HIGH = 32'h0000002F;
 parameter VGA_ID = 2;
 
-// CPU instruction memory - 4096 x 32 bits
+// CPU registers and instruction memory - 32 x 32 bits + 4096 x 32 bits
 parameter CPU_LOW =  32'h00000030;
-parameter CPU_HIGH = 32'h0000102F;
+parameter CPU_HIGH = 32'h0000104F;
 parameter CPU_ID = 7;
 
 // RAM - 8M x 16 bits = 16MB
-parameter RAM_LOW  = 32'h00001030;
-parameter RAM_HIGH = 32'h0100102F;
+parameter RAM_LOW  = 32'h00001050;
+parameter RAM_HIGH = 32'h0100104F;
 parameter RAM_ID = 0;
 
 // ROM - 8M x 16 bits = 16MB
-parameter ROM_LOW  = 32'h01001030;
-parameter ROM_HIGH = 32'h0200102F;
+parameter ROM_LOW  = 32'h01001050;
+parameter ROM_HIGH = 32'h0200104F;
 parameter ROM_ID = 1;
 
 always@(*) begin
