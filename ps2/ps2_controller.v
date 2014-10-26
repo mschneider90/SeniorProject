@@ -6,11 +6,12 @@ module PS2Controller #(parameter DATA_WIDTH = 8,
                     (input ps2_data_in,
                      input clk_ps2,
                      input clk,
-                     input[BUS_WIDTH-1:0] bus_in,
                      input ack,
-                     input[CTRL_WIDTH-1:0] bus_ctrl_in,
+                     input[BUS_WIDTH-1:0] bus_in,
                      output[BUS_WIDTH-1:0] bus_out,
                      output[CTRL_WIDTH-1:0] ctrl_out);
+                     
+assign ctrl_out = 8'b0; //Never wait
                        
 wire interface_valid;
 
@@ -48,9 +49,7 @@ d_reg_sync #(.WIDTH(DATA_WIDTH)) last_data_reg(.d(ps2_data), //Prevents "double 
                            .reset(reset),
                            .clk(clk),
                            .q(last_data));                                     
-												
-reg bus_wait_out;
-assign ctrl_out[0] = bus_wait_out;
+											
 
 // PS/2 Scan Codes
 // Break code shared by all of the following keys
@@ -183,11 +182,11 @@ mux10to1 read_mux(.in_0(e_pressed),
                   .in_2(a_pressed),
                   .in_3(s_pressed),
                   .in_4(d_pressed),
-                  .in_5(kp7_we),
-                  .in_6(kp8_we),
-                  .in_7(kp4_we),
-                  .in_8(kp5_we),
-                  .in_9(kp6_we),
+                  .in_5(kp7_pressed),
+                  .in_6(kp8_pressed),
+                  .in_7(kp4_pressed),
+                  .in_8(kp5_pressed),
+                  .in_9(kp6_pressed),
                   .sel(addr),
                   .mux_out(bus_out));
                   
@@ -340,26 +339,30 @@ always@(*) begin
     case (currentBusState) 
         STATE_WAIT_FOR_ACK: begin
             if (ack) begin
-                nextState <= STATE_READ_WAIT;
+                nextBusState <= STATE_READ_WAIT;
             end
             else begin
-                nextState <= STATE_WAIT_FOR_ACK;
+                nextBusState <= STATE_WAIT_FOR_ACK;
+            end
         end
         STATE_READ_WAIT: begin
-            nextState <= STATE_READ_DATA;
+            nextBusState <= STATE_READ_DATA;
         end
         STATE_READ_DATA: begin
-            nextState <= STATE_FINISH;
+            nextBusState <= STATE_FINISH;
         end
         STATE_FINISH: begin
-            nextState <= STATE_WAIT_FOR_ACK;
+            nextBusState <= STATE_WAIT_FOR_ACK;
+        end
+        default: begin
+            nextBusState <= STATE_WAIT_FOR_ACK;
         end
     endcase
 end
 
 // Bus interface control signals
 always@(*) begin
-    case (currentBusState) begin
+    case (currentBusState)
         STATE_WAIT_FOR_ACK: begin
             addr_we <= 1;
         end
@@ -370,6 +373,9 @@ always@(*) begin
             addr_we <= 0;
         end
         STATE_FINISH: begin
+            addr_we <= 0;
+        end
+        default: begin
             addr_we <= 0;
         end
     endcase

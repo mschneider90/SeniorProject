@@ -5,17 +5,26 @@ module tb_ps2_controller();
 reg clk;
 reg clk_ps2;
 reg data_in;
+reg ack;
 wire[7:0] data_out;
+reg[31:0] bus_in;
 
 parameter[7:0] w = 8'h1D; 
 parameter[7:0] break_code = 8'hF0;
 
-PS2Controller ps2_ctrl(.clk(clk), .clk_ps2(clk_ps2), .ps2_data_in(data_in), .bus_in(data_in), .bus_out(data_out));
+PS2Controller ps2_ctrl(.clk(clk),
+                       .clk_ps2(clk_ps2),
+                       .ps2_data_in(data_in),
+                       .ack(ack),
+                       .bus_in(bus_in),
+                       .bus_out(data_out));
 
 initial begin
     clk = 1;
     clk_ps2 = 1;
     data_in = 1;
+    bus_in = 1; // read from address 1
+    ack = 0;
     #200
     data_in = 0; //start bit
     #200
@@ -38,6 +47,10 @@ initial begin
     data_in = 1; //parity
     #200
     data_in = 1; //stop bit
+    #100
+    ack = 1;
+    #20
+    ack = 0;
     #600
     data_in = 0; //start bit
     #200
