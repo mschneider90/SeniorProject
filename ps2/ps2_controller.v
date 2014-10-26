@@ -175,7 +175,9 @@ KeyDecoder key_dec (.key_code(ps2_data),
                     .kp4_we(kp4_we),
                     .kp5_we(kp5_we),
                     .kp6_we(kp6_we));
-                    
+
+// Read mux for bus interface
+wire [3:0] addr;             
 mux10to1 read_mux(.in_0(e_pressed),
                   .in_1(w_pressed),
                   .in_2(a_pressed),
@@ -188,6 +190,14 @@ mux10to1 read_mux(.in_0(e_pressed),
                   .in_9(kp6_we),
                   .sel(addr),
                   .mux_out(bus_out));
+                  
+// Stores address from bus
+reg addr_we;
+d_reg_sync #(.WIDTH(4)) addr_reg(.d(bus_in[3:0]),
+                         .en(addr_we),
+                         .reset(reset),
+                         .clk(clk),
+                         .q(addr));
                   
 // PS/2 side of the interface                  
 parameter STATE_RESET = 0;
@@ -211,12 +221,17 @@ reg [1:0] nextBusState;
 initial begin
 	currentState <= STATE_RESET;
 	nextState <= STATE_RESET;
+    
+    currentBusState <= STATE_WAIT_FOR_ACK;
+    nextBusState <= STATE_WAIT_FOR_ACK;
 end
 
 always@(posedge clk) begin
 	currentState <= nextState;
+    currentBusState <= nextBusState;
 end
  
+// PS/2 Interface next state logic
 always@(*) begin
 	case (currentState)
         STATE_RESET: begin
@@ -255,6 +270,7 @@ always@(*) begin
 	endcase
 end
 
+// PS/2 Interface control signals
 always@(*) begin
 	case (currentState) 
         STATE_RESET: begin
@@ -317,6 +333,46 @@ always@(*) begin
             last_data_we <= 0;
         end
 	endcase
+end
+
+// Bus interface next state logic
+always@(*) begin
+    case (currentBusState) 
+        STATE_WAIT_FOR_ACK: begin
+            if (ack) begin
+                nextState <= STATE_READ_WAIT;
+            end
+            else begin
+                nextState <= STATE_WAIT_FOR_ACK;
+        end
+        STATE_READ_WAIT: begin
+            nextState <= STATE_READ_DATA;
+        end
+        STATE_READ_DATA: begin
+            nextState <= STATE_FINISH;
+        end
+        STATE_FINISH: begin
+            nextState <= STATE_WAIT_FOR_ACK;
+        end
+    endcase
+end
+
+// Bus interface control signals
+always@(*) begin
+    case (currentBusState) begin
+        STATE_WAIT_FOR_ACK: begin
+            addr_we <= 1;
+        end
+        STATE_READ_WAIT: begin
+            addr_we <= 0;
+        end
+        STATE_READ_DATA: begin
+            addr_we <= 0;
+        end
+        STATE_FINISH: begin
+            addr_we <= 0;
+        end
+    endcase
 end
 
 endmodule
