@@ -17,8 +17,8 @@ always@(negedge clk) begin
 		q <= 0;
 	else begin
 		if (en) begin
-			q <= q << 1;
-			q[0] <= d;
+			q <= q >> 1;
+			q[7] <= d;
 		end
 	end
 end

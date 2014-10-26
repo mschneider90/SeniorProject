@@ -3,7 +3,6 @@
 module PS2Interface #(parameter DATA_WIDTH = 8)
                      (input clk_ps2,
                       input data_in,
-                      input reset,
                       output[DATA_WIDTH-1:0] data_out,
                       output valid 
                      );
@@ -26,9 +25,9 @@ OddParityCheck p_check(.serial_in(data_in),
                        .parity_valid(parity_valid));
                        
 d_reg #(.WIDTH(8)) d_reg(.d(sreg_out[DATA_WIDTH-1:0]),
-                         .rst(reset),
+                         .reset(data_out_reset),
                          .clk(clk_ps2),
-                         .we(write_en),
+                         .en(write_en),
                          .q(data_out));
                                   
 PS2InterfaceStateController control(.clk(clk_ps2),
@@ -36,6 +35,7 @@ PS2InterfaceStateController control(.clk(clk_ps2),
                                     .shift_en(shift_en),
                                     .write_en(write_en),
                                     .reset(reset),
+                                    .data_out_reset(data_out_reset),
                                     .parity_valid(parity_valid),
                                     .frame_valid(valid));
                             
