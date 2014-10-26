@@ -161,7 +161,7 @@ BUFG freq1_bufg (.I (basefreq), .O (buffreq)); //a clock buffer?
 //SQUARE WAVE CHANNEL
 trigen triangle_generator ( 	
 	.base_freq	(buffreq),
-	.square_out	(sq_out),
+	.triangle_out	(sq_out),
 	.en			(sq_en) //CHANGE THIS; link to envelope controller 
 );
 

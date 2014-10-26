@@ -175,7 +175,7 @@ BUFG freq1_bufg (.I (basefreq), .O (buffreq)); //a clock buffer?
 // noise generator cascade: 
 noise_gen nogen4 (
 	.base_freq (buffreq),
-	.noise_out (wave_out),
+	.noise_out (sq_out),
 	.en		  (sq_en)
 );
 
