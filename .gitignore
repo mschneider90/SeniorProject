@@ -38,6 +38,9 @@
 #asm
 !*.asm
 
+#release folder readmes
+!/release/*/*.txt
+
 #Exceptions to the exceptions (specifically exclude)
 /*/isim
 /*/netgen
