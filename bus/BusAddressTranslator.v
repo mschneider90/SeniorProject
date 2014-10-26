@@ -20,14 +20,19 @@ parameter VGA_LOW  = 32'h00000020;
 parameter VGA_HIGH = 32'h0000002F;
 parameter VGA_ID = 2;
 
+// CPU instruction memory - 4096 x 32 bits
+parameter CPU_LOW =  32'h00000030;
+parameter CPU_HIGH = 32'h0000102F;
+parameter CPU_ID = 7;
+
 // RAM - 8M x 16 bits = 16MB
-parameter RAM_LOW  = 32'h00000030;
-parameter RAM_HIGH = 32'h0100002F;
+parameter RAM_LOW  = 32'h00001030;
+parameter RAM_HIGH = 32'h0100102F;
 parameter RAM_ID = 0;
 
 // ROM - 8M x 16 bits = 16MB
-parameter ROM_LOW  = 32'h01000030;
-parameter ROM_HIGH = 32'h0200002F;
+parameter ROM_LOW  = 32'h01001030;
+parameter ROM_HIGH = 32'h0200102F;
 parameter ROM_ID = 1;
 
 always@(*) begin
@@ -50,6 +55,10 @@ always@(*) begin
     else if (virtual_addr >= ACP_LOW && virtual_addr <= ACP_HIGH) begin
         phys_addr <= virtual_addr - ACP_LOW;
         device_en <= ( 1 << ACP_ID);
+    end
+    else if (virtual_addr >= CPU_LOW && virtual_addr <= CPU_HIGH) begin
+        phys_addr <= virtual_addr - CPU_LOW;
+        device_en <= ( 1 << CPU_ID);
     end
     else begin
         phys_addr <= 0;
