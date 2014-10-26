@@ -9,8 +9,9 @@ module PS2Controller #(parameter DATA_WIDTH = 8,
                      input ack,
                      input[BUS_WIDTH-1:0] bus_in,
                      output[BUS_WIDTH-1:0] bus_out,
-                     output[CTRL_WIDTH-1:0] ctrl_out);
-                     
+                     output[CTRL_WIDTH-1:0] ctrl_out,
+                     output[4:0] debug_out);
+                                    
 assign ctrl_out = 8'b0; //Never wait
                        
 wire interface_valid;
@@ -42,13 +43,13 @@ d_reg_sync #(.WIDTH(DATA_WIDTH)) reg_out(.d(sync_reg_out),
                            .clk(clk),
                            .q(ps2_data));
                            
-reg last_data_we;
-wire [DATA_WIDTH-1:0] last_data;
-d_reg_sync #(.WIDTH(DATA_WIDTH)) last_data_reg(.d(ps2_data), //Prevents "double dipping" from one PS/2 frame
-                           .en(last_data_we),
-                           .reset(reset),
-                           .clk(clk),
-                           .q(last_data));                                     
+reg valid_reset;
+wire data_valid;
+d_reg #(.WIDTH(DATA_WIDTH)) valid_reg(.d(1), //Prevents "double dipping" from one PS/2 frame
+                           .en(1),
+                           .reset(valid_reset),
+                           .clk(interface_valid),
+                           .q(data_valid));                                     
 											
 
 // PS/2 Scan Codes
@@ -189,6 +190,9 @@ mux10to1 read_mux(.in_0(e_pressed),
                   .in_9(kp6_pressed),
                   .sel(addr),
                   .mux_out(bus_out));
+  
+// Debug  
+assign debug_out = {e_pressed, w_pressed, a_pressed, s_pressed, d_pressed};
                   
 // Stores address from bus
 reg addr_we;
@@ -237,7 +241,7 @@ always@(*) begin
             nextState <= STATE_IDLE;
         end
 		STATE_IDLE: begin
-			if (interface_valid) begin
+			if (data_valid) begin
                 nextState <= STATE_PS2_SYNC;
 			end
 			else begin
@@ -248,17 +252,12 @@ always@(*) begin
 			nextState <= STATE_PS2_DATA;
 		end
 		STATE_PS2_DATA: begin
-			if (ps2_data == last_data) begin
-				nextState <= STATE_IDLE;
-			end
-			else begin
-                if (ps2_data == PS2_BREAK) begin
-                    nextState <= STATE_IDLE;
-                end
-                else begin
-                    nextState <= STATE_PS2_PROCESSKEY;
-                end
-			end
+            if (ps2_data == PS2_BREAK) begin
+                nextState <= STATE_IDLE;
+            end
+            else begin
+                nextState <= STATE_PS2_PROCESSKEY;
+            end
 		end
 		STATE_PS2_PROCESSKEY: begin
 			nextState <= STATE_IDLE;
@@ -279,7 +278,7 @@ always@(*) begin
             break_we <= 0;
             key_dec_en <= 0;
             key_rst <= 1;
-            last_data_we <= 0;
+            valid_reset <= 1;
         end
 		STATE_IDLE: begin
             reset <= 0;
@@ -288,7 +287,7 @@ always@(*) begin
             break_we <= 0;
             key_dec_en <= 0;
             key_rst <= 0;
-            last_data_we <= 0;
+            valid_reset <= 0;
 		end
 		STATE_PS2_SYNC: begin
             reset <= 0;
@@ -297,7 +296,7 @@ always@(*) begin
             break_we <= 0;
             key_dec_en <= 0;
             key_rst <= 0;
-            last_data_we <= 0;
+            valid_reset <= 1;
 		end
 		STATE_PS2_DATA: begin
             reset <= 0;
@@ -311,7 +310,7 @@ always@(*) begin
             end
             key_dec_en <= 0;
             key_rst <= 0;
-            last_data_we <= 1;
+            valid_reset <= 0;
 		end
 		STATE_PS2_PROCESSKEY: begin
             reset <= 0;
@@ -320,7 +319,7 @@ always@(*) begin
             break_we <= 0;
             key_dec_en <= 1;
             key_rst <= 0;
-            last_data_we <= 0;
+            valid_reset <= 0;
 		end
         default: begin
             reset <= 0;
@@ -329,7 +328,7 @@ always@(*) begin
             break_we <= 0;
             key_dec_en <= 0;
             key_rst <= 0;
-            last_data_we <= 0;
+            valid_reset <= 0;
         end
 	endcase
 end
