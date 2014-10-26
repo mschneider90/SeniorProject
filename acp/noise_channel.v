@@ -203,7 +203,7 @@ module noise_gen(
 input base_freq;
 input en;
 reg [5:0] count;
-output reg [4:0] noise_out;
+output reg [3:0] noise_out;
 
 wire [15:0] lsfr_data;
 

@@ -166,7 +166,7 @@ trigen triangle_generator (
 );
 
 //Envelope Controller
-envelope_control envelope_sq(
+tri_length_control tri_len_ctrl(
 		.attack 		(2'b00),  //triangle channel does not support atk/dec
 		.decay 		(2'b00),  //triangle channel does not support atk/dec 
 		.length		(note_length),
