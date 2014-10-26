@@ -1,0 +1,16 @@
+#Display the word on the LEDs
+NET "debug_out<0>" LOC = "R4";
+NET "debug_out<1>" LOC = "F4";
+NET "debug_out<2>" LOC = "P15";
+NET "debug_out<3>" LOC = "E17";
+NET "debug_out<4>" LOC = "K14"; 
+
+#PS/2 connector
+NET "clk_ps2" LOC = "R12";
+NET "ps2_data_in" LOC = "P11";
+
+#Fix PAR error
+NET "clk_ps2" CLOCK_DEDICATED_ROUTE = FALSE;
+
+#17KHz max clock rate
+NET "clk_ps2" PERIOD = 58823;
