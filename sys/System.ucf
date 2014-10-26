@@ -88,3 +88,9 @@ NET audio_out<7> LOC = M16; //pmod 10
 # UART
 NET "tx" LOC = "P9";
 NET "rx" LOC = "U6";
+
+# PS/2
+NET "clk_ps2" LOC = "R12";
+NET "ps2_data_in" LOC = "P11";
+# Fix PAR error
+NET "clk_ps2" CLOCK_DEDICATED_ROUTE = FALSE;
