@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module PS2Controller #(DATA_WIDTH = 8,
+module PS2Controller #(parameter DATA_WIDTH = 8,
                        BUS_WIDTH = 32,
                        CTRL_WIDTH = 8)
                     (input ps2_data_in,
@@ -189,14 +189,24 @@ mux10to1 read_mux(.in_0(e_pressed),
                   .sel(addr),
                   .mux_out(bus_out));
                   
+// PS/2 side of the interface                  
 parameter STATE_RESET = 0;
 parameter STATE_IDLE = 1;
 parameter STATE_PS2_SYNC = 2;
 parameter STATE_PS2_DATA = 3;
 parameter STATE_PS2_PROCESSKEY = 4;
-                                    
+
 reg [2:0] currentState;
 reg [2:0] nextState;
+
+// Bus side of the interface
+parameter STATE_WAIT_FOR_ACK = 0;
+parameter STATE_READ_WAIT = 1;
+parameter STATE_READ_DATA = 2;
+parameter STATE_FINISH = 3;
+                                    
+reg [1:0] currentBusState;
+reg [1:0] nextBusState;
 
 initial begin
 	currentState <= STATE_RESET;
