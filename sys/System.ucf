@@ -1,6 +1,6 @@
 NET "clk50MHz" LOC = "B8";
 # Timing constraing for clock @ 50MHz
-NET "clk50MHz" PERIOD = 20;
+NET "clk50MHz" PERIOD = 40;
 
 //Micron SRAM control signals
 NET "moe_L" LOC = "T2";
@@ -28,14 +28,14 @@ NET "maddr<12>" LOC = "G5";
 NET "maddr<13>" LOC = "G4";
 NET "maddr<14>" LOC = "F2";
 NET "maddr<15>" LOC = "E1";
-#NET "baddr<16>" = "M5";
-#NET "baddr<17>" = "E2";
-#NET "baddr<18>" = "C2";
-#NET "baddr<19>" = "C1";
-#NET "baddr<20>" = "D2";
-#NET "baddr<21>" = "K3";
-#NET "baddr<22>" = "D1";
-#NET "baddr<23>" = "K6";
+NET "maddr<16>" LOC = "M5";
+NET "maddr<17>" LOC = "E2";
+NET "maddr<18>" LOC = "C2";
+NET "maddr<19>" LOC = "C1";
+NET "maddr<20>" LOC = "D2";
+NET "maddr<21>" LOC = "K3";
+NET "maddr<22>" LOC = "D1";
+#NET "maddr<23>" = "K6";
 
 #Data bus
 NET "mem_data<0>" LOC = "L1";
@@ -56,14 +56,14 @@ NET "mem_data<14>" LOC = "R3";
 NET "mem_data<15>" LOC = "T1";
 
 #LED out
-NET "debug_rd4<7>" LOC = "R4";
-NET "debug_rd4<6>" LOC = "F4";
-NET "debug_rd4<5>" LOC = "P15";
-NET "debug_rd4<4>" LOC = "E17";
-NET "debug_rd4<3>" LOC = "K14"; 
-NET "debug_rd4<2>" LOC = "K15";
-NET "debug_rd4<1>" LOC = "J15";
-NET "debug_rd4<0>" LOC = "J14";
+#NET "debug_rd4<7>" LOC = "R4";
+#NET "debug_rd4<6>" LOC = "F4";
+#NET "debug_rd4<5>" LOC = "P15";
+#NET "debug_rd4<4>" LOC = "E17";
+#NET "debug_rd4<3>" LOC = "K14"; 
+#NET "debug_rd4<2>" LOC = "K15";
+#NET "debug_rd4<1>" LOC = "J15";
+#NET "debug_rd4<0>" LOC = "J14";
 
 #Reset
 NET "reset" LOC = "R17";
@@ -88,3 +88,9 @@ NET audio_out<7> LOC = M16; //pmod 10
 # UART
 NET "tx" LOC = "P9";
 NET "rx" LOC = "U6";
+
+# PS/2
+NET "clk_ps2" LOC = "R12";
+NET "ps2_data_in" LOC = "P11";
+# Fix PAR error
+NET "clk_ps2" CLOCK_DEDICATED_ROUTE = FALSE;

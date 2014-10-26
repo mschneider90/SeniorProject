@@ -178,6 +178,12 @@ BusAddressTranslator bat(.virtual_addr(bus_mux_out),
                          .phys_addr(phys_addr),
                          .device_en(device_en));
                          
+wire [7:0] reqDropped;
+assign reqDropped = initiatingDevice & req;
+
+wire didReqDrop;
+assign didReqDrop = (reqDropped == 0)? 1:0;
+                         
 // States                  
 reg [2:0] currentState;
 reg [2:0] nextState;
@@ -340,8 +346,8 @@ always@(*) begin
             // Check to see if the initiating device has dropped its REQ flag
             // e.g., initiatingDevice = 0010
             //       current req = 1001
-            // initiatingDevice && req = 0000 -> back to idle
-            if (initiatingDevice && req == 0) begin
+            // initiatingDevice & req = 0000 -> back to idle
+            if (didReqDrop) begin
                 nextState <= STATE_FINISH;
             end
             else begin

@@ -5,38 +5,24 @@ module tb_tb_impl_bus_controller();
 reg clk50MHz;
 reg sw_0;
 reg sw_1;
-reg sw_6;
-reg sw_7;
+reg m1_en;
+reg m2_en;
 
 wire [7:0] debug_out;
 
 tb_impl_bus_controller bus_test(.clk50MHz(clk50MHz),
-                       .sw_7(sw_7),
-                       .sw_6(sw_6),
+                       .master1_en(m1_en),
+                       .master2_en(m2_en),
                        .sw_1(sw_1),
                        .sw_0(sw_0),
                        .debug_out(debug_out));
 
 initial begin
     clk50MHz <= 0;
-    sw_0 <= 0;
-    sw_1 <= 0;
-    sw_6 <= 0;
-    sw_7 <= 0;
-    #20
-    sw_7 <= 1;
-    sw_6 <= 1;
-    #300
-    sw_6 <= 0;
+    m1_en <= 1;
+    m2_en <= 1;
     #400
-    sw_0 <= 1;
-    sw_1 <= 0;
-    #20
-    sw_0 <= 0;
-    sw_1 <= 1;
-    #20
-    sw_0 <= 1;
-    sw_1 <= 1;
+    m2_en <= 0;
 end
 
 always begin

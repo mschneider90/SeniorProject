@@ -24,16 +24,18 @@ OddParityCheck p_check(.serial_in(data_in),
                        .reset(reset),
                        .parity_valid(parity_valid));
                        
-DFlipFlop #(.DATA_WIDTH(8)) d_reg(.d_in(sreg_out[DATA_WIDTH-1:0]),
-                                  .clk(clk_ps2),
-                                  .write_en(write_en),
-                                  .q_out(data_out));
+d_reg #(.WIDTH(8)) d_reg(.d(sreg_out[DATA_WIDTH-1:0]),
+                         .reset(data_out_reset),
+                         .clk(clk_ps2),
+                         .en(write_en),
+                         .q(data_out));
                                   
 PS2InterfaceStateController control(.clk(clk_ps2),
                                     .data(data_in),
                                     .shift_en(shift_en),
                                     .write_en(write_en),
                                     .reset(reset),
+                                    .data_out_reset(data_out_reset),
                                     .parity_valid(parity_valid),
                                     .frame_valid(valid));
                             

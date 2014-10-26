@@ -98,6 +98,24 @@ always@(posedge clk) begin
     end
 end
 
+reg[2:0] burst_length_bcd;
+always@(*) begin
+    case (burst_length)
+        3'b000: burst_length_bcd = 1;
+        3'b001: burst_length_bcd = 2;
+        3'b010: burst_length_bcd = 4;
+        3'b011: burst_length_bcd = 8;
+        default: burst_length_bcd = 1;
+    endcase
+end
+
+reg [4:0] starting_addr;
+always@(posedge clk) begin
+    if (addr_write) begin
+        starting_addr <= bus_in;
+    end
+end
+
 //Data R/W
 //assign bus_out = data[counter];
 
@@ -226,7 +244,7 @@ always@(*) begin
             end
         end
         STATE_READ_DATA: begin
-            if (counter == (1 << burst_length) - 1) begin
+            if (counter == burst_length_bcd + starting_addr - 1) begin
                 nextState <= STATE_FINISH;
             end
             else begin
@@ -234,7 +252,7 @@ always@(*) begin
             end
         end
         STATE_WRITE_DATA: begin
-            if (counter == (1 << burst_length) - 1) begin
+            if (counter == burst_length_bcd + starting_addr - 1) begin
                 nextState <= STATE_FINISH;
             end
             else begin

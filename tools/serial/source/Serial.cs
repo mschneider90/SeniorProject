@@ -58,18 +58,15 @@ namespace MooseboxSerial
                 input = Console.ReadLine();
                 if (input.Equals("help"))
                 {
-                    Console.WriteLine("- HELP > List of commands");
-                    Console.WriteLine("         read  (Reads a single byte)");
-                    Console.WriteLine("         write (Writes a single byte)");
-                    Console.WriteLine("         file  (Writes an entire file)");
-                    Console.WriteLine("         exit  (Exits Moosebox Serial Communicator)");
+                    printHelpText();
+                    
                 }
                 else if (input.Equals("read"))
                 {
                     Console.Write("- READ > Enter address to read from: ");
 
-                    int addr = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
-                    int rxData;
+                    uint addr = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    uint rxData;
 
                     serial.DiscardInBuffer();
 
@@ -87,12 +84,12 @@ namespace MooseboxSerial
                 else if (input.Equals("write"))
                 {
                     Console.Write("- WRITE > Enter address to write to: ");
-                    int addr = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    uint addr = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
 
                     Console.Write("- WRITE > Enter data to write: ");
-                    int data = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    uint data = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
 
-                    if (serialWrite(serial, addr, data))
+                    if (serialWrite(serial, addr, data, true))
                     {
                         Console.WriteLine("- WRITE > Write completed successfully");
                     }
@@ -108,7 +105,7 @@ namespace MooseboxSerial
                     string filePath = Console.ReadLine();
 
                     Console.Write("- FILE > Enter starting address: ");
-                    int startingAddr = int.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    uint startingAddr = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
 
                     string[] lines;
                     try
@@ -122,13 +119,13 @@ namespace MooseboxSerial
                     }
 
                     bool failed = false;
-                    for (int i = 0; i < lines.Length; i++)
+                    for (uint i = 0; i < lines.Length; i++)
                     {
-                        int addr = startingAddr + i;
-                        int data = int.Parse(lines[i], NumberStyles.AllowHexSpecifier);
+                        uint addr = startingAddr + i;
+                        uint data = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
 
                         Console.WriteLine("- FILE > Writing {0:X} to address {1:X}...", data, addr); 
-                        if (!serialWrite(serial, addr, data))
+                        if (!serialWrite(serial, addr, data, true))
                         {
                             Console.WriteLine("- FILE > File write failed");
                             failed = true;
@@ -141,6 +138,45 @@ namespace MooseboxSerial
                         Console.WriteLine("- FILE > File write completed successfully");
                     }
                 }
+                else if (input.Equals("dump"))
+                {
+                    Console.WriteLine("- DUMP > Not yet implemented");
+                }
+                else if (input.Equals("music"))
+                {
+                    Console.Write("- MUSIC > Enter name of music file: ");
+                    string filePath = Console.ReadLine();
+
+                    string[] lines;
+                    try
+                    {
+                        lines = readFile(filePath);
+                    }
+                    catch (IOException)
+                    {
+                        Console.WriteLine("- MUSIC > Failed to open file");
+                        continue;
+                    }
+
+                    for (int i = 0; i < lines.Length; i++ )
+                    {
+                        uint note = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
+
+                        uint note_r0 = (note >> 16);           //MSB
+                        uint note_r1 = (note  & 0x0000FFFFF);  //LSB
+                        
+                        if (note_r0 != 0)
+                        {
+                            serialWrite(serial, 0, note_r0, false);
+                        }
+
+                        //Thread.Sleep(2);
+
+                        //serialWrite(serial, 1, note_r1, false);
+
+                        Thread.Sleep(112);
+                    }
+                }
                 else if (input.Equals("exit"))
                 {
                     serial.Close();
@@ -151,6 +187,17 @@ namespace MooseboxSerial
                     Console.WriteLine("- > Invalid command!");
                 }
             }
+        }
+
+        static void printHelpText()
+        {
+            Console.WriteLine("- HELP > List of commands");
+            Console.WriteLine("         read  (Reads a single byte)");
+            Console.WriteLine("         write (Writes a single byte)");
+            Console.WriteLine("         file  (Writes an entire file)");
+            Console.WriteLine("         dump  (Reads a set of locations into a file");
+            Console.WriteLine("         music (Creates some beeps)");
+            Console.WriteLine("         exit  (Exits Moosebox Serial Communicator)");
         }
 
         static string[] readFile(string filePath)
@@ -204,7 +251,7 @@ namespace MooseboxSerial
             return lines;
         }
 
-        static int serialRead(SerialPort serial, int addr)
+        static uint serialRead(SerialPort serial, uint addr)
         {
             // Must match the value in uartInterface.v
             byte[] READ_COMMAND = {0x55};
@@ -229,7 +276,7 @@ namespace MooseboxSerial
             return toInt(rx_data_bytes);
         }
 
-        static bool serialWrite(SerialPort serial, int addr, int data)
+        static bool serialWrite(SerialPort serial, uint addr, uint data, bool verifyWrite)
         {
             // Must match the value in uartInterface.v
             byte[] WRITE_COMMAND = { 0x56 };
@@ -240,29 +287,34 @@ namespace MooseboxSerial
             Thread.Sleep(1);
             serial.Write(toByteArray(data), 0, 4);
 
-            Thread.Sleep(1);
-            // Check that value was successfully written by reading it back
-            serial.DiscardInBuffer();
-            try
+            if (verifyWrite)
             {
-                if (data == serialRead(serial, addr))
+                Thread.Sleep(1);
+                // Check that value was successfully written by reading it back
+                serial.DiscardInBuffer();
+                try
                 {
-                    return true;
+                    if (data == serialRead(serial, addr))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("- WRITE > ERROR: Verification read did not match");
+                        return false;
+                    }
                 }
-                else
+                catch (TimeoutException)
                 {
-                    Console.WriteLine("- WRITE > ERROR: Verification read did not match");
+                    Console.WriteLine("- WRITE > ERROR: Verification read timed out");
                     return false;
                 }
             }
-            catch (TimeoutException)
-            {
-                Console.WriteLine("- WRITE > ERROR: Verification read timed out");
-                return false;
-            }
+
+            return true;
         }
 
-        static byte[] toByteArray(int val)
+        static byte[] toByteArray(uint val)
         {
             byte[] arr = new byte[4];
             arr[0] = (byte)val;
@@ -273,13 +325,13 @@ namespace MooseboxSerial
             return arr;
         }
 
-        static int toInt(byte[] arr)
+        static uint toInt(byte[] arr)
         {
-            int val = 0;
+            uint val = 0;
             val += arr[0];
-            val += arr[1] << 8;
-            val += arr[2] << 16;
-            val += arr[3] << 24;
+            val += (uint)(arr[1] << 8);
+            val += (uint)(arr[2] << 16);
+            val += (uint)(arr[3] << 24);
 
             return val;
         }

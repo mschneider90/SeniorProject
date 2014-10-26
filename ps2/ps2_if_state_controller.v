@@ -6,6 +6,7 @@ module PS2InterfaceStateController(input clk,
                           output reg shift_en,
                           output reg write_en,
                           output reg reset,
+                          output reg data_out_reset,
                           output reg frame_valid
                          );
 
@@ -36,60 +37,70 @@ always@(*) begin
             shift_en <= 0;
             reset <= 1;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D0: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D1: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D2: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D3: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D4: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D5: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D6: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
         STATE_D7: begin
             write_en <= 0;
             shift_en <= 1;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 1;
         end
         STATE_PARITY: begin
-            write_en <= 0;
+            write_en <= 1;
             shift_en <= 0;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0; // Hold data as long as we can
         end
         STATE_STOP: begin
             write_en <= 1;
@@ -101,12 +112,14 @@ always@(*) begin
             else begin
                 frame_valid <= 0;
             end
+            data_out_reset <= 0;
         end
         default: begin
             write_en <= 0;
             shift_en <= 0;
             reset <= 0;
             frame_valid <= 0;
+            data_out_reset <= 0;
         end
     endcase
 end
