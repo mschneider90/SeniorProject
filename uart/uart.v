@@ -9,7 +9,7 @@ module uart(input clk50MHz,
             input [7:0] data_in,
             input data_in_valid);
 
-parameter UART_BAUD = 9600;
+parameter UART_BAUD = 38400;
 parameter INPUT_CLOCK = 25000000;
 
 parameter CLOCKS_BETWEEN_BITS = INPUT_CLOCK / (UART_BAUD);
