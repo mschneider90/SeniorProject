@@ -31,7 +31,7 @@ namespace MooseboxSerial
             String portName = Console.ReadLine();
 
             // UART settings. These must match the UART transceiver module (uart.v)
-            const int BAUD_RATE = 9600;
+            const int BAUD_RATE = 38400;
             const Parity PARITY = Parity.None;
             const int DATA_BITS = 8;
             const StopBits STOP_BITS = StopBits.One;
@@ -161,18 +161,24 @@ namespace MooseboxSerial
                     for (int i = 0; i < lines.Length; i++ )
                     {
                         String[] regs = lines[i].Split(',');
-                        for (uint j = 0; j < regs.Length; j++)
+                        for (uint j = 1; j < regs.Length; j += 2) // Write effects registers
                         {
-                            uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
-                        
-                            if (!(note == 0 && j % 2 == 0)) // Only write note regs if they are non-zero
-                            {
-                                serialWrite(serial, j, note, false);
-                            }   
-                            Thread.Sleep(1);
+                            uint fx = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
+                            
+                            serialWrite(serial, j, fx, false);
                         }
 
-                        Thread.Sleep(100);
+                        for (uint j = 0; j < regs.Length; j += 2) // Write note registers
+                        {
+                            uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
+
+                            if (note != 0) // Only write note regs if they are non-zero
+                            {
+                                serialWrite(serial, j, note, false);
+                            }
+                        }
+
+                        Thread.Sleep(104);
                     }
                 }
                 else if (input.Equals("exit"))
