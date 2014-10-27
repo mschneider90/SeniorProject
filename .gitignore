@@ -41,6 +41,9 @@
 #release folder readmes
 !/release/*/*.txt
 
+#audio
+!*.paf
+
 #Exceptions to the exceptions (specifically exclude)
 /*/isim
 /*/netgen
