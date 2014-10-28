@@ -11,7 +11,7 @@ namespace MooseboxSerial
     {
         public static void Main()
         {
-            Console.WriteLine("- > MooseBox Serial Communicator MK.I");
+            Console.WriteLine("- > MooseBox Serial Communicator Mk.II");
             Console.WriteLine("- > Enter the name of a serial port from the list below");
 
             string[] portNames = SerialPort.GetPortNames();
@@ -48,24 +48,33 @@ namespace MooseboxSerial
                 return;
             }
             Console.WriteLine("- > Serial port opened successfully");
+            Console.WriteLine("- > Current UART settings");
+            Console.WriteLine("    BAUD: {0}", BAUD_RATE);
+            Console.WriteLine("    Parity: {0}", PARITY);
+            Console.WriteLine("    Data bits: {0}", DATA_BITS);
+            Console.WriteLine("    Stop bits: {0}", STOP_BITS);
 
             bool exit = false;
-            String input;
+            String[] input;
             while (!exit)
             {
                 Console.WriteLine("- > Enter a command, or type 'help'");
                 Console.Write("- > ");
-                input = Console.ReadLine();
-                if (input.Equals("help"))
+                input = Console.ReadLine().Split(' ');
+
+                if (input[0].Equals("help"))
                 {
                     printHelpText();
                     
                 }
-                else if (input.Equals("read"))
+                else if (input[0].Equals("read"))
                 {
-                    Console.Write("- READ > Enter address to read from: ");
-
-                    uint addr = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    if (input.Length != 2)
+                    {
+                        Console.WriteLine("- READ > ERROR: bad arguments");
+                        continue;
+                    }
+                    uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
                     uint rxData;
 
                     serial.DiscardInBuffer();
@@ -81,13 +90,16 @@ namespace MooseboxSerial
 
                     Console.WriteLine("- READ > Received data: {0:X}", rxData);
                 }
-                else if (input.Equals("write"))
+                else if (input[0].Equals("write"))
                 {
-                    Console.Write("- WRITE > Enter address to write to: ");
-                    uint addr = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    if (input.Length != 3)
+                    {
+                        Console.WriteLine("- WRITE > ERROR: bad arguments");
+                        continue;
+                    }
 
-                    Console.Write("- WRITE > Enter data to write: ");
-                    uint data = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
+                    uint data = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
 
                     if (serialWrite(serial, addr, data, true))
                     {
@@ -99,13 +111,16 @@ namespace MooseboxSerial
                     }
                     
                 }
-                else if (input.Equals("file"))
+                else if (input[0].Equals("file"))
                 {
-                    Console.Write("- FILE > Enter name of file to write from: ");
-                    string filePath = Console.ReadLine();
+                    if (input.Length != 3)
+                    {
+                        Console.WriteLine("- FILE > ERROR: bad arguments");
+                        continue;
+                    }
 
-                    Console.Write("- FILE > Enter starting address: ");
-                    uint startingAddr = uint.Parse(Console.ReadLine(), NumberStyles.AllowHexSpecifier);
+                    string filePath = input[1];
+                    uint startingAddr = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
 
                     string[] lines;
                     try
@@ -138,14 +153,19 @@ namespace MooseboxSerial
                         Console.WriteLine("- FILE > File write completed successfully");
                     }
                 }
-                else if (input.Equals("dump"))
+                else if (input[0].Equals("dump"))
                 {
                     Console.WriteLine("- DUMP > Not yet implemented");
                 }
-                else if (input.Equals("music"))
+                else if (input[0].Equals("music"))
                 {
-                    Console.Write("- MUSIC > Enter name of music file: ");
-                    string filePath = Console.ReadLine();
+                    if (input.Length != 2)
+                    {
+                        Console.WriteLine("- MUSIC > ERROR: bad arguments");
+                        continue;
+                    }
+
+                    string filePath = input[1];
 
                     string[] lines;
                     try
@@ -181,7 +201,7 @@ namespace MooseboxSerial
                         Thread.Sleep(104);
                     }
                 }
-                else if (input.Equals("exit"))
+                else if (input[0].Equals("exit"))
                 {
                     serial.Close();
                     exit = true;
@@ -195,13 +215,20 @@ namespace MooseboxSerial
 
         static void printHelpText()
         {
-            Console.WriteLine("- HELP > List of commands");
-            Console.WriteLine("         read  (Reads a single byte)");
-            Console.WriteLine("         write (Writes a single byte)");
-            Console.WriteLine("         file  (Writes an entire file)");
-            Console.WriteLine("         dump  (Reads a set of locations into a file");
-            Console.WriteLine("         music (Creates some beeps)");
-            Console.WriteLine("         exit  (Exits Moosebox Serial Communicator)");
+            Console.WriteLine("- HELP > List of commands. Note that the format for all addresses/data is hex");
+            Console.WriteLine("         read <addr>");
+            Console.WriteLine("            Reads a single byte from the specified address");
+            Console.WriteLine("         write <addr> <data>");
+            Console.WriteLine("            Writes a single byte to the specified address");
+            Console.WriteLine("         file  <file_name> <starting_addr>");
+            Console.WriteLine("            Writes an entire file of bytes starting at the specified address.");
+            Console.WriteLine("            Bytes should be separated with a newline");
+            Console.WriteLine("         dump  <addr> <length> <file_name>");
+            Console.WriteLine("            Reads data starting from address into the specified file");
+            Console.WriteLine("         music <audio_file.paf");
+            Console.WriteLine("            Plays music from a .paf audio file");
+            Console.WriteLine("         exit ");
+            Console.WriteLine("            Exits MooseBox Serial Communicator");
         }
 
         static string[] readFile(string filePath)
