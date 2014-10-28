@@ -64,142 +64,27 @@ namespace MooseboxSerial
 
                 if (input[0].Equals("help"))
                 {
-                    printHelpText();
-                    
+                    doHelpCommand();
                 }
                 else if (input[0].Equals("read"))
                 {
-                    if (input.Length != 2)
-                    {
-                        Console.WriteLine("- READ > ERROR: bad arguments");
-                        continue;
-                    }
-                    uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
-                    uint rxData;
-
-                    serial.DiscardInBuffer();
-
-                    try
-                    {
-                        rxData = serialRead(serial, addr);
-                    } catch (TimeoutException)
-                    {
-                        Console.WriteLine("- READ > ERROR: read timed out");
-                        continue;
-                    }
-
-                    Console.WriteLine("- READ > Received data: {0:X}", rxData);
+                    doReadCommand(serial, input);
                 }
                 else if (input[0].Equals("write"))
                 {
-                    if (input.Length != 3)
-                    {
-                        Console.WriteLine("- WRITE > ERROR: bad arguments");
-                        continue;
-                    }
-
-                    uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
-                    uint data = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
-
-                    if (serialWrite(serial, addr, data, true))
-                    {
-                        Console.WriteLine("- WRITE > Write completed successfully");
-                    }
-                    else
-                    {
-                        Console.WriteLine("- WRITE > ERROR: Write failed");
-                    }
-                    
+                    doWriteCommand(serial, input);
                 }
                 else if (input[0].Equals("file"))
                 {
-                    if (input.Length != 3)
-                    {
-                        Console.WriteLine("- FILE > ERROR: bad arguments");
-                        continue;
-                    }
-
-                    string filePath = input[1];
-                    uint startingAddr = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
-
-                    string[] lines;
-                    try
-                    {
-                        lines = readFile(filePath);
-                    }
-                    catch (IOException)
-                    {
-                        Console.WriteLine("- FILE > Failed to open file");
-                        continue;
-                    }
-
-                    bool failed = false;
-                    for (uint i = 0; i < lines.Length; i++)
-                    {
-                        uint addr = startingAddr + i;
-                        uint data = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
-
-                        Console.WriteLine("- FILE > Writing {0:X} to address {1:X}...", data, addr); 
-                        if (!serialWrite(serial, addr, data, true))
-                        {
-                            Console.WriteLine("- FILE > File write failed");
-                            failed = true;
-                            break;
-                        }
-                        Thread.Sleep(5);
-                    }
-                    if (!failed)
-                    {
-                        Console.WriteLine("- FILE > File write completed successfully");
-                    }
+                    doFileCommand(serial, input);
                 }
                 else if (input[0].Equals("dump"))
                 {
-                    Console.WriteLine("- DUMP > Not yet implemented");
+                    doDumpCommand(serial, input);
                 }
                 else if (input[0].Equals("music"))
                 {
-                    if (input.Length != 2)
-                    {
-                        Console.WriteLine("- MUSIC > ERROR: bad arguments");
-                        continue;
-                    }
-
-                    string filePath = input[1];
-
-                    string[] lines;
-                    try
-                    {
-                        lines = readFile(filePath);
-                    }
-                    catch (IOException)
-                    {
-                        Console.WriteLine("- MUSIC > Failed to open file");
-                        continue;
-                    }
-
-                    for (int i = 0; i < lines.Length; i++ )
-                    {
-                        String[] regs = lines[i].Split(',');
-                        for (uint j = 1; j < regs.Length; j += 2) // Write effects registers
-                        {
-                            uint fx = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
-                            
-                            serialWrite(serial, j, fx, false);
-                        }
-
-                        for (uint j = 0; j < regs.Length; j += 2) // Write note registers
-                        {
-                            uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
-
-                            if (note != 0) // Only write note regs if they are non-zero
-                            {
-                                serialWrite(serial, j, note, false);
-                            }
-                        }
-
-                        Thread.Sleep(104);
-                    }
+                    doMusicCommand(serial, input);
                 }
                 else if (input[0].Equals("exit"))
                 {
@@ -213,7 +98,146 @@ namespace MooseboxSerial
             }
         }
 
-        static void printHelpText()
+        static void doReadCommand(SerialPort serial, string[] input)
+        {
+            if (input.Length != 2)
+            {
+                Console.WriteLine("- READ > ERROR: bad arguments");
+                return;
+            }
+            uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
+            uint rxData;
+
+            serial.DiscardInBuffer();
+
+            try
+            {
+                rxData = serialRead(serial, addr);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine("- READ > ERROR: read timed out");
+                return;
+            }
+
+            Console.WriteLine("- READ > Received data: {0:X}", rxData);
+        }
+
+        static void doWriteCommand(SerialPort serial, string[] input)
+        {
+            if (input.Length != 3)
+            {
+                Console.WriteLine("- WRITE > ERROR: bad arguments");
+                return;
+            }
+
+            uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
+            uint data = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
+
+            if (serialWrite(serial, addr, data, true))
+            {
+                Console.WriteLine("- WRITE > Write completed successfully");
+            }
+            else
+            {
+                Console.WriteLine("- WRITE > ERROR: Write failed");
+            }
+        }
+
+        static void doFileCommand(SerialPort serial, string[] input)
+        {
+            if (input.Length != 3)
+            {
+                Console.WriteLine("- FILE > ERROR: bad arguments");
+                return;
+            }
+
+            string filePath = input[1];
+            uint startingAddr = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
+
+            string[] lines;
+            try
+            {
+                lines = readFile(filePath);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("- FILE > Failed to open file");
+                return;
+            }
+
+            bool failed = false;
+            for (uint i = 0; i < lines.Length; i++)
+            {
+                uint addr = startingAddr + i;
+                uint data = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
+
+                Console.WriteLine("- FILE > Writing {0:X} to address {1:X}...", data, addr);
+                if (!serialWrite(serial, addr, data, true))
+                {
+                    Console.WriteLine("- FILE > File write failed");
+                    failed = true;
+                    break;
+                }
+                Thread.Sleep(5);
+            }
+            if (!failed)
+            {
+                Console.WriteLine("- FILE > File write completed successfully");
+            }
+        }
+
+        static void doMusicCommand(SerialPort serial, string[] input)
+        {
+            if (input.Length != 2)
+            {
+                Console.WriteLine("- MUSIC > ERROR: bad arguments");
+                return; ;
+            }
+
+            string filePath = input[1];
+
+            string[] lines;
+            try
+            {
+                lines = readFile(filePath);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("- MUSIC > Failed to open file");
+                return;
+            }
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                String[] regs = lines[i].Split(',');
+                for (uint j = 1; j < regs.Length; j += 2) // Write effects registers
+                {
+                    uint fx = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
+
+                    serialWrite(serial, j, fx, false);
+                }
+
+                for (uint j = 0; j < regs.Length; j += 2) // Write note registers
+                {
+                    uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
+
+                    if (note != 0) // Only write note regs if they are non-zero
+                    {
+                        serialWrite(serial, j, note, false);
+                    }
+                }
+
+                Thread.Sleep(104);
+            }
+        }
+
+        static void doDumpCommand(SerialPort serial, string[] input)
+        {
+            Console.WriteLine("- DUMP > Not yet implemented");
+        }
+
+        static void doHelpCommand()
         {
             Console.WriteLine("- HELP > List of commands. Note that the format for all addresses/data is hex");
             Console.WriteLine("         read <addr>");
