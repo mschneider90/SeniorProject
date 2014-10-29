@@ -18,8 +18,10 @@ namespace MooseboxSerial
             if (portNames.Length == 0)
             {
                 Console.WriteLine("- > ERROR: No serial ports found. Press enter to exit");
-                Console.ReadLine();
-                return;
+                if (!Console.ReadLine().Equals("moose"))
+                {
+                    return;
+                }
             }
 
             for (int i = 0; i < portNames.Length; i++)
@@ -31,28 +33,31 @@ namespace MooseboxSerial
             String portName = Console.ReadLine();
 
             // UART settings. These must match the UART transceiver module (uart.v)
-            const int BAUD_RATE = 38400;
-            const Parity PARITY = Parity.None;
-            const int DATA_BITS = 8;
-            const StopBits STOP_BITS = StopBits.One;
+            int baudRate = 38400;
+            Parity parityBits = Parity.None;
+            int dataBits = 8;
+            StopBits stopBits = StopBits.One;
+            int sleepBetweenNotes = 104;
 
             // Read timeout 500ms
             const int READ_TIMEOUT = 500;
            
-            SerialPort serial = new SerialPort(portName, BAUD_RATE, PARITY, DATA_BITS, STOP_BITS);
+            SerialPort serial = new SerialPort(portName, baudRate, parityBits, dataBits, stopBits);
             serial.ReadTimeout = READ_TIMEOUT;
             if (!openSerialPort(serial))
             {
                 Console.WriteLine("Failed to open serial port. Press enter to exit");
-                Console.ReadLine();
-                return;
+                if (!Console.ReadLine().Equals("moose")) //backdoor
+                {
+                    return;
+                }
             }
             Console.WriteLine("- > Serial port opened successfully");
             Console.WriteLine("- > Current UART settings");
-            Console.WriteLine("    BAUD: {0}", BAUD_RATE);
-            Console.WriteLine("    Parity: {0}", PARITY);
-            Console.WriteLine("    Data bits: {0}", DATA_BITS);
-            Console.WriteLine("    Stop bits: {0}", STOP_BITS);
+            Console.WriteLine("    BAUD: {0}", baudRate);
+            Console.WriteLine("    Parity: {0}", parityBits);
+            Console.WriteLine("    Data bits: {0}", dataBits);
+            Console.WriteLine("    Stop bits: {0}", stopBits);
 
             bool exit = false;
             String[] input;
@@ -84,7 +89,11 @@ namespace MooseboxSerial
                 }
                 else if (input[0].Equals("music"))
                 {
-                    doMusicCommand(serial, input);
+                    doMusicCommand(serial, input, sleepBetweenNotes);
+                }
+                else if (input[0].Equals("settings"))
+                {
+                    doSettingsCommand(input, ref baudRate, ref sleepBetweenNotes);
                 }
                 else if (input[0].Equals("exit"))
                 {
@@ -187,12 +196,12 @@ namespace MooseboxSerial
             }
         }
 
-        static void doMusicCommand(SerialPort serial, string[] input)
+        static void doMusicCommand(SerialPort serial, string[] input, int sleepBetweenNotes)
         {
             if (input.Length != 2)
             {
                 Console.WriteLine("- MUSIC > ERROR: bad arguments");
-                return; ;
+                return;
             }
 
             string filePath = input[1];
@@ -228,7 +237,29 @@ namespace MooseboxSerial
                     }
                 }
 
-                Thread.Sleep(104);
+                Thread.Sleep(sleepBetweenNotes);
+            }
+        }
+
+        static void doSettingsCommand(String[] input, ref int baud, ref int sleep)
+        {
+            if (input.Length != 3)
+            {
+                Console.WriteLine("- MUSIC > ERROR: bad arguments");
+                return;
+            }
+
+            if (input[1].Equals("baud"))
+            {
+                baud = int.Parse(input[2]);
+            }
+            else if (input[1].Equals("delay"))
+            {
+                sleep = int.Parse(input[2]);
+            }
+            else
+            {
+                Console.WriteLine("- SETTINGS > Not a valid setting");
             }
         }
 
@@ -251,6 +282,9 @@ namespace MooseboxSerial
             Console.WriteLine("            Reads data starting from address into the specified file");
             Console.WriteLine("         music <audio_file.paf");
             Console.WriteLine("            Plays music from a .paf audio file");
+            Console.WriteLine("         setting <setting_name> <value>");
+            Console.WriteLine("            Changes one of the program settings below (default)");
+            Console.WriteLine("            baud (38400), delay (104)");
             Console.WriteLine("         exit ");
             Console.WriteLine("            Exits MooseBox Serial Communicator");
         }
