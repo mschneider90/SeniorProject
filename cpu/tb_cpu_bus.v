@@ -40,7 +40,9 @@ mips cpu(.clk(clk50MHz),
          .bus_req(req[7]),
          .bus_data_in(bus),
          .bus_data_out(cpu_out));
-        
+         
+imem instr_mem(.addr(pc[7:2]),
+               .data_r(instr));
               
 BusController controller(.req(req),
                          .clk(clk50MHz),
