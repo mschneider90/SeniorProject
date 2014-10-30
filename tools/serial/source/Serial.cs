@@ -93,7 +93,7 @@ namespace MooseboxSerial
                 }
                 else if (input[0].Equals("settings"))
                 {
-                    doSettingsCommand(input, ref baudRate, ref sleepBetweenNotes);
+                    doSettingsCommand(serial, input, ref baudRate, ref sleepBetweenNotes);
                 }
                 else if (input[0].Equals("exit"))
                 {
@@ -241,7 +241,7 @@ namespace MooseboxSerial
             }
         }
 
-        static void doSettingsCommand(String[] input, ref int baud, ref int sleep)
+        static void doSettingsCommand(SerialPort serial, String[] input, ref int baud, ref int sleep)
         {
             if (input.Length != 3)
             {
@@ -252,6 +252,7 @@ namespace MooseboxSerial
             if (input[1].Equals("baud"))
             {
                 baud = int.Parse(input[2]);
+                serial.BaudRate = baud;
             }
             else if (input[1].Equals("delay"))
             {
@@ -282,7 +283,7 @@ namespace MooseboxSerial
             Console.WriteLine("            Reads data starting from address into the specified file");
             Console.WriteLine("         music <audio_file.paf");
             Console.WriteLine("            Plays music from a .paf audio file");
-            Console.WriteLine("         setting <setting_name> <value>");
+            Console.WriteLine("         settings <setting_name> <value>");
             Console.WriteLine("            Changes one of the program settings below (default)");
             Console.WriteLine("            baud (38400), delay (104)");
             Console.WriteLine("         exit ");
