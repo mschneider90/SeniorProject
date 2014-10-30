@@ -235,6 +235,10 @@ namespace MooseboxSerial
                     {
                         serialWrite(serial, j, note, false);
                     }
+                    else //write garbage to one of the unused ACP registers
+                    {
+                        serialWrite(serial, 0xF, 0, false);
+                    }
                 }
 
                 Thread.Sleep(sleepBetweenNotes);
