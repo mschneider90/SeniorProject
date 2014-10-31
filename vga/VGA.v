@@ -17,12 +17,12 @@
 `timescale 1ns/100ps  //including this in every module significantly improves simulation speed (like 10x faster, no shit)
 
 module sync_gen(input rst,
-                input clk50MHz,
+                input clk25MHz,
                 output reg hsync_L,
                 output reg vsync_L,
                 output reg output_valid,
-                output reg col,
-                output reg row);
+                output reg [10:0] col,
+                output reg [10:0] row);
 									 //time values calculated using 25MHz clk
 parameter H_SYNC_WIDTH = 96; 		 //Width of horizontal sync pulse, in clock cycles (3.84us)
 parameter H_FPORCH = 16;     		 //Width of horizontal front porch, in clock cycles (0.6us)
@@ -41,18 +41,11 @@ parameter DEASSERT = 1'b0;
 parameter ASSERT_L = 1'b0;
 parameter DEASSERT_L = 1'b1;
 
-reg clk25MHz;
-
 initial begin
 	vsync_L <= DEASSERT_L;
 	hsync_L <= DEASSERT_L;
-	clk25MHz <= 0;
 	col <= 0;
 	row <= 0;
-end
-
-always@(posedge clk50MHz) begin
-		clk25MHz = ~clk25MHz;
 end
 
 always@(posedge clk25MHz) begin
