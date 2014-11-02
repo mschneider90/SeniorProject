@@ -33,7 +33,7 @@ namespace MooseboxSerial
             String portName = Console.ReadLine();
 
             // UART settings. These must match the UART transceiver module (uart.v)
-            int baudRate = 38400;
+            int baudRate = 115200;
             Parity parityBits = Parity.None;
             int dataBits = 8;
             StopBits stopBits = StopBits.One;
@@ -41,9 +41,11 @@ namespace MooseboxSerial
 
             // Read timeout 500ms
             const int READ_TIMEOUT = 500;
+            const int WRITE_TIMEOUT = 500;
            
             SerialPort serial = new SerialPort(portName, baudRate, parityBits, dataBits, stopBits);
             serial.ReadTimeout = READ_TIMEOUT;
+            serial.WriteTimeout = WRITE_TIMEOUT;
             if (!openSerialPort(serial))
             {
                 Console.WriteLine("Failed to open serial port. Press enter to exit");
