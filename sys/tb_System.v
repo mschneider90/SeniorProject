@@ -64,7 +64,7 @@ initial begin
     clk50MHz <= 0;
     debug_ra4 <= 5;
     rx <= 1;
-    #10
+    #50
     reset = 0;
 
    // First data: 0x56 (WRITE_COMMAND)

@@ -14,7 +14,8 @@ VGA_module DUT(.clk25MHz(tb_clk25MHz),
                .vsync(tb_vsync),
                .hsync(tb_hsync),
                .rgb(tb_rgb),
-               .bus_ack(1));
+               .bus_ack(1),
+               .bus_in(32'hABCD));
 
 initial begin
 	tb_rst = 1;

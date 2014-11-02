@@ -6,6 +6,7 @@ module VGABusInterface(input clk,
                        input bus_ack,
                        input reset,
                        input bus_wait,
+                       input vga_output_valid,
                        output reg bus_req,
                        output buf_sel,
                        output buf0_we,
@@ -14,14 +15,16 @@ module VGABusInterface(input clk,
                        
 parameter RES_X = 640;
 parameter RES_Y = 480;
+
+parameter BASE_ADDR = 32'h00001050;
                        
-wire [31:0] pix_addr;
+wire [15:0] pix_addr;
 assign pix_addr = row * RES_X + col;
 
-wire [31:0] pix_addr_reduced;
+wire [15:0] pix_addr_reduced;
 assign pix_addr_reduced = pix_addr >> 4;
 
-assign bus_out = pix_addr_reduced;
+assign bus_out = {16'h0000, BASE_ADDR + pix_addr_reduced};
 
 wire currentBuf;
 assign buf_sel = currentBuf;
@@ -62,8 +65,13 @@ always@(*) begin
     case (currentState)
         STATE_IDLE: begin
             if (pix_addr_reduced != last_addr) begin
-                if (bus_ack) begin
-                    nextState <= STATE_PRESENT_ADDR;
+                if (vga_output_valid) begin
+                    if (bus_ack) begin
+                        nextState <= STATE_PRESENT_ADDR;
+                    end
+                    else begin
+                        nextState <= STATE_IDLE;
+                    end
                 end
                 else begin
                     nextState <= STATE_IDLE;

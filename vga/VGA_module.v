@@ -1,6 +1,6 @@
 `timescale 1ns/100ps 
 
-module VGA_module #(COLOR_DEPTH = 8,
+module VGA_module #(parameter COLOR_DEPTH = 8,
                     BUS_WIDTH = 32,
                     CTRL_WIDTH = 8)
                    (output[COLOR_DEPTH-1:0] rgb,
@@ -29,7 +29,7 @@ d_reg_sync #(.WIDTH(COLOR_DEPTH)) buf0(.clk(clk25MHz),
                 .en(buf0_we),
                 .reset(reset),
                 .d(bus_in),
-                .q(buf1_out));
+                .q(buf0_out));
  
 wire buf1_we; 
 wire [COLOR_DEPTH-1:0] buf1_out;
@@ -39,10 +39,10 @@ d_reg_sync #(.WIDTH(COLOR_DEPTH)) buf1(.clk(clk25MHz),
                 .d(bus_in),
                 .q(buf1_out));
  
-wire pix_sel; 
-mux21 #(.D_WIDTH(COLOR_DEPTH)) pix_mux(.in_a(pix1_out),
-                                       .in_b(pix2_out),
-                                       .sel(pix_sel),
+wire buf_sel; 
+mux21 #(.D_WIDTH(COLOR_DEPTH)) pix_mux(.in_a(buf0_out),
+                                       .in_b(buf1_out),
+                                       .sel(buf_sel),
                                        .out(pixel));
 
 sync_gen sgen(.clk25MHz(clk25MHz),
@@ -61,6 +61,7 @@ VGABusInterface bus_if(.clk(clk25MHz),
                 .row(row),
                 .col(col),
                 .reset(reset),
+                .vga_output_valid(output_valid),
                 .bus_ack(bus_ack),
                 .bus_req(bus_req),
                 .bus_wait(ctrl_in[0]),
