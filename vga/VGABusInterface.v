@@ -108,9 +108,9 @@ end
 always@(*) begin
     case (currentState)
         STATE_IDLE: begin
-            if (pix_addr_reduced != last_addr) begin
+            if (pix_addr_reduced != last_addr && vga_output_valid) begin
                 bus_req <= 1;
-                switch_buf <= 1;
+                switch_buf <= 0;
             end
             else begin
                 bus_req <= 0;
@@ -120,19 +120,19 @@ always@(*) begin
             last_addr_we <= 0;
         end
         STATE_PRESENT_ADDR: begin
-            bus_req <= 0;
+            bus_req <= 1;
             buf_we <= 0;
             last_addr_we <= 1;
             switch_buf <= 0;
         end
         STATE_WAIT: begin
-            bus_req <= 0;
+            bus_req <= 1;
             buf_we <= 0;
             last_addr_we <= 0;
             switch_buf <= 0;
         end
         STATE_READ_DATA: begin
-            bus_req <= 0;
+            bus_req <= 1;
             buf_we <= 1;
             last_addr_we <= 0;
             switch_buf <= 0;
@@ -141,7 +141,7 @@ always@(*) begin
             bus_req <= 0;
             buf_we <= 0;
             last_addr_we <= 0;
-            switch_buf <= 0;
+            switch_buf <= 1;
         end
         default: begin
             bus_req <= 0;
