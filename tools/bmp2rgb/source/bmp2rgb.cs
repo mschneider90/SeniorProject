@@ -52,7 +52,7 @@ namespace bmp2rgb
             int pix_y = bmp.Height;
 
             int rgb_index = 0; // Index for the rgb file
-            String[] rgb = new String[pix_x * pix_y];
+            String[] rgb = new String[pix_x * pix_y / 2];
             for (int y = 0; y < pix_y; y++ )
             {
                 for (int x = 0; x < pix_x; x+=2)
