@@ -40,11 +40,11 @@ namespace bmp2rgb
                 return;
             }
 
-            if (bmp.PixelFormat != PixelFormat.Format24bppRgb)
+          /*  if (bmp.PixelFormat != PixelFormat.Format24bppRgb)
             {
                 Console.WriteLine("ERROR: Opened bitmap file with format {0}", bmp.PixelFormat);
                 Console.WriteLine("The bitmap format should be 24 bits RGB");
-            }
+            } */
 
             // For each pixel in the bitmap file, convert it to 8 bit RGB
             // Our 8 bit RGB format: {RED (three bits), GREEN (three bits), BLUE (two bits)}
@@ -89,11 +89,26 @@ namespace bmp2rgb
 
         static byte convertTo8Bit(byte r, byte g, byte b)
         {
+            ushort r_rounded = (ushort)(((ushort)r + 0x10)); 
+            ushort g_rounded = (ushort)(((ushort)g + 0x10));
+            ushort b_rounded = (ushort)(((ushort)b + 0x20)); 
+
             byte pixel8Bit = 0;
-            pixel8Bit += (byte)(r & 0xE0); // Keep the most significant three bits
-            pixel8Bit += (byte)((g & 0xE0) >> 3); 
-            pixel8Bit += (byte)((b & 0xC0) >> 6); // Keep the most significant two bits
+            pixel8Bit += (byte)(clipValue(r_rounded) & 0xE0); // Mask off all but the most significant three bits 
+            pixel8Bit += (byte)((clipValue(g_rounded) & 0xE0) >> 3); 
+            pixel8Bit += (byte)((clipValue(b_rounded) & 0xC0) >> 6); // Mask off all but the most significant two bits
+
             return pixel8Bit;
+        }
+
+        static short clipValue(ushort val)
+        {
+            if (val > Byte.MaxValue)
+            {
+                return Byte.MaxValue;
+            }
+
+            return (byte)val;
         }
     }
 }
