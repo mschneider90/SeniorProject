@@ -52,13 +52,23 @@ namespace bmp2rgb
             int pix_y = bmp.Height;
 
             int rgb_index = 0; // Index for the rgb file
-            String[] rgb = new String[pix_x * pix_y];
+            String[] rgb = new String[pix_x * pix_y / 2];
             for (int y = 0; y < pix_y; y++ )
             {
-                for (int x = 0; x < pix_x; x++)
+                for (int x = 0; x < pix_x; x+=2)
                 {
-                    Color pix = bmp.GetPixel(x, y);
-                    rgb[rgb_index] = Conversion.Hex(convertTo8Bit(pix.R, pix.G, pix.B));
+                    // Pack two pixels into 16 bits
+                    Color pix_high = bmp.GetPixel(x, y);
+                    Color pix_low = bmp.GetPixel(x + 1, y);
+
+                    String highByte = Conversion.Hex(convertTo8Bit(pix_high.R, pix_high.G, pix_high.B));
+                    String lowByte = Conversion.Hex(convertTo8Bit(pix_low.R, pix_low.G, pix_low.B));
+
+                    if (lowByte.Length == 1) // Insert a leading 0
+                    {
+                        lowByte = "0" + lowByte;
+                    }
+                    rgb[rgb_index] = highByte + lowByte;
                     rgb_index++;
                 }
             }

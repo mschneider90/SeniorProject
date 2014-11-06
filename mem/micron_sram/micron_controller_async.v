@@ -63,8 +63,8 @@ assign bus_ctrl_out = {3'b000, //not used
 //Local reset for counters
 reg reset;
 
-//RW latency for single word oepration is 70ns => 4 x 20ns cycles
-parameter RW_LATENCY_CYCLES = 4;
+//RW latency for single word oepration is 70ns => 2 x 40ns cycles
+parameter RW_LATENCY_CYCLES = 2;
 
 //Counter for r/w latency
 reg cycle_count_en;

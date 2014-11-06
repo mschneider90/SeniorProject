@@ -9,22 +9,23 @@ module VGABusInterface(input clk,
                        input vga_output_valid,
                        output reg bus_req,
                        output buf_sel,
+                       output buf_byte_sel,
                        output buf0_we,
                        output buf1_we,
                        output [31:0] bus_out);
                        
-parameter RES_X = 640;
-parameter RES_Y = 480;
+parameter RES_X = 160;
+parameter RES_Y = 240;
 
 parameter BASE_ADDR = 32'h00001050;
                        
-wire [15:0] pix_addr;
-assign pix_addr = row * RES_X + col;
+wire [31:0] pix_addr;  // For selecting each byte
+assign pix_addr = (row >> 1) * RES_X + (col >> 2);
 
-wire [15:0] pix_addr_reduced;
-assign pix_addr_reduced = pix_addr >> 4;
+wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
+assign pix_addr_reduced = pix_addr >> 1;
 
-assign bus_out = {16'h0000, BASE_ADDR + pix_addr_reduced};
+assign bus_out = {BASE_ADDR + pix_addr_reduced};
 
 wire currentBuf;
 assign buf_sel = currentBuf;
@@ -46,6 +47,8 @@ d_reg_sync #(.WIDTH(32)) lastAddrReg(.clk(clk),
 reg buf_we;
 assign buf0_we = ((buf_sel != 1) && buf_we)? 1 : 0; // Buffer not selected, so write to it
 assign buf1_we = ((buf_sel != 0) && buf_we)? 1 : 0;
+
+assign buf_byte_sel = pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
 
 parameter STATE_IDLE = 0;
 parameter STATE_PRESENT_ADDR = 1;
