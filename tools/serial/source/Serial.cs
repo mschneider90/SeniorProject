@@ -93,6 +93,10 @@ namespace MooseboxSerial
                 {
                     doMusicCommand(serial, input, sleepBetweenNotes);
                 }
+                else if (input[0].Equals("program"))
+                {
+                    doProgramCommand(serial, input);
+                }
                 else if (input[0].Equals("settings"))
                 {
                     doSettingsCommand(serial, input, ref baudRate, ref sleepBetweenNotes);
@@ -265,6 +269,57 @@ namespace MooseboxSerial
             }
         }
 
+        static void doProgramCommand(SerialPort serial, String[] input)
+        {
+            if (input.Length != 2)
+            {
+                Console.WriteLine("- PROGRAM > ERROR: bad arguments");
+            }
+
+            string filePath = input[1];
+
+            string[] lines;
+            try
+            {
+                lines = readFile(filePath);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("- PROGRAM > Failed to open file");
+                return;
+            }
+
+            const uint CPU_IMEM_SIZE = 4096;
+            const uint CPU_IMEM_BASE_ADDR = 0x30;
+            const uint MIPS_NO_OP = 0x20840000;
+
+            for (uint i = 0; i < CPU_IMEM_SIZE; i++)
+            {
+                uint addr = CPU_IMEM_BASE_ADDR + i;
+                if (i < lines.Length)
+                {
+                    uint data = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
+
+                    Console.WriteLine("- PROGRAM > Writing {0:X} to address {1:X}...", data, addr);
+                    if (!serialWrite(serial, addr, data, true))
+                    {
+                        Console.WriteLine("- PROGRAM > CPU programming failed (is it reset?)");
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("- PROGRAM > Writing no-op to address {0:X}", addr);
+                    if (!serialWrite(serial, CPU_IMEM_BASE_ADDR + i, MIPS_NO_OP, true))
+                    {
+                        Console.WriteLine("- PROGRAM > CPU programming failed (is it reset?)");
+                        return;
+                    }
+                }
+            }
+            Console.WriteLine("- PROGRAM > CPU programmed successfully");
+        }
+
         static void doSettingsCommand(SerialPort serial, String[] input, ref int baud, ref int sleep)
         {
             if (input.Length != 3)
@@ -307,6 +362,8 @@ namespace MooseboxSerial
             Console.WriteLine("            Reads data starting from address into the specified file");
             Console.WriteLine("         music <audio_file.paf>");
             Console.WriteLine("            Plays music from a .paf audio file");
+            Console.WriteLine("         program <program_file>");
+            Console.WriteLine("            Program CPU from a file of assembled MIPS instructions");
             Console.WriteLine("         settings <setting_name> <value>");
             Console.WriteLine("            Changes one of the program settings below (default)");
             Console.WriteLine("            baud (115200), delay (104)");
