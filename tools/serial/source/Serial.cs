@@ -136,16 +136,25 @@ namespace MooseboxSerial
 
         static void doWriteCommand(SerialPort serial, string[] input)
         {
-            if (input.Length != 3)
+            if (input.Length != 3 || input.Length != 4)
             {
                 Console.WriteLine("- WRITE > ERROR: bad arguments");
                 return;
             }
 
+            bool verifyWrite = true;
+            if (input.Length == 4)
+            {
+                if (input[3] == "-noverify")
+                {
+                    verifyWrite = false;
+                }
+            }
+
             uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
             uint data = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
 
-            if (serialWrite(serial, addr, data, true))
+            if (serialWrite(serial, addr, data, verifyWrite))
             {
                 Console.WriteLine("- WRITE > Write completed successfully");
             }
@@ -289,7 +298,7 @@ namespace MooseboxSerial
             Console.WriteLine("- HELP > List of commands. Note that the format for all addresses/data is hex");
             Console.WriteLine("         read <addr>");
             Console.WriteLine("            Reads a single byte from the specified address");
-            Console.WriteLine("         write <addr> <data>");
+            Console.WriteLine("         write <addr> <data> [-noverify]");
             Console.WriteLine("            Writes a single byte to the specified address");
             Console.WriteLine("         file  <file_name> <starting_addr> [-noverify]");
             Console.WriteLine("            Writes an entire file of bytes starting at the specified address.");
@@ -300,7 +309,7 @@ namespace MooseboxSerial
             Console.WriteLine("            Plays music from a .paf audio file");
             Console.WriteLine("         settings <setting_name> <value>");
             Console.WriteLine("            Changes one of the program settings below (default)");
-            Console.WriteLine("            baud (38400), delay (104)");
+            Console.WriteLine("            baud (115200), delay (104)");
             Console.WriteLine("         exit ");
             Console.WriteLine("            Exits MooseBox Serial Communicator");
         }
