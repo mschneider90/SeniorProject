@@ -357,7 +357,7 @@ begin
 
 //note clock counter
 	note_clk_count <= note_clk_count + 1;
-	if (note_clk_count >= 390625)
+	if (note_clk_count >= 97656) //old value: 390625
 	begin
 		note_clk_count <= 0;
 		note_clk <= ~note_clk;
