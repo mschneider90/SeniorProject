@@ -162,6 +162,7 @@ BUFG freq1_bufg (.I (basefreq), .O (buffreq)); //a clock buffer?
 square_gen sqgen1 ( 	
 	.base_freq	(buffreq),
 	.square_out	(sq_out),
+	.duty			(FX_optB),
 	.en			(sq_en) ///////////////////////CHANGE THIS; link to envelope controller 
 );
 
