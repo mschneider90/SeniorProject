@@ -75,7 +75,7 @@ micron_controller sramctrl(.clk50MHz(clk50MHz),
                        .mcre(mcre),
                        .mwait(mwait)
                       ); 
-                      
+/*                      
 tb_impl_test_master master(.bus_in(bus),
                       .ack(ack[7]),
                       .clk(clk50MHz),
@@ -98,7 +98,8 @@ BusController controller(.req(req),
                          .ctrl_in_0(slave_ctrl_out),
                          .ctrl_in_7(master_ctrl_out),
                          .ctrl_out(ctrl));
-                     
+  */
+  
                      
 
 

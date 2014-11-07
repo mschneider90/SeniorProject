@@ -42,21 +42,9 @@ System sys(.clk50MHz(clk50MHz),
            .rx(rx),
            .tx(tx)
            );
-        /*      
-micron_sram ram(.clk(mclk),
-                .addr(maddr), // 24 bits
-                .adv_L(madv_L),
-                .ce_L(mce_L),
-                .oe_L(moe_L),
-                .we_L(mwe_L ),
-                .mem_wait(mwait),
-                .data(bus_data), //16 bits
-                .ub_L(mub_L),
-                .lb_L(mlb_L),
-                .mcre(mcre)); */
                 
-          parameter UART_BAUD = 9600;
-parameter INPUT_CLOCK = 50000000;
+parameter UART_BAUD = 115200;
+parameter INPUT_CLOCK = 25000000;
 parameter CLOCKS_BETWEEN_BITS = INPUT_CLOCK / UART_BAUD;      
            
 initial begin
@@ -65,8 +53,7 @@ initial begin
     debug_ra4 <= 5;
     rx <= 1;
     #50
-    reset = 0;
-
+   
    // First data: 0x56 (WRITE_COMMAND)
     rx = 0; // start
     #(CLOCKS_BETWEEN_BITS * 20)

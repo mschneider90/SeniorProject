@@ -136,16 +136,25 @@ namespace MooseboxSerial
 
         static void doWriteCommand(SerialPort serial, string[] input)
         {
-            if (input.Length != 3)
+            if (input.Length != 3 && input.Length != 4)
             {
                 Console.WriteLine("- WRITE > ERROR: bad arguments");
                 return;
             }
 
+            bool verifyWrite = true;
+            if (input.Length == 4)
+            {
+                if (input[3] == "-noverify")
+                {
+                    verifyWrite = false;
+                }
+            }
+
             uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
             uint data = uint.Parse(input[2], NumberStyles.AllowHexSpecifier);
 
-            if (serialWrite(serial, addr, data, true))
+            if (serialWrite(serial, addr, data, verifyWrite))
             {
                 Console.WriteLine("- WRITE > Write completed successfully");
             }
@@ -157,10 +166,19 @@ namespace MooseboxSerial
 
         static void doFileCommand(SerialPort serial, string[] input)
         {
-            if (input.Length != 3)
+            if (input.Length != 3 && input.Length != 4)
             {
                 Console.WriteLine("- FILE > ERROR: bad arguments");
                 return;
+            }
+
+            bool verifyWrite = true;
+            if (input.Length == 4)
+            {
+                if (input[3] == "-noverify")
+                {
+                    verifyWrite = false;
+                }
             }
 
             string filePath = input[1];
@@ -184,7 +202,7 @@ namespace MooseboxSerial
                 uint data = uint.Parse(lines[i], NumberStyles.AllowHexSpecifier);
 
                 Console.WriteLine("- FILE > Writing {0:X} to address {1:X}...", data, addr);
-                if (!serialWrite(serial, addr, data, true))
+                if (!serialWrite(serial, addr, data, verifyWrite))
                 {
                     Console.WriteLine("- FILE > File write failed");
                     failed = true;
@@ -280,18 +298,18 @@ namespace MooseboxSerial
             Console.WriteLine("- HELP > List of commands. Note that the format for all addresses/data is hex");
             Console.WriteLine("         read <addr>");
             Console.WriteLine("            Reads a single byte from the specified address");
-            Console.WriteLine("         write <addr> <data>");
+            Console.WriteLine("         write <addr> <data> [-noverify]");
             Console.WriteLine("            Writes a single byte to the specified address");
-            Console.WriteLine("         file  <file_name> <starting_addr>");
+            Console.WriteLine("         file  <file_name> <starting_addr> [-noverify]");
             Console.WriteLine("            Writes an entire file of bytes starting at the specified address.");
             Console.WriteLine("            Bytes should be separated with a newline");
             Console.WriteLine("         dump  <addr> <length> <file_name>");
             Console.WriteLine("            Reads data starting from address into the specified file");
-            Console.WriteLine("         music <audio_file.paf");
+            Console.WriteLine("         music <audio_file.paf>");
             Console.WriteLine("            Plays music from a .paf audio file");
             Console.WriteLine("         settings <setting_name> <value>");
             Console.WriteLine("            Changes one of the program settings below (default)");
-            Console.WriteLine("            baud (38400), delay (104)");
+            Console.WriteLine("            baud (115200), delay (104)");
             Console.WriteLine("         exit ");
             Console.WriteLine("            Exits MooseBox Serial Communicator");
         }

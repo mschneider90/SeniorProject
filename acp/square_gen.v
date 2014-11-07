@@ -3,18 +3,22 @@
 module square_gen(
 	base_freq,
 	square_out,
+	duty,
 	en
     );
 
 //input en;
 input base_freq;
+input [1:0] duty;
 input en;
 reg [5:0] count; //max value 63
+reg [1:0] step;
 output reg [3:0] square_out;
 
 initial
 begin
 count = 0;
+step = 0;
 square_out = 4'b0000;
 end
 
@@ -35,11 +39,48 @@ begin
 	count = 0;
 end
 */
-
+if (duty == 0 || duty == 3)
+begin
 	case (count)
-	0: square_out = 0;	1: square_out = 0;	2: square_out = 0;	3: square_out = 0;	4: square_out = 0;	5: square_out = 0;	6: square_out = 0;	7: square_out = 0;	8: square_out = 0;	9: square_out = 0;	10: square_out = 0;	11: square_out = 0;	12: square_out = 0;	13: square_out = 0;	14: square_out = 0;	15: square_out = 0;	16: square_out = 15;	17: square_out = 15;	18: square_out = 15;	19: square_out = 15;	20: square_out = 15;	21: square_out = 15;	22: square_out = 15;	23: square_out = 15;	24: square_out = 15;	25: square_out = 15;	26: square_out = 15;	27: square_out = 15;	28: square_out = 15;	29: square_out = 15;	30: square_out = 15;	31: square_out = 15;
+	0: square_out = 0;	1: square_out = 0;	2: square_out = 0;	3: square_out = 0;
+		4: square_out = 0;	5: square_out = 0;	6: square_out = 0;	7: square_out = 0;
+		8: square_out = 0;	9: square_out = 0;	10: square_out = 0;	11: square_out = 0;
+		12: square_out = 0;	13: square_out = 0;	14: square_out = 0;	15: square_out = 0;
+		16: square_out = 15;	17: square_out = 15;	18: square_out = 15;	19: square_out = 15;
+		20: square_out = 15;	21: square_out = 15;	22: square_out = 15;	23: square_out = 15;
+		24: square_out = 15;	25: square_out = 15;	26: square_out = 15;	27: square_out = 15;
+		28: square_out = 15;	29: square_out = 15;	30: square_out = 15;	31: square_out = 15;
 	default: square_out = 0;
 	endcase
+end
+else if (duty == 1) 
+begin
+	case (count)
+	0: square_out = 0;	1: square_out = 0;	2: square_out = 0;	3: square_out = 0;
+		4: square_out = 0;	5: square_out = 0;	6: square_out = 0;	7: square_out = 0;
+		8: square_out = 15;	9: square_out = 15;	10: square_out = 15;	11: square_out = 15;
+		12: square_out = 15;	13: square_out = 15;	14: square_out = 15;	15: square_out = 15;
+		16: square_out = 15;	17: square_out = 15;	18: square_out = 15;	19: square_out = 15;
+		20: square_out = 15;	21: square_out = 15;	22: square_out = 15;	23: square_out = 15;
+		24: square_out = 15;	25: square_out = 15;	26: square_out = 15;	27: square_out = 15;
+		28: square_out = 15;	29: square_out = 15;	30: square_out = 15;	31: square_out = 15;
+	default: square_out = 0;
+	endcase
+end
+else if (duty == 2)
+begin
+	case (count)
+	0: square_out = 0;	1: square_out = 0;	2: square_out = 0;	3: square_out = 0;
+		4: square_out = 15;	5: square_out = 15;	6: square_out = 15;	7: square_out = 15;
+		8: square_out = 15;	9: square_out = 15;	10: square_out = 15;	11: square_out = 15;
+		12: square_out = 15;	13: square_out = 15;	14: square_out = 15;	15: square_out = 15;
+		16: square_out = 15;	17: square_out = 15;	18: square_out = 15;	19: square_out = 15;
+		20: square_out = 15;	21: square_out = 15;	22: square_out = 15;	23: square_out = 15;
+		24: square_out = 15;	25: square_out = 15;	26: square_out = 15;	27: square_out = 15;
+		28: square_out = 15;	29: square_out = 15;	30: square_out = 15;	31: square_out = 15;
+	default: square_out = 0;
+	endcase
+end
 
 
 	if (count >= 32)
