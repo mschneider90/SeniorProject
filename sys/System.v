@@ -64,7 +64,7 @@ assign bus_req[0] = 0;
 wire [D_WIDTH-1:0] bus_data;
 wire [C_WIDTH-1:0] bus_ctrl;
 
-wire[15:0] cpu_data_out;
+wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
 
 mips cpu(.clk(clk25MHz),
@@ -153,7 +153,7 @@ BusController bus_ctrller(.req(bus_req),
                        .bus_in_2(vga_bus_out),
                        .bus_in_3(ps2_data_out),
                        .bus_in_6(uart_bus_out),
-                       .bus_in_7({16'b0, cpu_data_out}),
+                       .bus_in_7(cpu_data_out),
                        .ctrl_in_0(sram_ctrl_out),
                        .ctrl_in_2(vga_ctrl_out),
                        .ctrl_in_3(ps2_ctrl_out),
