@@ -136,7 +136,7 @@ namespace MooseboxSerial
 
         static void doWriteCommand(SerialPort serial, string[] input)
         {
-            if (input.Length != 3 || input.Length != 4)
+            if (input.Length != 3 && input.Length != 4)
             {
                 Console.WriteLine("- WRITE > ERROR: bad arguments");
                 return;
