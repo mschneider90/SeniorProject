@@ -68,11 +68,15 @@ module tr_channel( 	note_in,
 	//testing specific assignments: only for testing a configuration. 
 	//assign vibra_speed = 3;
 	//assign vibra_depth = 3;
+	//slide module wires
+	wire [5:0] slide_out;
+	reg slide_en;
 
 
 initial begin
 	porta_en <= 0;
 	vibra_en <= 0;
+	slide_en <= 0;
 end
 	 
 always@(posedge clk50mhz)	 	 
@@ -82,30 +86,34 @@ case(fx_sel)
 begin
 porta_en <= 0;
 vibra_en <= 0;
+slide_en <= 0;
 end
 1:
 begin
 porta_en <= 1;
 vibra_en <= 0;
+slide_en <= 0;
 end
 2:
 begin
 porta_en <= 0;
 vibra_en <= 1;
+slide_en <= 0;
 end
 3:
 begin
 porta_en <= 0;
 vibra_en <=0;
+slide_en <= 1;
 end
 default:
 begin
 porta_en <= 0;
 vibra_en <= 0;
+slide_en <= 0;
 end
 endcase	 
 end
-	
 
 	
 FX_porta tr_porta (
@@ -129,12 +137,24 @@ FX_vibrato tr_vibra (
 	.en			(vibra_en), //1 bit
 	.clk50mhz	(clk50mhz) //1 bit
 );
+
+FX_slide  sq_slide(
+	.note_in		(note_in),
+	.note_clk	(note_clk),
+	.note_out	(slide_out),
+	.speed		(fx_optA),
+	.direction	(fx_optB),
+	.en			(slide_en),
+	.rst			(note_rst),
+	.clk50mhz	(clk50mhz)
+);	
+
 	
 mux4to1 tr_FX_mux (
 	.in_a		(note_in),
 	.in_b		(porta_out),
 	.in_c		(vibra_out),
-	.in_d		(6'b000000),
+	.in_d		(slide_out),
 	.mux_sel	(fx_sel),
 	.mux_out	(fx_mux_out)
 );
