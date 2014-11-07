@@ -10,7 +10,7 @@ module System #(parameter A_WIDTH = 32,
               input [4:0] debug_ra4,
               output [7:0] debug_rd4,
               output mclk, //begin SRAM specific signals
-              output [A_WIDTH-1:0] maddr,
+              output [23:0] maddr,
               output madv_L,
               output mce_L,
               output moe_L,
@@ -69,8 +69,6 @@ wire[C_WIDTH-1:0] cpu_ctrl_out;
 
 mips cpu(.clk(clk25MHz),
          .reset(reset),
-         .pc(pc), 
-         .instr(instr),
          .bus_ack(bus_ack[CPU_BUS_ID]),
          .bus_ctrl_in(bus_ctrl),
          .bus_ctrl_out(cpu_ctrl_out),
@@ -79,9 +77,6 @@ mips cpu(.clk(clk25MHz),
          .bus_data_out(cpu_data_out),
          .debug_ra4(debug_ra4),
          .debug_rd4(debug_rd4)); 
-
-imem instr_mem(.addr(pc[7:2]),
-               .data_r(instr));
 
 wire [D_WIDTH-1:0] sram_data_out;
 wire [C_WIDTH-1:0] sram_ctrl_out;

@@ -32,17 +32,13 @@ wire [31:0] pc;
 wire [31:0] instr;
 mips cpu(.clk(clk50MHz),
          .reset(reset),
-         .pc(pc),
-         .instr(instr),
          .bus_ctrl_in(ctrl),
-         .bus_ack(ack[7]),
+         .bus_ack(slave_ack),
          .bus_ctrl_out(cpu_ctrl_out),
          .bus_req(req[7]),
          .bus_data_in(bus),
          .bus_data_out(cpu_out));
-         
-imem instr_mem(.addr(pc[7:2]),
-               .data_r(instr));
+        
               
 BusController controller(.req(req),
                          .clk(clk50MHz),
