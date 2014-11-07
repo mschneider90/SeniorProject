@@ -68,6 +68,7 @@ wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
 
 mips cpu(.clk(clk25MHz),
+         .clk50MHz(clk50MHz),
          .reset(reset),
          .bus_ack(bus_ack[CPU_BUS_ID]),
          .bus_ctrl_in(bus_ctrl),

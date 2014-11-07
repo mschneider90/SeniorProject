@@ -1,21 +1,31 @@
-module imem(input clk,
+// RAM with a synchronous read
+// The read is synchronous so we can infer a block RAM
+// The read clock can be twice as fast as the write clock so we can read in a single cycle
+// See Xilinx XST guide, pg 197
+
+module imem #(parameter D_WIDTH = 32,
+              parameter A_WIDTH = 12)
+           (input clk_read,
+            input clk_write,
             input we,
-            input  [5:0] addr,
-            output [31:0] data_r,
-            input [31:0] data_w);
+            input  [A_WIDTH-1:0] addr,
+            output [D_WIDTH-1:0] data_r,
+            input [D_WIDTH-1:0] data_w);
 
-  reg  [31:0] RAM[63:0];
+  parameter RAM_DEPTH = 4096;
+  reg [D_WIDTH-1:0] RAM[RAM_DEPTH-1:0];
   
-  assign data_r = RAM[addr]; // word aligned
-
-  always@(posedge clk) begin
+  always@(posedge clk_write) begin
     if (we) begin
         RAM[addr] <= data_w;
     end
-    else begin
-        RAM[addr] <= RAM[addr];
-    end
   end
   
+  reg [A_WIDTH-1:0] read_addr;
+  always@(posedge clk_read) begin
+    read_addr <= addr;
+  end
+  
+  assign data_r = RAM[read_addr];
   
 endmodule

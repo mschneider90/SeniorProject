@@ -2,7 +2,9 @@ module mips #(parameter dwidth = 32,
               parameter awidth = 32,
               parameter iwidth = 32,
               parameter cwidth = 8)
-           (input clk, reset,
+           (input clk,
+            input clk50MHz, // for imem reads
+            input reset,
             input  [cwidth-1:0] bus_ctrl_in,
             input               bus_ack,
             input  [4:0]        debug_ra4,
@@ -133,7 +135,8 @@ module mips #(parameter dwidth = 32,
                            .mux_sel(sel_pc),
                            .mux_out(imem_addr));
               
-   imem instr_mem(.clk(clk),
+   imem instr_mem(.clk_write(clk),
+                  .clk_read(clk50MHz),
                   .addr(imem_addr),
                   .data_r(instr),
                   .data_w(bus_data_in),
