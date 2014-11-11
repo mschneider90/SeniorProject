@@ -67,29 +67,29 @@ begin
 	
 	case (attack)
 		0: atktime <= 0; //calculations assuming 390625 note clock at 50MHz base clock 
-		1: atktime <= 2; //1 = 8note clocks = approx 1/32th note at 120bpm
-		2: atktime <= 4; // 16: approx 1/8th note
-		3: atktime <= 8;
+		1: atktime <= 4; //1 = 8note clocks = approx 1/32th note at 120bpm
+		2: atktime <= 16; // 16: approx 1/8th note
+		3: atktime <= 32;
 		default: atktime <= 0; 
 	endcase
 	
 	case (decay)
 		0: dectime <= 0;
-		1: dectime <= 2;
-		2: dectime <= 4;
-		3: dectime <= 8;
+		1: dectime <= 4;
+		2: dectime <= 16;
+		3: dectime <= 32;
 		default: dectime <= 0;
 	endcase
 	
 	case (length)
-		0: lentime <= 2;
-		1: lentime <= 4;
-		2: lentime <= 8;
-		3: lentime <= 16;
-		4: lentime <= 32;
-		5: lentime <= 64;
-		6: lentime <= 128;
-		7: lentime <= 256;
+		0: lentime <= 8;
+		1: lentime <= 16;
+		2: lentime <= 32;
+		3: lentime <= 64;
+		4: lentime <= 128;
+		5: lentime <= 256;
+		6: lentime <= 512;
+		7: lentime <= 1024;
 		default: lentime <=  32;
 	endcase
 	
