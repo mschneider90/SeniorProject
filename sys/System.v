@@ -29,7 +29,7 @@ module System #(parameter A_WIDTH = 32,
               output vsync,
               output hsync
               );
-              
+        
 reg clk25MHz;
 initial begin
     clk25MHz = 0;
@@ -37,7 +37,7 @@ end
 always@(posedge clk50MHz) begin
     clk25MHz <= ~clk25MHz;
 end
-              
+      
 parameter NUM_DEVICES = 8;
 
 //each device gets an ID
@@ -68,8 +68,8 @@ wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
 
 mips cpu(.clk(clk25MHz),
-         .clk50MHz(clk50MHz),
-         .reset(reset),
+         .clk50MHz(clk100MHz),
+         .reset_ext(reset),
          .bus_ack(bus_ack[CPU_BUS_ID]),
          .bus_ctrl_in(bus_ctrl),
          .bus_ctrl_out(cpu_ctrl_out),
@@ -163,6 +163,5 @@ BusController bus_ctrller(.req(bus_req),
                        .ctrl_in_7(cpu_ctrl_out),
                        .bus_out(bus_data),
                        .ctrl_out(bus_ctrl)); 
-
                    
 endmodule

@@ -5,7 +5,7 @@ module controller(input  [5:0] op, funct,
                   output       regdst, regwrite,
                   output       jump, jumpreg, link,
                   output       mult, mfhi, mflo,
-                  output       memop,
+                  output       memop, branchop,
                   output [2:0] alucontrol);
 
   wire [1:0] aluop;
@@ -26,6 +26,7 @@ module controller(input  [5:0] op, funct,
              .mfhi(mfhi),
 	         .mflo(mflo),
              .memop(memop),
+             .branchop(branchop),
 	         .aluop(aluop));
   aludec  ad(.funct(funct),
              .aluop(aluop),
