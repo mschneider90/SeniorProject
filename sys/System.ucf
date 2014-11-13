@@ -1,9 +1,7 @@
-NET "clk50MHz" LOC = "B8";
+NET "clk50MHz_in" LOC = "B8";
 
-# Timing constraint for clock @ 50MHz
-NET "clk50MHz" PERIOD = 20;
-# Timing constraint for clock @ 25MHz
-NET "clk25MHz" PERIOD = 40; 
+NET "clk50MHz_in" TNM_NET = "clk50MHz_in";
+TIMESPEC "TS_clk50MHz_in" = PERIOD "clk50MHz_in" 20ns HIGH 50%;
 
 //Micron SRAM control signals
 NET "moe_L" LOC = "T2";

@@ -5,7 +5,7 @@
 
 module imem #(parameter D_WIDTH = 32,
               parameter A_WIDTH = 12)
-           (input clk_read,
+           (input clk100MHz,
             input clk_write,
             input we,
             input  [A_WIDTH-1:0] addr,
@@ -22,7 +22,7 @@ module imem #(parameter D_WIDTH = 32,
   end
   
   reg [A_WIDTH-1:0] read_addr;
-  always@(posedge clk_read) begin
+  always@(posedge clk100MHz) begin
     read_addr <= addr;
   end
   

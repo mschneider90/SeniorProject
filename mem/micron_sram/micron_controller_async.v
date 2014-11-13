@@ -6,7 +6,7 @@ module micron_controller_async #(parameter A_WIDTH = 23,
                            parameter D_WIDTH = 16,
                            parameter BUS_WIDTH = 32,
                            parameter BUS_CTRL = 8)
-                          (input clk50MHz,
+                          (input clk25MHz,
                            input  [BUS_CTRL-1:0] bus_ctrl_in,
                            output [BUS_CTRL-1:0] bus_ctrl_out,
                            input  [BUS_WIDTH-1:0] bus_data_in,
@@ -73,7 +73,7 @@ wire[1:0] cycle_counter;
 count_reg c_counter(.count_load(0),
                     .en(cycle_count_en),
                     .rst(reset),
-                    .clk(clk50MHz),
+                    .clk(clk25MHz),
                     .count(cycle_counter),
                     .load(DEASSERT));
 //Zero indexed so subtract 1
@@ -82,7 +82,7 @@ assign cycle_count_geq = (cycle_counter >= RW_LATENCY_CYCLES - 1) ? ASSERT : DEA
 // Stores the burst length
 wire [2:0] bus_burst;
 d_reg #(.WIDTH(3)) burstReg
-       (.clk(clk50MHz),
+       (.clk(clk25MHz),
         .reset(0),
         .en(bus_ack == ASSERT && currentState == STATE_IDLE),
         .d(bus_ctrl_in[4:2]),
@@ -95,7 +95,7 @@ wire[2:0] burst_counter;
 count_reg b_counter(.count_load(0),
                     .en(burst_count_en),
                     .rst(reset),
-                    .clk(clk50MHz),
+                    .clk(clk25MHz),
                     .count(burst_counter),
                     .load(DEASSERT));
 reg[2:0] burst_length;
@@ -116,7 +116,7 @@ wire [A_WIDTH-1:0] addr_reg_out;
 reg addr_write_en;
 reg addr_reset;
 d_reg #(.WIDTH(A_WIDTH)) maddrReg
-       (.clk(clk50MHz),
+       (.clk(clk25MHz),
         .reset(addr_reset),
         .en(addr_write_en),
         .d(bus_data_in),
@@ -139,7 +139,7 @@ initial begin
     currentState <= STATE_RESET;
 end
 
-always@(posedge clk50MHz) begin
+always@(posedge clk25MHz) begin
     currentState <= nextState;
 end
 
