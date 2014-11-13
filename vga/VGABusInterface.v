@@ -45,8 +45,8 @@ d_reg_sync #(.WIDTH(32)) lastAddrReg(.clk(clk),
                                       .q(last_addr));
                                       
 reg buf_we;
-assign buf0_we = ((buf_sel != 1) && buf_we)? 1 : 0; // Buffer not selected, so write to it
-assign buf1_we = ((buf_sel != 0) && buf_we)? 1 : 0;
+assign buf0_we = ((buf_sel != 0) && buf_we)? 1 : 0; // Buffer not selected, so write to it
+assign buf1_we = ((buf_sel != 1) && buf_we)? 1 : 0;
 
 assign buf_byte_sel = ~pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
 assign buf_sel = pix_addr[1];
