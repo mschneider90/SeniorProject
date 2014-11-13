@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/vga/VGA_tb_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="VGA_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/VGA_tb/tb_hsync" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tb_hsync</obj_property>
+      <obj_property name="ObjectShortName">tb_hsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/tb_vsync" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tb_vsync</obj_property>
+      <obj_property name="ObjectShortName">tb_vsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/tb_rgb" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tb_rgb[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tb_rgb[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/tb_clk25MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tb_clk25MHz</obj_property>
+      <obj_property name="ObjectShortName">tb_clk25MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/tb_rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tb_rst</obj_property>
+      <obj_property name="ObjectShortName">tb_rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/row" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">row[10:0]</obj_property>
+      <obj_property name="ObjectShortName">row[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/col" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">col[10:0]</obj_property>
+      <obj_property name="ObjectShortName">col[10:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/buf_byte_sel" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">buf_byte_sel</obj_property>
+      <obj_property name="ObjectShortName">buf_byte_sel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/buf_sel" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">buf_sel</obj_property>
+      <obj_property name="ObjectShortName">buf_sel</obj_property>
+   </wvobject>
+</wave_config>

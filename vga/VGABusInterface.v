@@ -28,7 +28,7 @@ assign pix_addr_reduced = pix_addr >> 1;
 assign bus_out = {BASE_ADDR + pix_addr_reduced};
 
 wire currentBuf;
-assign buf_sel = currentBuf;
+//assign buf_sel = currentBuf;
 reg switch_buf;
 d_reg_sync #(.WIDTH(1)) currentPixBuf(.clk(clk),
                                       .en(switch_buf),
@@ -48,7 +48,8 @@ reg buf_we;
 assign buf0_we = ((buf_sel != 1) && buf_we)? 1 : 0; // Buffer not selected, so write to it
 assign buf1_we = ((buf_sel != 0) && buf_we)? 1 : 0;
 
-assign buf_byte_sel = pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
+assign buf_byte_sel = ~pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
+assign buf_sel = pix_addr[1];
 
 parameter STATE_IDLE = 0;
 parameter STATE_PRESENT_ADDR = 1;
@@ -113,12 +114,11 @@ always@(*) begin
         STATE_IDLE: begin
             if (pix_addr_reduced != last_addr && vga_output_valid) begin
                 bus_req <= 1;
-                switch_buf <= 0;
             end
             else begin
                 bus_req <= 0;
-                switch_buf <= 0;
             end
+            switch_buf <= 0;
             buf_we <= 0;
             last_addr_we <= 0;
         end
@@ -144,7 +144,7 @@ always@(*) begin
             bus_req <= 0;
             buf_we <= 0;
             last_addr_we <= 0;
-            switch_buf <= 1;
+            switch_buf <= 0;
         end
         default: begin
             bus_req <= 0;
