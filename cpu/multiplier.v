@@ -8,8 +8,8 @@ module multiplier #(parameter width = 32)
 				    output [width-1:0] out_hi,
 					output [width-1:0] out_lo);
 						  
-reg [out_width-1:0] hi;
-reg [out_width-1:0] lo;
+reg [width-1:0] hi;
+reg [width-1:0] lo;
 
 assign out_hi = hi;
 assign out_lo = lo;
