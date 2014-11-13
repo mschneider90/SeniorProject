@@ -72,7 +72,6 @@ color_gen cgen(.pixel(pixel),
                .output_valid(output_valid));
                             
 VGABusInterface bus_if(.clk(clk25MHz),
-                .vsync(vsync),
                 .row(row),
                 .col(col),
                 .reset(reset),

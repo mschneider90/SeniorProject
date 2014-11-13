@@ -10,7 +10,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="11" />
+   <WVObjectSize size="9" />
    <wvobject fp_name="/VGA_tb/tb_hsync" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">tb_hsync</obj_property>
       <obj_property name="ObjectShortName">tb_hsync</obj_property>
@@ -47,14 +47,5 @@
    <wvobject fp_name="/VGA_tb/DUT/buf_sel" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">buf_sel</obj_property>
       <obj_property name="ObjectShortName">buf_sel</obj_property>
-   </wvobject>
-   <wvobject fp_name="/VGA_tb/DUT/bus_if/pix_addr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">pix_addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">pix_addr[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/VGA_tb/DUT/output_valid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">output_valid</obj_property>
-      <obj_property name="ObjectShortName">output_valid</obj_property>
    </wvobject>
 </wave_config>
