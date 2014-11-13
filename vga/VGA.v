@@ -48,13 +48,6 @@ initial begin
 	row <= 0;
 end
 
-always@(*) begin
-		if (col <= H_RES && row <= V_RES)
-			output_valid <= ASSERT;
-		else
-			output_valid <= DEASSERT;
-end
-
 always@(posedge clk25MHz) begin
 	if (!rst) begin
 		col <= col + 1;  //increment cycle counter. Counts # of posedge clk transitions. 
@@ -72,6 +65,11 @@ always@(posedge clk25MHz) begin
 			vsync_L <= ASSERT_L;
 		if (row == V_RES + V_FPORCH + V_SYNC_WIDTH) //end vsync_L pulse
 			vsync_L <= DEASSERT_L;
+            
+        if (col <= H_RES && row <= V_RES)
+			output_valid <= ASSERT;
+		else
+			output_valid <= DEASSERT;
 			
 		if (row == LINE_PER_FRAME) 
 			row <= 0;
