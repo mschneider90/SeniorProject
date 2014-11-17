@@ -71,6 +71,7 @@ always@(posedge clk25MHz) begin
 			vsync_L <= ASSERT_L;
 		if (row == V_RES + V_FPORCH + V_SYNC_WIDTH) //end vsync_L pulse
 			vsync_L <= DEASSERT_L;
+
 			
 		//if (col < H_RES && row < V_RES)
 		//	output_valid <= ASSERT;

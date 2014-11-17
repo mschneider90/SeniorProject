@@ -5,7 +5,7 @@ module System #(parameter A_WIDTH = 32,
                 parameter D_WIDTH = 32,
                 parameter C_WIDTH = 8,
                 parameter COLOR_DEPTH = 8)
-             (input clk50MHz,
+             (input clk50MHz_in,
               input reset,
               input [4:0] debug_ra4,
               output [7:0] debug_rd4,
@@ -29,14 +29,17 @@ module System #(parameter A_WIDTH = 32,
               output vsync,
               output hsync
               );
-        
-reg clk25MHz;
-initial begin
-    clk25MHz = 0;
-end
-always@(posedge clk50MHz) begin
-    clk25MHz <= ~clk25MHz;
-end
+
+wire clk25MHz;
+wire clk50MHz;
+wire clk100MHz;
+wire dcm_locked;
+SysClockGen clk_gen(.CLKIN_IN(clk50MHz_in),
+                    .CLKFX_OUT(clk25MHz),
+                    .CLK0_OUT(clk50MHz),
+                    .CLK2X_OUT(clk100MHz),
+                    .LOCKED_OUT(dcm_locked));
+
       
 parameter NUM_DEVICES = 8;
 
@@ -66,10 +69,11 @@ wire [C_WIDTH-1:0] bus_ctrl;
 
 wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
-
+         
 mips cpu(.clk(clk25MHz),
-         .clk50MHz(clk100MHz),
-         .reset_ext(reset),
+         .reset(reset),
+         .pc(pc), 
+         .instr(instr),
          .bus_ack(bus_ack[CPU_BUS_ID]),
          .bus_ctrl_in(bus_ctrl),
          .bus_ctrl_out(cpu_ctrl_out),
@@ -79,9 +83,12 @@ mips cpu(.clk(clk25MHz),
          .debug_ra4(debug_ra4),
          .debug_rd4(debug_rd4)); 
 
+imem instr_mem(.addr(pc[7:2]),
+               .data_r(instr));
+
 wire [D_WIDTH-1:0] sram_data_out;
 wire [C_WIDTH-1:0] sram_ctrl_out;
-micron_controller_async sram_ctrl(.clk50MHz(clk25MHz),
+micron_controller_async sram_ctrl(.clk25MHz(clk25MHz),
                            .bus_ctrl_in(bus_ctrl),
                            .bus_ctrl_out(sram_ctrl_out),
                            .bus_ack(bus_ack[RAM_BUS_ID]),

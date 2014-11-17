@@ -20,7 +20,10 @@ parameter RES_Y = 240;
 parameter BASE_ADDR = 32'h00001050;
                        
 wire [31:0] pix_addr;  // For selecting each byte
+
 assign pix_addr = (row >> 1) * RES_X + (col >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
+
+
 
 wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
 assign pix_addr_reduced = pix_addr >> 1;

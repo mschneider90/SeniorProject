@@ -291,7 +291,7 @@ namespace MooseboxSerial
 
             const uint CPU_IMEM_SIZE = 4096;
             const uint CPU_IMEM_BASE_ADDR = 0x30;
-            const uint MIPS_NO_OP = 0x20840000;
+            const uint MIPS_NO_OP = 0x20080000;
 
             for (uint i = 0; i < CPU_IMEM_SIZE; i++)
             {
