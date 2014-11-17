@@ -91,7 +91,7 @@ always@(*) begin
             data_out <= 1;
         end
         STATE_DATA: begin
-            bus_req <= 0;
+            bus_req <= 1;
             pc_stall_en <= 1;
             data_out <= 1;
         end
