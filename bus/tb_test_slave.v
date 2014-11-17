@@ -33,13 +33,15 @@ reg [3:0] burst_length;
 reg [3:0] counter;
 reg [3:0] latencyCounter;
 
-reg [31:0] data [7:0];
+reg [31:0] data [15:0];
 reg data_we;
 
 initial begin
     currentState <= 0;
     nextState <= 0;
     counter <= 0;
+    
+    data[0] = 1;
 end
 
 always@(posedge clk) begin

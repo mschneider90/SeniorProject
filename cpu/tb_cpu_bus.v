@@ -18,7 +18,7 @@ wire [7:0] ack;
 wire [BUS_WIDTH-1:0] slave_out; 
 wire [CTRL_WIDTH-1:0] slave_ctrl_out;                   
 tb_test_slave   slave(.bus_in(bus),
-                      .ack(ack[0]),
+                      .ack(ack[3]),
                       .clk(clk50MHz),
                       .bus_out(slave_out),
                       .ctrl_in(ctrl),
@@ -33,20 +33,24 @@ wire [31:0] instr;
 mips cpu(.clk(clk50MHz),
          .reset(reset),
          .bus_ctrl_in(ctrl),
-         .bus_ack(slave_ack),
+         .bus_ack(ack[7]),
          .bus_ctrl_out(cpu_ctrl_out),
          .bus_req(req[7]),
          .bus_data_in(bus),
-         .bus_data_out(cpu_out));
+         .bus_data_out(cpu_out),
+         .pc(pc),
+         .instr(instr));
         
+imem instr_mem(.addr(pc[7:2]),
+               .data_r(instr));        
               
 BusController controller(.req(req),
                          .clk(clk50MHz),
                          .ack(ack),
-                         .bus_in_0(slave_out),
+                         .bus_in_3(slave_out),
                          .bus_in_7(cpu_out),
                          .bus_out(bus),
-                         .ctrl_in_0(slave_ctrl_out),
+                         .ctrl_in_3(slave_ctrl_out),
                          .ctrl_in_7(cpu_ctrl_out),
                          .ctrl_out(ctrl));
 
