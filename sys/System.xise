@@ -9,15 +9,15 @@
     <!-- along with the project source files, is sufficient to open and    -->
     <!-- implement in ISE Project Navigator.                               -->
     <!--                                                                   -->
-    <!-- Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved. -->
+    <!-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved. -->
   </header>
 
-  <version xil_pn:ise_version="14.4" xil_pn:schema_version="2"/>
+  <version xil_pn:ise_version="14.7" xil_pn:schema_version="2"/>
 
   <files>
     <file xil_pn:name="System.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="57"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="57"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="58"/>
     </file>
     <file xil_pn:name="../cpu/adder.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="14"/>
@@ -53,7 +53,7 @@
     </file>
     <file xil_pn:name="../cpu/imem.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="54"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="35"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="55"/>
     </file>
     <file xil_pn:name="../cpu/maindec.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="10"/>
@@ -93,7 +93,7 @@
     </file>
     <file xil_pn:name="../bus/BusController.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="55"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="55"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="56"/>
     </file>
     <file xil_pn:name="../bus/PriorityEncoder.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="39"/>
@@ -120,7 +120,7 @@
     </file>
     <file xil_pn:name="../acp/acp.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="56"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="56"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="57"/>
     </file>
     <file xil_pn:name="../acp/wave_channel.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="42"/>
@@ -184,7 +184,7 @@
     </file>
     <file xil_pn:name="../uart/uart.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="31"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="31"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="32"/>
     </file>
     <file xil_pn:name="../uart/shift_reg.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="1"/>
@@ -196,11 +196,11 @@
     </file>
     <file xil_pn:name="../ps2/KeyDecoder.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="34"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="34"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="35"/>
     </file>
     <file xil_pn:name="../ps2/mux10to1.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="33"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="33"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="34"/>
     </file>
     <file xil_pn:name="../ps2/parity_check.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="4"/>
@@ -212,7 +212,7 @@
     </file>
     <file xil_pn:name="../ps2/ps2_interface.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="32"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="32"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="33"/>
     </file>
     <file xil_pn:name="../ps2/shift_reg.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="2"/>
@@ -228,11 +228,11 @@
     </file>
     <file xil_pn:name="../vga/color_gen.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="30"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="30"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="31"/>
     </file>
     <file xil_pn:name="../vga/VGA.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="29"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="29"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="30"/>
     </file>
     <file xil_pn:name="../vga/VGA_module.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="48"/>
@@ -240,7 +240,7 @@
     </file>
     <file xil_pn:name="../vga/VGABusInterface.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="28"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="28"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="29"/>
     </file>
     <file xil_pn:name="../acp/FX_slide.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="24"/>
@@ -249,6 +249,10 @@
     <file xil_pn:name="ipcore_dir/SysClockGen.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="50"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="51"/>
+    </file>
+    <file xil_pn:name="../vga/vga_slave_interface.v" xil_pn:type="FILE_VERILOG">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="111"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="28"/>
     </file>
   </files>
 

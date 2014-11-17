@@ -70,12 +70,17 @@ sync_gen sgen(.clk25MHz(clk25MHz),
 color_gen cgen(.pixel(pixel),
                .rgb(rgb),
                .output_valid(output_valid));
+					
+wire [31:0] framebuffer_addr;
+wire slave_data_we;
+wire master_idle;
                             
 VGABusInterface bus_if(.clk(clk25MHz),
                 .row(row),
                 .col(col),
                 .reset(reset),
                 .vga_output_valid(output_valid),
+					 .base_addr(framebuffer_addr),
                 .bus_ack(bus_ack),
                 .bus_req(bus_req),
                 .bus_wait(ctrl_in[0]),
@@ -83,6 +88,26 @@ VGABusInterface bus_if(.clk(clk25MHz),
                 .buf_byte_sel(buf_byte_sel),
                 .buf0_we(buf0_we),
                 .buf1_we(buf1_we),
-                .bus_out(bus_out));
+                .bus_out(bus_out),
+					 .idle(master_idle));
+					 
+//vga framebuffer select register
+d_reg #(.WIDTH(32)) vga_reg0(
+	.clk		(clk25MHz),
+	.reset	(reset),
+	.en		(slave_data_we),
+	.d 		(bus_in),
+	.q			(framebuffer_addr)
+);
+
+vga_slave_interface vga_slave_busint(
+		.bus_in		(bus_in),
+		.ack			(bus_ack),
+		.clk			(clk25MHz),
+		.ctrl_in    (ctrl_in),
+		.data_we		(slave_data_we)
+);
+
+
 
 endmodule

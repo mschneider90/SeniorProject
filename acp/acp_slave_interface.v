@@ -19,7 +19,7 @@ module acp_mem_interface #(parameter BUS_WIDTH = 32,
 reg [3:0] currentState;
 reg [3:0] nextState;
 
-parameter LATENCY = 4;
+parameter LATENCY = 2;
 
 parameter STATE_WAIT_FOR_ACK = 0;
 parameter STATE_WRITE_WAIT = 1;

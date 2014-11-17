@@ -10,7 +10,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="19" />
+   <WVObjectSize size="24" />
    <wvobject fp_name="/VGA_tb/tb_hsync" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">tb_hsync</obj_property>
       <obj_property name="ObjectShortName">tb_hsync</obj_property>
@@ -35,6 +35,10 @@
    <wvobject fp_name="/VGA_tb/tb_rst" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">tb_rst</obj_property>
       <obj_property name="ObjectShortName">tb_rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_ack" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_ack</obj_property>
+      <obj_property name="ObjectShortName">bus_ack</obj_property>
    </wvobject>
    <wvobject fp_name="/VGA_tb/DUT/row" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">row[10:0]</obj_property>
@@ -105,5 +109,23 @@
       <obj_property name="ElementShortName">bus_out[31:0]</obj_property>
       <obj_property name="ObjectShortName">bus_out[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/vga_reg0/q" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">q[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/vga_slave_busint/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[3:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/bus_req" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_req</obj_property>
+      <obj_property name="ObjectShortName">bus_req</obj_property>
    </wvobject>
 </wave_config>

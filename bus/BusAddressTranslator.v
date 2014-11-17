@@ -27,12 +27,12 @@ parameter CPU_ID = 7;
 
 // RAM - 8M x 16 bits = 16MB
 parameter RAM_LOW  = 32'h00001050;
-parameter RAM_HIGH = 32'h0100104F;
+parameter RAM_HIGH = 32'h0080104F;
 parameter RAM_ID = 0;
 
 // ROM - 8M x 16 bits = 16MB
-parameter ROM_LOW  = 32'h01001050;
-parameter ROM_HIGH = 32'h0200104F;
+parameter ROM_LOW  = 32'h00801050;
+parameter ROM_HIGH = 32'h0100104F;
 parameter ROM_ID = 1;
 
 always@(*) begin
