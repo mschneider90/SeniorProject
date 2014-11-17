@@ -1,5 +1,6 @@
 module regfile #(parameter width = 32)
               (input         clk, 
+               input         reset,
                input         we3, 
                input  [4:0]  ra1, ra2, wa3, 
                input  [4:0]  debug_ra4,
@@ -25,7 +26,34 @@ module regfile #(parameter width = 32)
     if (we3) rf[wa3] <= wd3;	
 
   //Reg 0 always has the value 0, hence the inline conditionals below
-  assign rd1 = (ra1 != 0) ? rf[ra1] : 0;
-  assign rd2 = (ra2 != 0) ? rf[ra2] : 0;
-  assign debug_rd4 = (debug_ra4 != 0) ? rf[debug_ra4] : 0;
+  wire [width-1:0] rd1_rf;
+  wire [width-1:0] rd2_rf;
+  assign rd1_rf = (ra1 != 0) ? rf[ra1] : 0;
+  assign rd2_rf = (ra2 != 0) ? rf[ra2] : 0;
+  assign debug_rd4 = 0; //disable for now
+  
+  //Reg 31 is also "special"
+  // Upon reading, it returns the value of a counter that increments every clock
+  // Upon writing, it resets to 0
+  wire [width-1:0] counter_out;
+  parameter ADDR_R31 = 5'b11111;
+  count_reg #(.D_WIDTH(width)) counter (
+                     .count_load(0),
+                     .en(1),
+                     .load(we3 && wa3 == ADDR_R31),
+                     .rst(reset),
+                     .clk(clk),
+                     .count(counter_out));
+                     
+  // Mux the RF and counter outputs
+  mux2 #(.WIDTH(width)) output_mux_1(.in_a(rd1_rf),
+                                     .in_b(counter_out),
+                                     .mux_sel(ra1 == ADDR_R31),
+                                     .mux_out(rd1));
+  
+  mux2 #(.WIDTH(width)) output_mux_2(.in_a(rd2_rf),
+                                     .in_b(counter_out),
+                                     .mux_sel(ra2 == ADDR_R31),
+                                     .mux_out(rd2));  
+  
 endmodule

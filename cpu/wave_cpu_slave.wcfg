@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Michael/Documents/SeniorProject/cpu/tb_cpu_slave_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_cpu_slave" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="17" />
+   <wvobject fp_name="/tb_cpu_slave/req" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req[7:0]</obj_property>
+      <obj_property name="ObjectShortName">req[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/cpu_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cpu_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cpu_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/cpu_ctrl_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cpu_ctrl_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">cpu_ctrl_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/pc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/instr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">instr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/clk50MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50MHz</obj_property>
+      <obj_property name="ObjectShortName">clk50MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/clk25MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk25MHz</obj_property>
+      <obj_property name="ObjectShortName">clk25MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/bus" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/ctrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ctrl[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ctrl[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/ack" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ack</obj_property>
+      <obj_property name="ObjectShortName">ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/BUS_WIDTH" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">BUS_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BUS_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/CTRL_WIDTH" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">CTRL_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CTRL_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/cpu/instr_mem/data_w" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data_w[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_w[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/cpu/instr_mem/addr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[11:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/cpu/instr_mem/we" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_slave/cpu/instr_mem/clk_write" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_write</obj_property>
+      <obj_property name="ObjectShortName">clk_write</obj_property>
+   </wvobject>
+</wave_config>

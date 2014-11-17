@@ -71,7 +71,8 @@ module datapath #(parameter dwidth = 32,
                  .rd1(srca),
                  .rd2(writedata),
                  .debug_ra4(debug_ra4),
-                 .debug_rd4(debug_rd4));
+                 .debug_rd4(debug_rd4),
+                 .reset(reset));
   mux2 #(5)   wrmux(.in_a(instr[20:16]),
                     .in_b(instr[15:11]),
                     .mux_sel(regdst),
