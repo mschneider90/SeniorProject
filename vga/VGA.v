@@ -20,7 +20,7 @@ module sync_gen(input rst,
                 input clk25MHz,
                 output reg hsync_L,
                 output reg vsync_L,
-                output reg output_valid,
+                output output_valid, //reg
                 output reg [10:0] col,
                 output reg [10:0] row);
 									 //time values calculated using 25MHz clk
@@ -33,7 +33,7 @@ parameter V_BPORCH = 29;    		 //Width of vertical back porch, in lines (928us)
 parameter H_RES = 640;      		 //Viewable horizontal resolution, in pixels (25.6us)
 parameter V_RES = 480;            //Viewable vertical resolution, in pixels 
 parameter CLK_PER_LINE = 800;     //Total clocks per line
-parameter LINE_PER_FRAME = 521;   //Total lines per frame
+parameter LINE_PER_FRAME = 521;   //Total lines per frame (521)
 
 //constants
 parameter ASSERT = 1'b1;
@@ -48,12 +48,18 @@ initial begin
 	row <= 0;
 end
 
+assign output_valid = (col <= H_RES && row <= V_RES) ? ASSERT : DEASSERT;
+
 always@(posedge clk25MHz) begin
 	if (!rst) begin
 		col <= col + 1;  //increment cycle counter. Counts # of posedge clk transitions. 
 		if (col == CLK_PER_LINE) begin  //800 cycles is one horizontal line
 			row <= row + 1; //increment line count
 			col <= 0;				 //reset cycle count for next h line
+			if (row == LINE_PER_FRAME) 
+			begin
+				row <= 0;
+			end
 		end
 
 		if (col == H_RES + H_FPORCH) //begin hsync_L pulse
@@ -65,18 +71,19 @@ always@(posedge clk25MHz) begin
 			vsync_L <= ASSERT_L;
 		if (row == V_RES + V_FPORCH + V_SYNC_WIDTH) //end vsync_L pulse
 			vsync_L <= DEASSERT_L;
-            
-        if (col <= H_RES && row <= V_RES)
-			output_valid <= ASSERT;
-		else
-			output_valid <= DEASSERT;
 			
-		if (row == LINE_PER_FRAME) 
-			row <= 0;
+		//if (col < H_RES && row < V_RES)
+		//	output_valid <= ASSERT;
+		//else
+		//	output_valid <= DEASSERT;
+			
+//		if (row == LINE_PER_FRAME) 
+//			row <= 0;
 	end
 	else begin //reset
 		col <= 0;
 		row <= 0;
+		//output_valid <= DEASSERT;
 		hsync_L <= DEASSERT_L;
 		vsync_L <= DEASSERT_L;
 	end

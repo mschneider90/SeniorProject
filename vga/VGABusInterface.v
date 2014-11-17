@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
 module VGABusInterface(input clk,
-                       input vsync,
                        input [10:0] row,
                        input [10:0] col,
                        input bus_ack,
@@ -15,25 +14,18 @@ module VGABusInterface(input clk,
                        output buf1_we,
                        output [31:0] bus_out);
                        
-parameter RES_X = 160;
+parameter RES_X = 80;
 parameter RES_Y = 240;
 
 parameter BASE_ADDR = 32'h00001050;
- 
-wire [31:0] pix_addr;  
-count_reg #(.D_WIDTH(32)) pixAddrCounter(.count_load(0),
-                         .en(vga_output_valid),
-                         .load(0),
-                         .rst(reset | ~vsync),
-                         .clk(clk),
-                         .count(pix_addr));
                        
-/*assign pix_addr = (row >> 1) * RES_X + (col >> 2); */
+wire [31:0] pix_addr;  // For selecting each byte
+assign pix_addr = (row >> 1) * RES_X + (col >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
 
 wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
 assign pix_addr_reduced = pix_addr >> 1;
 
-assign bus_out = {BASE_ADDR + pix_addr_reduced};
+assign bus_out =  {BASE_ADDR + pix_addr_reduced}; //(( BASE_ADDR + pix_addr_reduced >= 32'h0000391F)) ? BASE_ADDR : BASE_ADDR + pix_addr_reduced;        //{BASE_ADDR + pix_addr_reduced};
 
 wire currentBuf;
 //assign buf_sel = currentBuf;
