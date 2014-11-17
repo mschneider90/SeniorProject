@@ -66,6 +66,8 @@ NET "mem_data<15>" LOC = "T1";
 #NET "debug_rd4<2>" LOC = "K15";
 #NET "debug_rd4<1>" LOC = "J15";
 #NET "debug_rd4<0>" LOC = "J14";
+NET "tx_led" LOC = "K15";
+NET "rx_led" LOC = "J15";
 NET "dcm_locked" LOC = "J14";
 
 #Reset

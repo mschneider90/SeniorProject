@@ -25,6 +25,8 @@ module System #(parameter A_WIDTH = 32,
 		      output [7:0] audio_out, // Audio
               input rx, // UART
               output tx, // UART
+              output rx_led,
+              output tx_led,
               input ps2_data_in, // PS2 serial data
               input clk_ps2,      // PS2 clock
               output[COLOR_DEPTH-1:0] rgb, // vga out
@@ -119,7 +121,9 @@ acp		AudioCopper(
 );				   
 		
 wire [D_WIDTH-1:0] uart_bus_out;   
-wire [C_WIDTH-1:0] uart_ctrl_out;        
+wire [C_WIDTH-1:0] uart_ctrl_out;   
+assign rx_led = ~rx;
+assign tx_led = ~tx;     
 uartInterface uart(.clk50MHz(clk25MHz),
                    .bus_in(bus_data),
                    .ctrl_in(bus_ctrl),
