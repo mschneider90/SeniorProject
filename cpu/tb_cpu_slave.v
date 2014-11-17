@@ -23,8 +23,8 @@ reg reset;
 wire [31:0] pc;
 wire [31:0] instr;
 mips cpu(.clk(clk25MHz),
-         .clk50MHz(clk50MHz),
-         .reset_ext(reset),
+         //.clk25MHz(clk50MHz),
+         .reset(reset),
          .bus_ctrl_in(ctrl),
          .bus_ack(ack),
          .bus_ctrl_out(cpu_ctrl_out),
