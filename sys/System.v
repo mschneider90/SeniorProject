@@ -6,7 +6,9 @@ module System #(parameter A_WIDTH = 32,
                 parameter C_WIDTH = 8,
                 parameter COLOR_DEPTH = 8)
              (input clk50MHz_in,
-              input reset,
+              input reset_cpu,
+              input reset_vga,
+              output dcm_locked,
               input [4:0] debug_ra4,
               output [7:0] debug_rd4,
               output mclk, //begin SRAM specific signals
@@ -33,7 +35,6 @@ module System #(parameter A_WIDTH = 32,
 wire clk25MHz;
 wire clk50MHz;
 wire clk100MHz;
-wire dcm_locked;
 SysClockGen clk_gen(.CLKIN_IN(clk50MHz_in),
                     .CLKFX_OUT(clk25MHz),
                     .CLK0_OUT(clk50MHz),
@@ -71,7 +72,7 @@ wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
          
 mips cpu(.clk(clk25MHz),
-         .reset(reset),
+         .reset(reset_cpu),
          .pc(pc), 
          .instr(instr),
          .bus_ack(bus_ack[CPU_BUS_ID]),
@@ -145,7 +146,7 @@ VGA_module vga_ctrl(.rgb(rgb),
                     .vsync(vsync),
                     .hsync(hsync),
                     .clk25MHz(clk25MHz),
-                    .reset(reset),
+                    .reset(reset_vga),
                     .bus_ack(bus_ack[VGA_BUS_ID]),
                     .bus_in(bus_data),
                     .ctrl_in(bus_ctrl),

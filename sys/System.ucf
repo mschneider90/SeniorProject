@@ -66,9 +66,11 @@ NET "mem_data<15>" LOC = "T1";
 #NET "debug_rd4<2>" LOC = "K15";
 #NET "debug_rd4<1>" LOC = "J15";
 #NET "debug_rd4<0>" LOC = "J14";
+NET "dcm_locked" LOC = "J14";
 
 #Reset
-NET "reset" LOC = "R17";
+NET "reset_cpu" LOC = "R17";
+NET "reset_vga" LOC = "N17";
 
 #Debug register select
 NET "debug_ra4<0>" LOC = "G18";
