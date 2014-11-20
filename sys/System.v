@@ -72,7 +72,7 @@ wire [C_WIDTH-1:0] bus_ctrl;
 
 wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
-         
+         /*
 mips cpu(.clk(clk25MHz),
          .reset(reset_cpu),
          .pc(pc), 
@@ -84,7 +84,7 @@ mips cpu(.clk(clk25MHz),
          .bus_data_in(bus_data), //16 bits
          .bus_data_out(cpu_data_out),
          .debug_ra4(debug_ra4),
-         .debug_rd4(debug_rd4)); 
+         .debug_rd4(debug_rd4)); */
 
 imem instr_mem(.addr(pc[7:2]),
                .data_r(instr));
