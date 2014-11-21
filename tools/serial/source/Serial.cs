@@ -283,9 +283,12 @@ namespace MooseboxSerial
 
             string filePath = input[1];
             bool verbose = false;
-            if (input[2] == "-verbose")
+            if (input.Length == 3)
             {
-                verbose = true;
+                if (input[2] == "-verbose")
+                {
+                    verbose = true;
+                }
             }
 
             string[] lines;
