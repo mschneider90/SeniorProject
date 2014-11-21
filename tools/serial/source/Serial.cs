@@ -275,13 +275,18 @@ namespace MooseboxSerial
 
         static void doMusic2Command(SerialPort serial, string[] input, int sleepBetweenNotes)
         {
-            if (input.Length != 2)
+            if (input.Length != 3)
             {
                 Console.WriteLine("- MUSIC2 > ERROR: bad arguments");
                 return;
             }
 
             string filePath = input[1];
+            bool verbose = false;
+            if (input[2] == "-verbose")
+            {
+                verbose = true;
+            }
 
             string[] lines;
             try
@@ -304,8 +309,12 @@ namespace MooseboxSerial
                     uint fx_low = uint.Parse(bytes[j + 1], NumberStyles.AllowHexSpecifier);
                     uint fx = fx_high + fx_low;
 
-                    Console.WriteLine("fx {0}: {1:X}", (j -2)/ 2 + 1, fx);
-                    serialWrite(serial, (j - 2) / 4 + 1, fx, false);
+                    if (verbose)
+                    {
+                        Console.WriteLine("fx {0}: {1:X}", (j - 2) / 2 + 1, fx);
+                    }
+
+                    serialWrite(serial, (j - 2) / 2 + 1, fx, false);
                 }
 
                 for (uint j = 0; j < bytes.Length; j += 4) // Write note registers
@@ -313,7 +322,12 @@ namespace MooseboxSerial
                     uint note_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
                     uint note_low = uint.Parse(bytes[j+1], NumberStyles.AllowHexSpecifier);
                     uint note = note_high + note_low;
-                    Console.WriteLine("note {0}: {1:X}", j / 2 , note);
+
+                    if (verbose)
+                    {
+                        Console.WriteLine("note {0}: {1:X}", j / 2 + 1, note);
+                    }
+
                     if (note != 0) // Only write note regs if they are non-zero
                     {
                         serialWrite(serial, j / 2, note, false);
@@ -421,7 +435,7 @@ namespace MooseboxSerial
             Console.WriteLine("            Reads data starting from address into the specified file");
             Console.WriteLine("         music <audio_file.paf>");
             Console.WriteLine("            Plays music from a .paf audio file");
-            Console.WriteLine("         music2 <audio_file.p2f>");
+            Console.WriteLine("         music2 <audio_file.p2f> [-verbose]");
             Console.WriteLine("            Plays music from a .p2f audio file");
             Console.WriteLine("         program <program_file>");
             Console.WriteLine("            Program CPU from a file of assembled MIPS instructions");
