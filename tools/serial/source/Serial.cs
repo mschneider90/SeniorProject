@@ -93,6 +93,10 @@ namespace MooseboxSerial
                 {
                     doMusicCommand(serial, input, sleepBetweenNotes);
                 }
+                else if (input[0].Equals("music2"))
+                {
+                    doMusic2Command(serial, input, sleepBetweenNotes);
+                }
                 else if (input[0].Equals("program"))
                 {
                     doProgramCommand(serial, input);
@@ -269,6 +273,61 @@ namespace MooseboxSerial
             }
         }
 
+        static void doMusic2Command(SerialPort serial, string[] input, int sleepBetweenNotes)
+        {
+            if (input.Length != 2)
+            {
+                Console.WriteLine("- MUSIC2 > ERROR: bad arguments");
+                return;
+            }
+
+            string filePath = input[1];
+
+            string[] lines;
+            try
+            {
+                lines = readFile(filePath);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("- MUSIC2 > Failed to open file");
+                return;
+            }
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Console.WriteLine("line {0}",i);
+                String[] bytes = lines[i].Split('\t');
+                for (uint j = 2; j < bytes.Length; j += 4) // Write effects registers
+                {
+                    uint fx_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
+                    uint fx_low = uint.Parse(bytes[j + 1], NumberStyles.AllowHexSpecifier);
+                    uint fx = fx_high + fx_low;
+
+                    Console.WriteLine("fx {0}: {1:X}", (j -2)/ 2 + 1, fx);
+                    serialWrite(serial, (j - 2) / 4 + 1, fx, false);
+                }
+
+                for (uint j = 0; j < bytes.Length; j += 4) // Write note registers
+                {
+                    uint note_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
+                    uint note_low = uint.Parse(bytes[j+1], NumberStyles.AllowHexSpecifier);
+                    uint note = note_high + note_low;
+                    Console.WriteLine("note {0}: {1:X}", j / 2 , note);
+                    if (note != 0) // Only write note regs if they are non-zero
+                    {
+                        serialWrite(serial, j / 2, note, false);
+                    }
+                    else //write garbage to one of the unused ACP registers
+                    {
+                        serialWrite(serial, 0xF, 0, false);
+                    }
+                }
+
+                Thread.Sleep(sleepBetweenNotes);
+            }
+        }
+
         static void doProgramCommand(SerialPort serial, String[] input)
         {
             if (input.Length != 2)
@@ -362,6 +421,8 @@ namespace MooseboxSerial
             Console.WriteLine("            Reads data starting from address into the specified file");
             Console.WriteLine("         music <audio_file.paf>");
             Console.WriteLine("            Plays music from a .paf audio file");
+            Console.WriteLine("         music2 <audio_file.p2f>");
+            Console.WriteLine("            Plays music from a .p2f audio file");
             Console.WriteLine("         program <program_file>");
             Console.WriteLine("            Program CPU from a file of assembled MIPS instructions");
             Console.WriteLine("         settings <setting_name> <value>");
