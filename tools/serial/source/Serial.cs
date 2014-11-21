@@ -275,7 +275,7 @@ namespace MooseboxSerial
 
         static void doMusic2Command(SerialPort serial, string[] input, int sleepBetweenNotes)
         {
-            if (input.Length != 3)
+            if (input.Length != 2 && input.Length != 3)
             {
                 Console.WriteLine("- MUSIC2 > ERROR: bad arguments");
                 return;
