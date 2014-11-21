@@ -88,8 +88,8 @@ NET audio_out<6> LOC = U11; //pmod 9
 NET audio_out<7> LOC = V11; //pmod 10
 
 # UART
-NET "tx" LOC = "N17";
-NET "rx" LOC = "N18";
+NET "tx" LOC = "N18";
+NET "rx" LOC = "N17";
 
 # PS/2
 #NET "clk_ps2" LOC = "R12";
