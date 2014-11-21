@@ -5,7 +5,7 @@ module System #(parameter A_WIDTH = 32,
                 parameter D_WIDTH = 32,
                 parameter C_WIDTH = 8,
                 parameter COLOR_DEPTH = 8)
-             (input clk50MHz_in,
+             (input clk100MHz_in,
               input reset,
               input [4:0] debug_ra4,
               output [7:0] debug_rd4,
@@ -34,13 +34,13 @@ wire clk25MHz;
 wire clk50MHz;
 wire clk100MHz;
 wire dcm_locked;
-SysClockGen clk_gen(.CLKIN_IN(clk50MHz_in),
-                    .CLKFX_OUT(clk25MHz),
-                    .CLK0_OUT(clk50MHz),
-                    .CLK2X_OUT(clk100MHz),
-                    .LOCKED_OUT(dcm_locked));
 
-      
+SysClockGen clk_gen(.CLK_IN1(clk100MHz_in),
+                    .CLK_OUT1(clk100MHz),
+                    .CLK_OUT2(clk50MHz),
+                    .CLK_OUT3(clk25MHz),
+                    .LOCKED(dcm_locked));
+
 parameter NUM_DEVICES = 8;
 
 //each device gets an ID
@@ -131,13 +131,13 @@ uartInterface uart(.clk50MHz(clk25MHz),
 
 wire [D_WIDTH-1:0] ps2_data_out;
 wire [C_WIDTH-1:0] ps2_ctrl_out;
-PS2Controller ps2_ctrl(.ps2_data_in(ps2_data_in),
+/*PS2Controller ps2_ctrl(.ps2_data_in(ps2_data_in),
                        .clk_ps2(clk_ps2),
                        .clk(clk25MHz),
                        .ack(bus_ack[PS2_BUS_ID]),
                        .bus_in(bus_data),
                        .bus_out(ps2_data_out),
-                       .ctrl_out(ps2_ctrl_out));
+                       .ctrl_out(ps2_ctrl_out)); */
                        
 wire [D_WIDTH-1:0] vga_bus_out;
 wire [C_WIDTH-1:0] vga_ctrl_out;                    

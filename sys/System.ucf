@@ -1,61 +1,61 @@
-NET "clk50MHz_in" LOC = "B8";
+NET "clk100MHz_in" LOC = "V10";
 
-NET "clk50MHz_in" TNM_NET = "clk50MHz_in";
-TIMESPEC "TS_clk50MHz_in" = PERIOD "clk50MHz_in" 20ns HIGH 50%;
+NET "clk100MHz_in" TNM_NET = "clk100MHz_in";
+TIMESPEC "TS_clk100MHz_in" = PERIOD "clk100MHz_in" 8ns HIGH 50%;
 
 //Micron SRAM control signals
-NET "moe_L" LOC = "T2";
-NET "mwe_L" LOC = "N7";
-NET "madv_L" LOC = "J4";
-NET "mclk" LOC = "H5";
-NET "mub_L" LOC = "K4";
-NET "mlb_L" LOC = "K5";
-NET "mce_L" LOC = "R6";
-NET "mcre" LOC = "P7";
+NET "moe_L" LOC = "L18";
+NET "mwe_L" LOC = "M16";
+NET "madv_L" LOC = "H18";
+NET "mclk" LOC = "R10";
+NET "mub_L" LOC = "K15";
+NET "mlb_L" LOC = "K16";
+NET "mce_L" LOC = "L15";
+NET "mcre" LOC = "M18";
 
 #Address bus
 # NET "maddr<0>" LOC = "NA";
-NET "maddr<0>" LOC = "J1";
-NET "maddr<1>" LOC = "J2";
-NET "maddr<2>" LOC = "H4";
-NET "maddr<3>" LOC = "H1";
-NET "maddr<4>" LOC = "H2";
-NET "maddr<5>" LOC = "J5";
-NET "maddr<6>" LOC = "H3";
-NET "maddr<7>" LOC = "H6";
-NET "maddr<8>" LOC = "F1";
-NET "maddr<9>" LOC = "G3";
-NET "maddr<10>" LOC = "G6";
-NET "maddr<11>" LOC = "G5";
-NET "maddr<12>" LOC = "G4";
-NET "maddr<13>" LOC = "F2";
-NET "maddr<14>" LOC = "E1";
-NET "maddr<15>" LOC = "M5";
-NET "maddr<16>" LOC = "E2";
-NET "maddr<17>" LOC = "C2";
-NET "maddr<18>" LOC = "C1";
-NET "maddr<19>" LOC = "D2";
-NET "maddr<20>" LOC = "K3";
-NET "maddr<21>" LOC = "D1";
-NET "maddr<22>" LOC = "K6";
+NET "maddr<0>" LOC = "K18";
+NET "maddr<1>" LOC = "K17";
+NET "maddr<2>" LOC = "J18";
+NET "maddr<3>" LOC = "J16";
+NET "maddr<4>" LOC = "G18";
+NET "maddr<5>" LOC = "G16";
+NET "maddr<6>" LOC = "H16";
+NET "maddr<7>" LOC = "H15";
+NET "maddr<8>" LOC = "H14";
+NET "maddr<9>" LOC = "H13";
+NET "maddr<10>" LOC = "F18";
+NET "maddr<11>" LOC = "F17";
+NET "maddr<12>" LOC = "K13";
+NET "maddr<13>" LOC = "K12";
+NET "maddr<14>" LOC = "E18";
+NET "maddr<15>" LOC = "E16";
+NET "maddr<16>" LOC = "G13";
+NET "maddr<17>" LOC = "H12";
+NET "maddr<18>" LOC = "D18";
+NET "maddr<19>" LOC = "D17";
+NET "maddr<20>" LOC = "G14";
+NET "maddr<21>" LOC = "F14";
+NET "maddr<22>" LOC = "C18";
 
 #Data bus
-NET "mem_data<0>" LOC = "L1";
-NET "mem_data<1>" LOC = "L4";
-NET "mem_data<2>" LOC = "L6";
-NET "mem_data<3>" LOC = "M4";
-NET "mem_data<4>" LOC = "N5";
-NET "mem_data<5>" LOC = "P1";
-NET "mem_data<6>" LOC = "P2";
-NET "mem_data<7>" LOC = "R2";
-NET "mem_data<8>" LOC = "L3";
-NET "mem_data<9>" LOC = "L5";
-NET "mem_data<10>" LOC = "M3";
-NET "mem_data<11>" LOC = "M6";
-NET "mem_data<12>" LOC = "L2";
-NET "mem_data<13>" LOC = "N4";
-NET "mem_data<14>" LOC = "R3";
-NET "mem_data<15>" LOC = "T1";
+NET "mem_data<0>" LOC = "R13";
+NET "mem_data<1>" LOC = "T14";
+NET "mem_data<2>" LOC = "V14";
+NET "mem_data<3>" LOC = "U5";
+NET "mem_data<4>" LOC = "V5";
+NET "mem_data<5>" LOC = "R3";
+NET "mem_data<6>" LOC = "T3";
+NET "mem_data<7>" LOC = "R5";
+NET "mem_data<8>" LOC = "N5";
+NET "mem_data<9>" LOC = "P6";
+NET "mem_data<10>" LOC = "P12";
+NET "mem_data<11>" LOC = "U13";
+NET "mem_data<12>" LOC = "V13";
+NET "mem_data<13>" LOC = "U10";
+NET "mem_data<14>" LOC = "R8";
+NET "mem_data<15>" LOC = "T8";
 
 #LED out
 #NET "debug_rd4<7>" LOC = "R4";
@@ -68,44 +68,44 @@ NET "mem_data<15>" LOC = "T1";
 #NET "debug_rd4<0>" LOC = "J14";
 
 #Reset
-NET "reset" LOC = "R17";
+NET "reset" LOC = "T5";
 
 #Debug register select
-NET "debug_ra4<0>" LOC = "G18";
-NET "debug_ra4<1>" LOC = "H18";
-NET "debug_ra4<2>" LOC = "K18";
-NET "debug_ra4<3>" LOC = "K17";
-NET "debug_ra4<4>" LOC = "L14";
+NET "debug_ra4<0>" LOC = "T10";
+NET "debug_ra4<1>" LOC = "T9";
+NET "debug_ra4<2>" LOC = "V9";
+NET "debug_ra4<3>" LOC = "M8";
+NET "debug_ra4<4>" LOC = "N8";
 
 #audio co-processor audio output
-NET audio_out<0> LOC = M15; //(pmod 4
-NET audio_out<1> LOC = L17; //pmod 3 
-NET audio_out<2> LOC = K12; //pmod 2
-NET audio_out<3> LOC = L15; //pmod 1
-NET audio_out<4> LOC = K13; //pmod 7
-NET audio_out<5> LOC = L16; //pmod 8
-NET audio_out<6> LOC = M14; //pmod 9
-NET audio_out<7> LOC = M16; //pmod 10
+NET audio_out<0> LOC = P11; //(pmod 4
+NET audio_out<1> LOC = N10; //pmod 3 
+NET audio_out<2> LOC = V12; //pmod 2
+NET audio_out<3> LOC = T12; //pmod 1
+NET audio_out<4> LOC = M10; //pmod 7
+NET audio_out<5> LOC = N9; //pmod 8
+NET audio_out<6> LOC = U11; //pmod 9
+NET audio_out<7> LOC = V11; //pmod 10
 
 # UART
-NET "tx" LOC = "P9";
-NET "rx" LOC = "U6";
+NET "tx" LOC = "N17";
+NET "rx" LOC = "N18";
 
 # PS/2
-NET "clk_ps2" LOC = "R12";
-NET "ps2_data_in" LOC = "P11";
+#NET "clk_ps2" LOC = "R12";
+#NET "ps2_data_in" LOC = "P11";
 # Fix PAR error
-NET "clk_ps2" CLOCK_DEDICATED_ROUTE = FALSE;
+#NET "clk_ps2" CLOCK_DEDICATED_ROUTE = FALSE;
 
 # VGA
-NET hsync LOC = T4;
-NET vsync LOC = U3;
+NET hsync LOC = N6;
+NET vsync LOC = P7;
 
-NET rgb<7> LOC = R9;
-NET rgb<6> LOC = T8;
-NET rgb<5> LOC = R8;
-NET rgb<4> LOC = N8;
-NET rgb<3> LOC = P8;
-NET rgb<2> LOC = P6;
-NET rgb<1> LOC = U5;
-NET rgb<0> LOC = U4;
+NET rgb<7> LOC = U7;
+NET rgb<6> LOC = V7;
+NET rgb<5> LOC = N7;
+NET rgb<4> LOC = P8;
+NET rgb<3> LOC = T6;
+NET rgb<2> LOC = V6;
+NET rgb<1> LOC = R7;
+NET rgb<0> LOC = T7;
