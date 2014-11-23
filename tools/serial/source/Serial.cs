@@ -245,31 +245,38 @@ namespace MooseboxSerial
                 return;
             }
 
-            for (int i = 0; i < lines.Length; i++)
+            try
             {
-                String[] regs = lines[i].Split(',');
-                for (uint j = 1; j < regs.Length; j += 2) // Write effects registers
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    uint fx = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
-
-                    serialWrite(serial, j, fx, false);
-                }
-
-                for (uint j = 0; j < regs.Length; j += 2) // Write note registers
-                {
-                    uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
-
-                    if (note != 0) // Only write note regs if they are non-zero
+                    String[] regs = lines[i].Split(',');
+                    for (uint j = 1; j < regs.Length; j += 2) // Write effects registers
                     {
-                        serialWrite(serial, j, note, false);
-                    }
-                    else //write garbage to one of the unused ACP registers
-                    {
-                        serialWrite(serial, 0xF, 0, false);
-                    }
-                }
+                        uint fx = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
 
-                Thread.Sleep(sleepBetweenNotes);
+                        serialWrite(serial, j, fx, false);
+                    }
+
+                    for (uint j = 0; j < regs.Length; j += 2) // Write note registers
+                    {
+                        uint note = uint.Parse(regs[j], NumberStyles.AllowHexSpecifier);
+
+                        if (note != 0) // Only write note regs if they are non-zero
+                        {
+                            serialWrite(serial, j, note, false);
+                        }
+                        else //write garbage to one of the unused ACP registers
+                        {
+                            serialWrite(serial, 0xF, 0, false);
+                        }
+                    }
+
+                    Thread.Sleep(sleepBetweenNotes);
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("- MUSIC > Bad file format");
             }
         }
 
@@ -302,46 +309,52 @@ namespace MooseboxSerial
                 return;
             }
 
-            for (int i = 0; i < lines.Length; i++)
+            try
             {
-                Console.WriteLine("line {0}",i);
-                String[] bytes = lines[i].Split('\t');
-                for (uint j = 2; j < bytes.Length; j += 4) // Write effects registers
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    uint fx_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
-                    uint fx_low = uint.Parse(bytes[j + 1], NumberStyles.AllowHexSpecifier);
-                    uint fx = fx_high + fx_low;
-
-                    if (verbose)
+                    Console.WriteLine("line {0}",i);
+                    String[] bytes = lines[i].Split('\t');
+                    for (uint j = 2; j < bytes.Length; j += 4) // Write effects registers
                     {
-                        Console.WriteLine("fx {0}: {1:X}", (j - 2) / 2 + 1, fx);
+                        uint fx_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
+                        uint fx_low = uint.Parse(bytes[j + 1], NumberStyles.AllowHexSpecifier);
+                        uint fx = fx_high + fx_low;
+
+                        if (verbose)
+                        {
+                            Console.WriteLine("fx {0}: {1:X}", (j - 2) / 2 + 1, fx);
+                        }
+
+                        serialWrite(serial, (j - 2) / 2 + 1, fx, false);
                     }
 
-                    serialWrite(serial, (j - 2) / 2 + 1, fx, false);
+                    for (uint j = 0; j < bytes.Length; j += 4) // Write note registers
+                    {
+                        uint note_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
+                        uint note_low = uint.Parse(bytes[j + 1], NumberStyles.AllowHexSpecifier);
+                        uint note = note_high + note_low;
+
+                        if (verbose)
+                        {
+                            Console.WriteLine("note {0}: {1:X}", j / 2 + 1, note);
+                        }
+
+                        if (note != 0) // Only write note regs if they are non-zero
+                        {
+                            serialWrite(serial, j / 2, note, false);
+                        }
+                        else //write garbage to one of the unused ACP registers
+                        {
+                            serialWrite(serial, 0xF, 0, false);
+                        }
+                    }
+                    Thread.Sleep(sleepBetweenNotes);
                 }
-
-                for (uint j = 0; j < bytes.Length; j += 4) // Write note registers
-                {
-                    uint note_high = (uint.Parse(bytes[j], NumberStyles.AllowHexSpecifier) << 8);
-                    uint note_low = uint.Parse(bytes[j+1], NumberStyles.AllowHexSpecifier);
-                    uint note = note_high + note_low;
-
-                    if (verbose)
-                    {
-                        Console.WriteLine("note {0}: {1:X}", j / 2 + 1, note);
-                    }
-
-                    if (note != 0) // Only write note regs if they are non-zero
-                    {
-                        serialWrite(serial, j / 2, note, false);
-                    }
-                    else //write garbage to one of the unused ACP registers
-                    {
-                        serialWrite(serial, 0xF, 0, false);
-                    }
-                }
-
-                Thread.Sleep(sleepBetweenNotes);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("- MUSIC2 > Bad file format");
             }
         }
 
