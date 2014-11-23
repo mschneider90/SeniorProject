@@ -7,15 +7,15 @@ module VGABusInterface(input clk,
                        input reset,
                        input bus_wait,
                        input vga_output_valid,
-							  input [31:0] base_addr,
+                       input [31:0] base_addr,
                        output reg bus_req,
                        output buf_sel,
                        output buf_byte_sel,
                        output buf0_we,
                        output buf1_we,
-							  output idle,
+                       output idle,
                        output [31:0] bus_out);
-                       
+ 
 parameter RES_X = 80;
 parameter RES_Y = 240;
 
