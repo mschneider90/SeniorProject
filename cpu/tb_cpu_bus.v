@@ -17,13 +17,15 @@ wire [7:0] ack;
       
 wire [BUS_WIDTH-1:0] slave_out; 
 wire [CTRL_WIDTH-1:0] slave_ctrl_out;                   
-tb_test_slave   slave(.bus_in(bus),
+/*tb_test_slave   slave(.bus_in(bus),
                       .ack(ack[3]),
                       .clk(clk50MHz),
                       .bus_out(slave_out),
                       .ctrl_in(ctrl),
                       .ctrl_out(slave_ctrl_out));
-                     
+  */ 
+
+  
 wire [BUS_WIDTH-1:0] cpu_out;  
 wire [CTRL_WIDTH-1:0] cpu_ctrl_out;     
         

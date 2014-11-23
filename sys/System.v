@@ -108,7 +108,7 @@ micron_controller_async sram_ctrl(.clk25MHz(clk25MHz),
                            .mce_L(mce_L),
                            .mcre(mcre),
                            .mwait(mwait));		   
-                           
+                          
 wire[C_WIDTH-1:0] acp_ctrl_out;
 acp		AudioCopper(
 				.clk50MHz	(clk50MHz),

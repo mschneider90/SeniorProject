@@ -59,6 +59,7 @@ reg counter_en;
 
 //counters
 //output reg addr_write;
+/*
 always@(posedge clk) begin
     if (counter_en) begin
         if (addr_write) begin
@@ -72,8 +73,10 @@ always@(posedge clk) begin
         counter <= counter;
     end
 end
+*/
 
 reg latency_counter_reset;
+/*
 always@(posedge clk) begin
     if (latency_counter_reset) begin
         latencyCounter <= 0;
@@ -87,7 +90,7 @@ always@(posedge clk) begin
         end
     end
 end
-
+*/
 reg burst_write;
 always@(posedge clk) begin
     if (burst_write) begin
@@ -134,7 +137,14 @@ end
 always@(*) begin
     case (currentState)
         STATE_WAIT_FOR_ACK: begin
-            addr_write <= 1;
+				if(ack)
+					begin
+						addr_write <= 1;
+					end
+				else
+					begin
+						addr_write <= 0;
+					end
             burst_write <= 1;
             latency_counter_en <= 0;
             latency_counter_reset <= 1;
@@ -150,12 +160,12 @@ always@(*) begin
             counter_en <= 0;
             data_we <= 0;
             
-            if (latencyCounter <= LATENCY - 2) begin
-                wait_out <= 1;
-            end
-            else begin
+            //if (latencyCounter <= LATENCY - 2) begin
+            //    wait_out <= 1;
+           // end
+           // else begin
                 wait_out <= 0;
-            end
+          //  end
         end
         STATE_WRITE_WAIT: begin
             addr_write <= 0;
@@ -165,12 +175,12 @@ always@(*) begin
             counter_en <= 0;
             data_we <= 0;
             
-            if (latencyCounter <= LATENCY - 2) begin
-                wait_out <= 1;
-            end
-            else begin
+          //  if (latencyCounter <= LATENCY - 2) begin
+          //      wait_out <= 1;
+         //   end
+          //  else begin
                 wait_out <= 0;
-            end
+         //   end
         end
         STATE_READ_DATA: begin
             addr_write <= 0;
@@ -228,36 +238,36 @@ always@(*) begin
             end
         end
         STATE_READ_WAIT: begin
-            if (latencyCounter == LATENCY - 1) begin
-                nextState <= STATE_READ_DATA;
-            end
-            else begin
-                nextState <= STATE_READ_WAIT;
-            end
+           // if (latencyCounter == LATENCY - 1) begin
+               nextState <= STATE_READ_DATA;
+          //  end
+          //  else begin
+         //       nextState <= STATE_READ_WAIT;
+          //  end
         end
         STATE_WRITE_WAIT: begin
-            if (latencyCounter == LATENCY- 1) begin
+           // if (latencyCounter == LATENCY- 1) begin
                 nextState <= STATE_WRITE_DATA;
-            end 
-            else begin
-                nextState <= STATE_WRITE_WAIT;
-            end
+          //  end 
+          //  else begin
+          //      nextState <= STATE_WRITE_WAIT;
+          //  end
         end
         STATE_READ_DATA: begin
-            if (counter == burst_length_bcd + starting_addr - 1) begin
+         //   if (counter == burst_length_bcd + starting_addr - 1) begin
                 nextState <= STATE_FINISH;
-            end
-            else begin
-                nextState <= STATE_READ_DATA;
-            end
+         //   end
+         //   else begin
+         //       nextState <= STATE_READ_DATA;
+         //   end
         end
         STATE_WRITE_DATA: begin
-            if (counter == burst_length_bcd + starting_addr - 1) begin
+         //   if (counter == burst_length_bcd + starting_addr - 1) begin
                 nextState <= STATE_FINISH;
-            end
-            else begin
-                nextState <= STATE_WRITE_DATA;
-            end
+         //   end
+         //   else begin
+         //       nextState <= STATE_WRITE_DATA;
+         //   end
         end
         STATE_FINISH: begin
             if (ack) begin

@@ -88,7 +88,7 @@ always@(*) begin
         STATE_WAIT: begin
             bus_req <= 1;
             pc_stall_en <= 1;
-            data_out <= 1;
+            data_out <= 0; //originally 1
         end
         STATE_DATA: begin
             bus_req <= 1;
@@ -98,7 +98,7 @@ always@(*) begin
         STATE_FINISH: begin
             bus_req <= 0;
             pc_stall_en <= 0;
-            data_out <= 1;
+            data_out <= 0; //originally 1
         end
         default: begin
             bus_req <= 0;
