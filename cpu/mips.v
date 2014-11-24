@@ -32,6 +32,7 @@ module mips #(parameter dwidth = 32,
   // Selects between outputting address and data
   wire [dwidth-1:0] bus_addr;
   wire data_out;
+  //this multiplexer or the inputs to it are suspect. 11/21/2014
   mux2 #(.WIDTH(dwidth)) data_addr_mux (.in_a(bus_addr),
                                    .in_b(writedata),
                                    .mux_sel(data_out),

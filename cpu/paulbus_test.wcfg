@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/inevitable_disaster/Desktop/senior_proj/SeniorProject/cpu/tb_cpu_bus_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_cpu_bus" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="26" />
+   <wvobject fp_name="/tb_cpu_bus/bus" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/ctrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ctrl[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ctrl[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/req" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req[7:0]</obj_property>
+      <obj_property name="ObjectShortName">req[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/ack" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ack[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ack[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/slave_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">slave_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_out[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/slave_ctrl_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">slave_ctrl_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_ctrl_out[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cpu_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cpu_out[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu_ctrl_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cpu_ctrl_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">cpu_ctrl_out[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/pc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/instr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">instr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/clk50MHz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk50MHz</obj_property>
+      <obj_property name="ObjectShortName">clk50MHz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/BUS_WIDTH" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">BUS_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BUS_WIDTH[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/CTRL_WIDTH" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">CTRL_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CTRL_WIDTH[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/data_addr_mux/in_a" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">in_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">in_a[31:0]</obj_property>
+      <obj_property name="label">busaddr (in_a)</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ffff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/data_addr_mux/in_b" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">in_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">in_b[31:0]</obj_property>
+      <obj_property name="label">writedata (in_b)</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ffff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/data_addr_mux/mux_sel" type="logic" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">mux_sel</obj_property>
+      <obj_property name="ObjectShortName">mux_sel</obj_property>
+      <obj_property name="label">data_out (muxsel)</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ffff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/data_addr_mux/mux_out" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">mux_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mux_out[31:0]</obj_property>
+      <obj_property name="label">bus_data_out (muxout)</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ffff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/bus_if/currentState" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">currentState[2:0]</obj_property>
+      <obj_property name="ObjectShortName">currentState[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffff00</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/bus" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/bus_if/data_out" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">data_out</obj_property>
+      <obj_property name="ObjectShortName">data_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/cpu/bus_if/pc_stall_en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">pc_stall_en</obj_property>
+      <obj_property name="ObjectShortName">pc_stall_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/controller/final_bus_mux/in_a" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">in_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">in_a[31:0]</obj_property>
+      <obj_property name="label">ina_previousdata</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffa500</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/controller/final_bus_mux/in_b" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">in_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">in_b[31:0]</obj_property>
+      <obj_property name="label">inb_addrmuxout</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffa500</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/controller/final_bus_mux/sel" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sel</obj_property>
+      <obj_property name="ObjectShortName">sel</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffa500</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_bus/controller/bus_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_out[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ffa500</obj_property>
+   </wvobject>
+</wave_config>
