@@ -68,7 +68,12 @@ always@(*) begin
     case (currentState)
         STATE_WAIT_FOR_ACK: begin
             if (ack) begin
-                nextState <= STATE_WRITE_WAIT;
+                if (we) begin
+                    nextState <= STATE_WRITE_WAIT;
+                end
+                else begin
+                    nextState <= STATE_WAIT_FOR_ACK;
+                end
             end
             else begin
                 nextState <= STATE_WAIT_FOR_ACK;
