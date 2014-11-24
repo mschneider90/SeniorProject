@@ -3,7 +3,8 @@
 module cpuBusInterface(input clk,
                        input reset,
                        input memop,
-                       input bus_ack,
+                       input bus_master_ack,
+                       input bus_slave_en,
                        input bus_we,
                        input bus_wait,
                        output reg bus_req,
@@ -42,7 +43,7 @@ always@(*) begin
     case (currentState) 
         STATE_IDLE: begin
             if (reset) begin
-                if (bus_ack) begin
+                if (bus_slave_en) begin
                     if (bus_we) begin
                         nextState <= STATE_SLAVE_WRITE_WAIT;
                     end
@@ -64,7 +65,7 @@ always@(*) begin
             end
         end
         STATE_MASTER_REQ: begin
-            if (bus_ack) begin
+            if (bus_master_ack) begin
                 nextState <= STATE_MASTER_ADDR;
             end
             else begin
@@ -118,7 +119,7 @@ always@(*) begin
             imem_we <= 0;
             imem_out <= 0;
             sel_pc <= 1;
-            if (bus_ack) begin
+            if (bus_slave_en) begin
                 bus_addr_write <= 1;
             end
             else begin

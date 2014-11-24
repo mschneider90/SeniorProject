@@ -75,11 +75,11 @@ NET "reset_cpu" LOC = "R17";
 NET "reset_vga" LOC = "N17";
 
 #Debug register select
-NET "debug_ra4<0>" LOC = "G18";
-NET "debug_ra4<1>" LOC = "H18";
-NET "debug_ra4<2>" LOC = "K18";
-NET "debug_ra4<3>" LOC = "K17";
-NET "debug_ra4<4>" LOC = "L14";
+#NET "debug_ra4<0>" LOC = "G18";
+#NET "debug_ra4<1>" LOC = "H18";
+#NET "debug_ra4<2>" LOC = "K18";
+#NET "debug_ra4<3>" LOC = "K17";
+#NET "debug_ra4<4>" LOC = "L14";
 
 #audio co-processor audio output
 NET audio_out<0> LOC = M15; //(pmod 4

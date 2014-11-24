@@ -9,8 +9,8 @@ module System #(parameter A_WIDTH = 32,
               input reset_cpu,
               input reset_vga,
               output dcm_locked,
-              input [4:0] debug_ra4,
-              output [7:0] debug_rd4,
+              //input [4:0] debug_ra4,
+              //output [7:0] debug_rd4,
               output mclk, //begin SRAM specific signals
               output [23:0] maddr,
               output madv_L,
@@ -72,18 +72,19 @@ wire [C_WIDTH-1:0] bus_ctrl;
 
 wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
-         
+  /*
 mips cpu(.clk(clk25MHz),
          .clk100MHz(clk100MHz),
-         .reset(reset_cpu),
-         .bus_ack(bus_master_ack[CPU_BUS_ID]),
+         .reset_ext(reset_cpu),
+         .bus_master_ack(bus_master_ack[CPU_BUS_ID]),
+         .bus_slave_en(bus_slave_en[CPU_BUS_ID]),
          .bus_ctrl_in(bus_ctrl),
          .bus_ctrl_out(cpu_ctrl_out),
          .bus_req(bus_req[CPU_BUS_ID]),
-         .bus_data_in(bus_data), //16 bits
+         .bus_data_in(bus_data),
          .bus_data_out(cpu_data_out),
          .debug_ra4(debug_ra4),
-         .debug_rd4(debug_rd4)); 
+         .debug_rd4(debug_rd4)); */
 
 wire [D_WIDTH-1:0] sram_data_out;
 wire [C_WIDTH-1:0] sram_ctrl_out;
