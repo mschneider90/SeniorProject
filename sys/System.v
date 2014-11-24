@@ -72,7 +72,7 @@ wire [C_WIDTH-1:0] bus_ctrl;
 
 wire[D_WIDTH-1:0] cpu_data_out;
 wire[C_WIDTH-1:0] cpu_ctrl_out;
-  /*
+
 mips cpu(.clk(clk25MHz),
          .clk100MHz(clk100MHz),
          .reset_ext(reset_cpu),
@@ -84,7 +84,7 @@ mips cpu(.clk(clk25MHz),
          .bus_data_in(bus_data),
          .bus_data_out(cpu_data_out),
          .debug_ra4(debug_ra4),
-         .debug_rd4(debug_rd4)); */
+         .debug_rd4(debug_rd4));
 
 wire [D_WIDTH-1:0] sram_data_out;
 wire [C_WIDTH-1:0] sram_ctrl_out;
