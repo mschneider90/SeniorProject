@@ -119,7 +119,7 @@ always@(*) begin
             imem_we <= 0;
             imem_out <= 0;
             sel_pc <= 1;
-            if (bus_slave_en) begin
+            if (reset && bus_slave_en) begin
                 bus_addr_write <= 1;
             end
             else begin
