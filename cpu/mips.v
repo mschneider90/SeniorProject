@@ -80,14 +80,6 @@ module mips #(parameter dwidth = 32,
                                   .d(bus_data_in),
                                   .q(readdata));
   
-  // Stall the PC when we branch so the new instruction can be fetched
-  wire branch_stall;  
-  d_reg_sync #(.WIDTH(1)) branch_reg(.clk(clk),
-                          .en(1),
-                          .reset(0),
-                          .d(branchop),
-                          .q(branch_stall));                                
- 
   wire imem_we;
   wire sel_pc;
   cpuBusInterface bus_if(.clk(clk),
@@ -98,6 +90,7 @@ module mips #(parameter dwidth = 32,
                          .bus_we(bus_ctrl_in[1]),
                          .bus_wait(bus_wait),
                          .bus_req(bus_req),
+                         .branch_stall(branch_stall),
                          .pc_stall(pc_stall),
                          .data_out(data_out),
                          .imem_out(imem_out),
@@ -150,10 +143,11 @@ module mips #(parameter dwidth = 32,
               
    // Controls whether or not we're prefetching the next instruction or fetching the current one (branch)
    wire [dwidth-1:0] pc_fetch;
+   wire fetch_current_pc;
    mux2 #(.WIDTH(dwidth)) pc_fetch_mux
                           (.in_a(pc+4),
                            .in_b(pc),
-                           .mux_sel(branch_stall || reset), // Correctly fetch the first instruction with reset
+                           .mux_sel(fetch_current_pc), 
                            .mux_out(pc_fetch));   
    
    // Selects between the address from PC or address from a bus access   
@@ -177,4 +171,10 @@ module mips #(parameter dwidth = 32,
                           .reset(0),
                           .d(instr),
                           .q(instr_cached));
+                          
+   branch_state_machine branch_controller(.branch_op(branchop),
+                                          .clk(clk),
+                                          .reset(reset),
+                                          .branch_stall(branch_stall),
+                                          .fetch_current_pc(fetch_current_pc));
 endmodule

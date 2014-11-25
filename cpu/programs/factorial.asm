@@ -3,7 +3,7 @@
 .text  
 main:  
   addi $a0, $0, 4   # set arg 
-  addi $sp, $sp, 8  # EDIT FOR TESTING: keep stack in range of test memory device
+  addi $sp, $sp, 0x2000  # EDIT FOR TESTING: keep stack in range of test memory device
   jal factorial     # compute the factorial  
   add $s0, $v0, $0  # move result into $s0 
   j end  
@@ -27,3 +27,4 @@ else:
   mflo $v0       # mv result into $v0  
   jr $ra 
 end: 
+  sw $s0, 0x1050($0) # store result in mem loc 0x1050

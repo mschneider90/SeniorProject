@@ -10,7 +10,7 @@
 
 
 
-
+/*
 module tb_paultest(
 
     );
@@ -59,5 +59,5 @@ mips cpu(.clk(clk50MHz),
          .pc(pc),
          .instr(instr));
 
+endmodule */
 
-endmodule

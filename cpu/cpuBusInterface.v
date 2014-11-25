@@ -7,6 +7,7 @@ module cpuBusInterface(input clk,
                        input bus_slave_en,
                        input bus_we,
                        input bus_wait,
+                       input branch_stall,
                        output reg bus_req,
                        output pc_stall,
                        output reg data_out,
@@ -37,7 +38,7 @@ end
 
 // Need to react faster than one clock cycle for stalling pc when a memop is detected
 reg pc_stall_en;
-assign pc_stall = (memop && currentState == STATE_IDLE)? 1 : (pc_stall_en);
+assign pc_stall = (memop && !branch_stall && currentState == STATE_IDLE)? 1 : (pc_stall_en);
 
 always@(*) begin
     case (currentState) 
@@ -56,7 +57,7 @@ always@(*) begin
                 end
             end
             else begin
-                if (memop) begin
+                if (memop && !branch_stall) begin
                     nextState <= STATE_MASTER_REQ;
                 end
                 else begin
