@@ -12,10 +12,18 @@ namespace MooseBoxGame
         enum gameStateEnum { LOADING, START_MENU, PLAYING, END_MENU };
 
         static gameStateEnum gameState;
+
         static MooseBoxUART uart;
+        static MooseBoxKeyboard keyboard;
+        static MooseBoxFrame framebuffer;
 
         static MooseBoxBackgroundAudio backgroundAudio;
         static Thread backgroundAudioThread;
+
+        const uint FRAMEBUFFER = 0x20;
+        const uint INIT_SCREEN = 0x8000;
+        const uint LOADING_SCREEN = 0x1500;
+        const uint MAIN_MENU = 0x4000;
 
         public static void Main()
         {
@@ -35,6 +43,12 @@ namespace MooseBoxGame
             backgroundAudioThread = new Thread(new ThreadStart(backgroundAudio.playAudio));
             backgroundAudioThread.Start();
 
+            // Init the keyboard
+            keyboard = new MooseBoxKeyboard(uart);
+
+            // Init the framebuffer
+            framebuffer = new MooseBoxFrame(uart);
+
             gameState = gameStateEnum.LOADING;
             while (true)
             {
@@ -49,10 +63,12 @@ namespace MooseBoxGame
                     case gameStateEnum.START_MENU:
                         {
                             displayStartMenu();
+                            gameState = gameStateEnum.PLAYING;
                             break;
                         }
                     case gameStateEnum.PLAYING:
                         {
+                            backgroundAudio.start();
                             break;
                         }
                     case gameStateEnum.END_MENU:
@@ -114,7 +130,7 @@ namespace MooseBoxGame
         /// </summary>
         static void initializeUART()
         {
-            Console.WriteLine("- > MooseBoxGame Mk.I");
+            Console.WriteLine("                         MooseBoxGame Mk.I");
             Console.WriteLine("- > Enter the name of a serial port from the list below");
 
             string[] portNames = MooseBoxUART.getPorts();
@@ -139,28 +155,28 @@ namespace MooseBoxGame
         /// </summary>
         static void loadGameData() 
         {
-            Console.Write("Initializing, please wait...");
+            Console.Write("- > Initializing, please wait...");
 
             // Put the screen in the pretty colors
-            uart.write(0x20, 0xC000); 
+            framebuffer.setFramePosition(INIT_SCREEN);
 
             // Load loading screen
             MooseBoxImage loadingScreen = new MooseBoxImage("loading.bmp");
-            uart.write(0x1501, loadingScreen);
+            uart.write(LOADING_SCREEN, loadingScreen);
             Console.WriteLine("Done!");
 
             // Display loading screen and music while the rest loads
-            uart.write(0x20, 0x1500);
+            framebuffer.setFramePosition(LOADING_SCREEN);
             backgroundAudio.start();
 
             // Load main screen
-            Console.Write("Loading title screen...");
+            Console.Write("- > Loading title screen...");
             MooseBoxImage titleScreen = new MooseBoxImage("title.bmp");
-            uart.write(0x4000, titleScreen);
+            uart.write(MAIN_MENU, titleScreen);
             Console.WriteLine("Done!");
 
             // Load background image
-            Console.Write("Loading background image...");
+            Console.Write("- > Loading background image...");
             MooseBoxImage backgroundImage = new MooseBoxImage("star_background.bmp");
            // uart.write(0x6500, backgroundImage);
             Console.WriteLine("Done!");
@@ -169,16 +185,20 @@ namespace MooseBoxGame
         }
 
         /// <summary>
-        /// Displays the start menu until the user presses _____
+        /// Displays the start menu until the user presses space
         /// </summary>
         static void displayStartMenu()
         {
             // Switch to title screen
-            uart.write(0x20, 0x4001);
+            framebuffer.setFramePosition(MAIN_MENU);
 
             while (true)
             {
-                // blah
+                // wait until the SPACE key is pressed
+                if (keyboard.isKeyPressed(keyEnum.SPACE))
+                {
+                    break;
+                }
             }
         }
     }
