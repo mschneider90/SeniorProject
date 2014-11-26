@@ -21,9 +21,10 @@ namespace MooseBoxGame
         static Thread backgroundAudioThread;
 
         const uint FRAMEBUFFER = 0x20;
-        const uint INIT_SCREEN = 0x8000;
+        const uint INIT_SCREEN = 0xC000;
         const uint LOADING_SCREEN = 0x1500;
         const uint MAIN_MENU = 0x4000;
+        const uint MAIN_MENU_2 = 0x7000;
 
         public static void Main()
         {
@@ -167,12 +168,15 @@ namespace MooseBoxGame
 
             // Display loading screen and music while the rest loads
             framebuffer.setFramePosition(LOADING_SCREEN);
-            backgroundAudio.start();
+            //backgroundAudio.start();
 
             // Load main screen
             Console.Write("- > Loading title screen...");
-            MooseBoxImage titleScreen = new MooseBoxImage("title.bmp");
+            MooseBoxImage titleScreen = new MooseBoxImage("space_title.bmp");
             uart.write(MAIN_MENU, titleScreen);
+
+            MooseBoxImage titleScreen2 = new MooseBoxImage("space_title_2.bmp");
+            uart.write(MAIN_MENU_2, titleScreen2);
             Console.WriteLine("Done!");
 
             // Load background image
@@ -181,7 +185,7 @@ namespace MooseBoxGame
            // uart.write(0x6500, backgroundImage);
             Console.WriteLine("Done!");
 
-            backgroundAudio.stop();
+            //backgroundAudio.stop();
         }
 
         /// <summary>
@@ -189,9 +193,10 @@ namespace MooseBoxGame
         /// </summary>
         static void displayStartMenu()
         {
+            backgroundAudio.start();
             // Switch to title screen
-            framebuffer.setFramePosition(MAIN_MENU);
-
+            framebuffer.setFramePosition(MAIN_MENU + 1);
+            bool title2 = false;
             while (true)
             {
                 // wait until the SPACE key is pressed
@@ -199,6 +204,18 @@ namespace MooseBoxGame
                 {
                     break;
                 }
+
+                title2 = !title2;
+                if (title2)
+                {
+                    framebuffer.setFramePosition(MAIN_MENU_2 + 1);
+                }
+                else
+                {
+                    framebuffer.setFramePosition(MAIN_MENU + 1);
+                }
+
+                Thread.Sleep(1000);
             }
         }
     }
