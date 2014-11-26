@@ -10,7 +10,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="24" />
+   <WVObjectSize size="26" />
    <wvobject fp_name="/VGA_tb/tb_hsync" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">tb_hsync</obj_property>
       <obj_property name="ObjectShortName">tb_hsync</obj_property>
@@ -48,7 +48,17 @@
    <wvobject fp_name="/VGA_tb/DUT/col" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">col[10:0]</obj_property>
       <obj_property name="ObjectShortName">col[10:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/pix_addr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pix_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pix_addr[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/pix_addr_reduced" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pix_addr_reduced[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pix_addr_reduced[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/VGA_tb/DUT/buf_sel" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">buf_sel</obj_property>

@@ -16,6 +16,7 @@
 !*.ucf
 !*.xise
 !*.wcfg
+!*.cdc
 
 #cpu mem file
 !*.dat
