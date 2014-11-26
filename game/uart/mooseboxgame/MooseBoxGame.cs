@@ -163,7 +163,7 @@ namespace MooseBoxGame
 
             // Load loading screen
             MooseBoxImage loadingScreen = new MooseBoxImage("loading.bmp");
-            uart.write(LOADING_SCREEN, loadingScreen);
+            //uart.write(LOADING_SCREEN, loadingScreen);
             Console.WriteLine("Done!");
 
             // Display loading screen and music while the rest loads
