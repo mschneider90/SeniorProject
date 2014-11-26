@@ -42,8 +42,7 @@ SysClockGen clk_gen(.CLKIN_IN(clk50MHz_in),
                     .CLK0_OUT(clk50MHz),
                     .CLK2X_OUT(clk100MHz),
                     .LOCKED_OUT(dcm_locked));
-
-      
+    
 parameter NUM_DEVICES = 8;
 
 //each device gets an ID
@@ -60,7 +59,8 @@ parameter CPU_BUS_ID = 7;
 wire [I_WIDTH-1:0] pc; //TODO how wide should this be?
 wire [I_WIDTH-1:0] instr;
 
-wire [NUM_DEVICES-1:0] bus_ack;
+wire [NUM_DEVICES-1:0] bus_master_ack;
+wire [NUM_DEVICES-1:0] bus_slave_en;
 wire [NUM_DEVICES-1:0] bus_req;
 assign bus_req[5] = 0;
 assign bus_req[4] = 0;
@@ -77,7 +77,7 @@ mips cpu(.clk(clk25MHz),
          .reset(reset_cpu),
          .pc(pc), 
          .instr(instr),
-         .bus_ack(bus_ack[CPU_BUS_ID]),
+         .bus_ack(bus_master_ack[CPU_BUS_ID]),
          .bus_ctrl_in(bus_ctrl),
          .bus_ctrl_out(cpu_ctrl_out),
          .bus_req(bus_req[CPU_BUS_ID]),
@@ -94,7 +94,7 @@ wire [C_WIDTH-1:0] sram_ctrl_out;
 micron_controller_async sram_ctrl(.clk25MHz(clk25MHz),
                            .bus_ctrl_in(bus_ctrl),
                            .bus_ctrl_out(sram_ctrl_out),
-                           .bus_ack(bus_ack[RAM_BUS_ID]),
+                           .bus_ack(bus_slave_en[RAM_BUS_ID]),
                            .bus_data_in(bus_data),
                            .bus_data_out(sram_data_out),
                            .mem_data(mem_data),
@@ -114,7 +114,7 @@ acp		AudioCopper(
 				.clk50MHz	(clk50MHz),
 				.clk25MHz	(clk25MHz),
 				.m_bus_in	(bus_data), 	
-				.m_ack		(bus_ack[ACP_BUS_ID]),
+				.m_ack		(bus_slave_en[ACP_BUS_ID]),
 				.m_ctrl_in	(bus_ctrl), 
 				.m_ctrl_out (acp_ctrl_out), 
 				.audio_out 	(audio_out) 		
@@ -128,7 +128,7 @@ uartInterface uart(.clk50MHz(clk25MHz),
                    .bus_in(bus_data),
                    .ctrl_in(bus_ctrl),
                    .bus_req(bus_req[UART_BUS_ID]),
-                   .bus_ack(bus_ack[UART_BUS_ID]),
+                   .bus_ack(bus_master_ack[UART_BUS_ID]),
                    .bus_out(uart_bus_out),
                    .ctrl_out(uart_ctrl_out),
                    .rx(rx),
@@ -139,7 +139,7 @@ wire [C_WIDTH-1:0] ps2_ctrl_out;
 PS2Controller ps2_ctrl(.ps2_data_in(ps2_data_in),
                        .clk_ps2(clk_ps2),
                        .clk(clk25MHz),
-                       .ack(bus_ack[PS2_BUS_ID]),
+                       .ack(bus_slave_en[PS2_BUS_ID]),
                        .bus_in(bus_data),
                        .bus_out(ps2_data_out),
                        .ctrl_out(ps2_ctrl_out));
@@ -151,17 +151,19 @@ VGA_module vga_ctrl(.rgb(rgb),
                     .hsync(hsync),
                     .clk25MHz(clk25MHz),
                     .reset(reset_vga),
-                    .bus_ack(bus_ack[VGA_BUS_ID]),
+                    .bus_master_ack(bus_master_ack[VGA_BUS_ID]),
+                    .bus_slave_en(bus_slave_en[VGA_BUS_ID]),
                     .bus_in(bus_data),
                     .ctrl_in(bus_ctrl),
                     .bus_req(bus_req[VGA_BUS_ID]),
                     .ctrl_out(vga_ctrl_out),
                     .bus_out(vga_bus_out)
                     );
-                     
+
 BusController bus_ctrller(.req(bus_req), 
                        .clk(clk25MHz),
-                       .ack(bus_ack),
+                       .master_ack(bus_master_ack),
+                       .slave_en(bus_slave_en),
                        .bus_in_0(sram_data_out),
                        .bus_in_2(vga_bus_out),
                        .bus_in_3(ps2_data_out),
@@ -170,7 +172,7 @@ BusController bus_ctrller(.req(bus_req),
                        .ctrl_in_0(sram_ctrl_out),
                        .ctrl_in_2(vga_ctrl_out),
                        .ctrl_in_3(ps2_ctrl_out),
-					        .ctrl_in_4(acp_ctrl_out),
+                       .ctrl_in_4(acp_ctrl_out),
                        .ctrl_in_6(uart_ctrl_out),
                        .ctrl_in_7(cpu_ctrl_out),
                        .bus_out(bus_data),

@@ -7,7 +7,7 @@ module VGABusInterface(input clk,
                        input reset,
                        input bus_wait,
                        input vga_output_valid,
-							  input [31:0] base_addr,
+                       input [31:0] base_addr,
                        output reg bus_req,
                        output buf_sel,
                        output buf_byte_sel,
@@ -15,9 +15,8 @@ module VGABusInterface(input clk,
                        output buf1_we,
                        output [2:0] buf_read_addr,
                        output [2:0] buf_write_addr,
-							  output idle,
+					   output idle,
                        output [31:0] bus_out);
-
                    
 localparam RES_X = 320;
 localparam RES_Y = 240;

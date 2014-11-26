@@ -8,7 +8,8 @@ module VGA_module #(parameter COLOR_DEPTH = 8,
                     output hsync,
                     input clk25MHz,
                     input reset,
-                    input bus_ack,
+                    input bus_master_ack,
+                    input bus_slave_en,
                     input[BUS_WIDTH-1:0] bus_in,
                     input[CTRL_WIDTH-1:0] ctrl_in,
                     output bus_req,
@@ -99,13 +100,13 @@ wire [31:0] framebuffer_addr;
 wire slave_data_we;
 wire master_idle;
                             
-VGABusInterface bus_if(.clk(clk25MHz),
+VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .row(row),
                 .col(col),
                 .reset(reset),
                 .vga_output_valid(output_valid),
 					 .base_addr(framebuffer_addr),
-                .bus_ack(bus_ack),
+                .bus_ack(bus_master_ack),
                 .bus_req(bus_req),
                 .bus_wait(ctrl_in[0]),
                 .buf_sel(buf_sel),
@@ -126,9 +127,9 @@ d_reg #(.WIDTH(32)) vga_reg0(
 	.q			(framebuffer_addr)
 );
 
-vga_slave_interface vga_slave_busint(
+vga_slave_interface vga_slave_busint( // slave state machine
 		.bus_in		(bus_in),
-		.ack			(bus_ack),
+		.ack			(bus_slave_en),
 		.clk			(clk25MHz),
 		.ctrl_in    (ctrl_in),
 		.data_we		(slave_data_we)

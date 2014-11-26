@@ -18,6 +18,12 @@
 !*.wcfg
 !*.cdc
 
+#visual studio
+!*.sln
+!*.suo
+!*.config
+!*.csproj
+
 #cpu mem file
 !*.dat
 
@@ -36,6 +42,10 @@
 #Any executables in the "tools" dir
 !/tools/*/*.exe
 
+#Game executables and images
+!/game/uart/*/bin/*/*.exe
+!/game/uart/*/bin/*/*.bmp
+
 #asm
 !*.asm
 
@@ -44,6 +54,7 @@
 
 #audio
 !*.paf
+!*.p2f
 
 #Exceptions to the exceptions (specifically exclude)
 /*/isim

@@ -22,8 +22,11 @@ parameter PS2_S = 8'h1B;
 parameter PS2_D = 8'h23;
 
 // Player 2: 7 8 4 5 6 (_KEYPAD_)
-parameter PS2_KP7 = 8'h6C;
-parameter PS2_KP8 = 8'h75;
+// 11/24 - remove player 2 keys KP7 and KP8, add space bar and enter
+//parameter PS2_KP7 = 8'h6C;
+//parameter PS2_KP8 = 8'h75;
+parameter PS2_KP7 = 8'h29; // space
+parameter PS2_KP8 = 8'h5A; // enter
 parameter PS2_KP4 = 8'h6B;
 parameter PS2_KP5 = 8'h73;
 parameter PS2_KP6 = 8'h74;

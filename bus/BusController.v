@@ -5,7 +5,8 @@ module BusController #(parameter NUM_DEVICES = 8,
                        parameter CTRL_WIDTH = 8)
                       (input clk, 
                        input  [NUM_DEVICES-1:0] req,
-                       output [NUM_DEVICES-1:0] ack,
+                       output [NUM_DEVICES-1:0] master_ack,
+                       output [NUM_DEVICES-1:0] slave_en,
                        input  [CTRL_WIDTH-1:0] ctrl_in_0,
                        input  [CTRL_WIDTH-1:0] ctrl_in_1,
                        input  [CTRL_WIDTH-1:0] ctrl_in_2,
@@ -116,12 +117,17 @@ BusMux #(.D_WIDTH(BUS_WIDTH)) bus_mux
                 .in_7(bus_in_7),
                 .sel(bus_mux_sel),
                 .out(bus_mux_out));
-                
-reg ctrlControl;      
+ 
+reg ctrlControl;  
+wire [NUM_DEVICES-1:0] ctrl_mux_sel;    
 mux21 ctrl_mux(.in_a(slaveDeviceEn),  
                .in_b(pri_out),   
                .sel(ctrlControl),
-               .out(ack));             
+               .out(ctrl_mux_sel));  
+               
+// 11/23 - separate master and slave ack
+assign slave_en = slaveDeviceEn;
+assign master_ack = pri_out;               
                 
 // Controls access to the control signal bus 
 wire [NUM_DEVICES-1:0] ctrl_mux_out;
@@ -134,7 +140,7 @@ BusMux #(.D_WIDTH(CTRL_WIDTH)) bus_ctrl_mux
                  .in_5(ctrl_in_5),
                  .in_6(ctrl_in_6),
                  .in_7(ctrl_in_7),
-                 .sel(ack),
+                 .sel(ctrl_mux_sel),
                  .out(ctrl_mux_out));
                  
 // Data on the bus can either be an address or data. If it's an address, we need

@@ -56,20 +56,6 @@ d_reg #(.WIDTH(DATA_WIDTH)) valid_reg(.d(1), //Prevents "double dipping" from on
 // Break code shared by all of the following keys
 parameter PS2_BREAK = 8'hF0;
 
-// Player 1: E W A S D
-parameter PS2_E = 8'h24;
-parameter PS2_W = 8'h1D;
-parameter PS2_A = 8'h1C;
-parameter PS2_S = 8'h1B;
-parameter PS2_D = 8'h23;
-
-// Player 2: 7 8 4 5 6 (_KEYPAD_)
-parameter PS2_KP7 = 8'h6C;
-parameter PS2_KP8 = 8'h75;
-parameter PS2_KP4 = 8'h6B;
-parameter PS2_KP5 = 8'h73;
-parameter PS2_KP6 = 8'h74;
-
 wire break_key; //Toggles based on whether or not we've received a BREAK code
 reg break_rst;
 reg break_we;

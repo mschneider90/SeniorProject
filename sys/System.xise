@@ -254,6 +254,7 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="111"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="28"/>
     </file>
+<<<<<<< HEAD
     <file xil_pn:name="chipscope_test.cdc" xil_pn:type="FILE_CDC">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
@@ -261,6 +262,8 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="116"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="31"/>
     </file>
+=======
+>>>>>>> master
   </files>
 
   <properties>
@@ -569,7 +572,6 @@
 
   <bindings>
     <binding xil_pn:location="/System" xil_pn:name="System.ucf"/>
-    <binding xil_pn:location="/System" xil_pn:name="chipscope_test.cdc"/>
   </bindings>
 
   <libraries/>
