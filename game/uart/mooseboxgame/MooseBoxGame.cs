@@ -167,7 +167,7 @@ namespace MooseBoxGame
             Console.WriteLine("Done!");
 
             // Display loading screen and music while the rest loads
-            framebuffer.setFramePosition(LOADING_SCREEN);
+            //framebuffer.setFramePosition(LOADING_SCREEN);
             //backgroundAudio.start();
 
             // Load main screen
