@@ -18,13 +18,13 @@ namespace MooseBoxGame
         static MooseBoxFrame framebuffer;
 
         static MooseBoxBackgroundAudio backgroundAudio;
-        static Thread backgroundAudioThread;
 
         const uint FRAMEBUFFER = 0x20;
-        const uint INIT_SCREEN = 0xC000;
+        const uint INIT_SCREEN = 0x1AD00;
         const uint LOADING_SCREEN = 0x1500;
         const uint MAIN_MENU = 0x4000;
-        const uint MAIN_MENU_2 = 0x7000;
+        const uint MAIN_MENU_2 = 0x6500;
+        const uint BACKGROUND = 0x8000;
 
         public static void Main()
         {
@@ -63,7 +63,7 @@ namespace MooseBoxGame
                         }
                     case gameStateEnum.PLAYING:
                         {
-                            backgroundAudio.start();
+                            playGame();
                             break;
                         }
                     case gameStateEnum.END_MENU:
@@ -71,6 +71,55 @@ namespace MooseBoxGame
                             break;
                         }
                 }
+            } 
+        }
+
+        /// <summary>
+        /// Plays the game
+        /// </summary>
+        static void playGame()
+        {
+            backgroundAudio.start();
+
+            int line = 839;
+            uint pos = 20;
+            while (true)
+            {
+                // Clear previous position
+                uart.write((uint)(BACKGROUND + ((line + 40) * 40 + pos)), 0);
+
+                if (line == 0)
+                {
+                    line = 839;
+                }
+                else
+                {
+                    line--;
+                }
+                framebuffer.setFramePosition((uint)(BACKGROUND + (line * 40)));
+                bool aPressed = keyboard.isKeyPressed(keyEnum.A);
+                bool dPressed = keyboard.isKeyPressed(keyEnum.D);
+
+                if (aPressed)
+                {
+                    //Console.WriteLine("a pressed");
+                    if (pos > 0)
+                    {
+                        pos--;
+                    }
+                }
+                if (dPressed)
+                {
+                    //Console.WriteLine("d pressed");
+                    if (pos < 40)
+                    {
+                        pos++;
+                    }
+                }
+
+                uart.write((uint)(BACKGROUND + ((line + 40) * 40 + pos)), (uint)(0xE0), false);
+
+                Thread.Sleep(33);
             } 
         }
 
@@ -104,7 +153,7 @@ namespace MooseBoxGame
 
             // Load background image
             Console.Write("- > Loading background image...");
-            MooseBoxImage backgroundImage = new MooseBoxImage("star_background.bmp", uart, 0x6500);
+            MooseBoxImage backgroundImage = new MooseBoxImage("starry_background.bmp", uart, 0x6500);
             backgroundImage.write();
             Console.WriteLine("Done!");
 

@@ -24,7 +24,8 @@ namespace MooseBoxGame
         /// Constructs the object from a bitmap file
         /// </summary>
         /// <param name="bitMapPath">The path to the bitmap file</param>
-        /// <param name="addr">The address in memory of the image</param>
+        /// <param name="uartObj">The UART to write to</param>
+        /// <param name="startingAddr">The address in memory of the image</param>
         public MooseBoxImage(String bitMapPath, MooseBoxUART uartObj, uint startingAddr)
         {
             addr = startingAddr;
