@@ -153,7 +153,7 @@ namespace MooseBoxGame
 
             // Load background image
             Console.Write("- > Loading background image...");
-            MooseBoxImage backgroundImage = new MooseBoxImage("starry_background.bmp", uart, 0x6500);
+            MooseBoxImage backgroundImage = new MooseBoxImage("starry_background.bmp", uart, BACKGROUND);
             backgroundImage.write();
             Console.WriteLine("Done!");
 
