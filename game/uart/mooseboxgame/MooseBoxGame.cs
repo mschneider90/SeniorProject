@@ -24,7 +24,7 @@ namespace MooseBoxGame
         const uint LOADING_SCREEN = 0x1500;
         const uint MAIN_MENU = 0x4000;
         const uint MAIN_MENU_2 = 0x6500;
-        const uint BACKGROUND = 0x8000;
+        const uint BACKGROUND = 0x9000;
 
         public static void Main()
         {

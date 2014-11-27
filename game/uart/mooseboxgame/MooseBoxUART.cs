@@ -168,7 +168,7 @@ namespace MooseBoxGame
                     success = false;
                     break;
                 }
-                Thread.Sleep(5);
+                Thread.Sleep(1);
             }
             return success;
         }
