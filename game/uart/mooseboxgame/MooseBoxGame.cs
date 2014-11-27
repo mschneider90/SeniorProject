@@ -39,15 +39,9 @@ namespace MooseBoxGame
                 return;
             }
 
-            // Setup the background audio thread
+            // Init the different modules
             backgroundAudio = new MooseBoxBackgroundAudio(uart, "audiotest9.p2f");
-            backgroundAudioThread = new Thread(new ThreadStart(backgroundAudio.playAudio));
-            backgroundAudioThread.Start();
-
-            // Init the keyboard
             keyboard = new MooseBoxKeyboard(uart);
-
-            // Init the framebuffer
             framebuffer = new MooseBoxFrame(uart);
 
             gameState = gameStateEnum.LOADING;
@@ -78,52 +72,76 @@ namespace MooseBoxGame
                         }
                 }
             } 
+        }
 
-            // Cleanup
-            uart.close();
-            backgroundAudioThread.Abort();
+        /// <summary>
+        /// Loads game data while playing some music in the background
+        /// </summary>
+        static void loadGameData() 
+        {
+            Console.Write("- > Initializing, please wait...");
 
-            /*
-            int line = 839;
-            uint pos = 40;
+            // Put the screen in the pretty colors
+            framebuffer.setFramePosition(INIT_SCREEN);
+
+            // Load loading screen
+            MooseBoxImage loadingScreen = new MooseBoxImage("loading.bmp", uart, LOADING_SCREEN);
+            loadingScreen.write();
+            Console.WriteLine("Done!");
+
+            // Display loading screen and music while the rest loads
+            framebuffer.setFramePosition(LOADING_SCREEN);
+            backgroundAudio.start();
+
+            // Load main screen
+            Console.Write("- > Loading title screen...");
+            MooseBoxImage titleScreen = new MooseBoxImage("space_title.bmp", uart, MAIN_MENU);
+            titleScreen.write();
+
+            MooseBoxImage titleScreen2 = new MooseBoxImage("space_title_2.bmp", uart, MAIN_MENU_2);
+            titleScreen2.write();
+            Console.WriteLine("Done!");
+
+            // Load background image
+            Console.Write("- > Loading background image...");
+            MooseBoxImage backgroundImage = new MooseBoxImage("star_background.bmp", uart, 0x6500);
+            backgroundImage.write();
+            Console.WriteLine("Done!");
+
+            backgroundAudio.stop();
+        }
+
+        /// <summary>
+        /// Displays the start menu until the user presses space
+        /// </summary>
+        static void displayStartMenu()
+        {
+            backgroundAudio.start();
+            // Switch to title screen
+            framebuffer.setFramePosition(MAIN_MENU + 1);
+            bool title2 = false;
             while (true)
             {
-                // Clear previous position
-                uart.write((int)(0x1050 + ((line + 40) * 80 + pos)), 0);
-
-                if (line == 0)
+                // wait until the SPACE key is pressed
+                if (keyboard.isKeyPressed(keyEnum.SPACE))
                 {
-                    line = 839;
+                    break;
+                }
+
+                // Make the start text blink
+                title2 = !title2;
+                if (title2)
+                {
+                    framebuffer.setFramePosition(MAIN_MENU_2 + 1);
                 }
                 else
                 {
-                    line--;
-                }
-                uart.write(0x20, (0x1050 + (line * 80)));
-                uint a = uart.read(0x12);
-                uint d = uart.read(0x14);
-
-                if (a == 1)
-                {
-                    Console.WriteLine("a pressed");
-                    if (pos > 0)
-                    {
-                        pos--;
-                    }
-                }
-                if (d == 1)
-                {
-                    Console.WriteLine("d pressed");
-                    if (pos < 80)
-                    {
-                        pos++;
-                    }
+                    framebuffer.setFramePosition(MAIN_MENU + 1);
                 }
 
-                uart.write((uint)(0x1050 + ((line + 40) * 80 + pos)), (uint)(0xE0), false);
-
-                Thread.Sleep(33);
-            } */
+                Thread.Sleep(1000);
+            }
+            backgroundAudio.stop();
         }
 
         /// <summary>
@@ -149,74 +167,6 @@ namespace MooseBoxGame
 
             uart = new MooseBoxUART(portName);
             uart.open();
-        }
-
-        /// <summary>
-        /// Loads game data while playing some music in the background
-        /// </summary>
-        static void loadGameData() 
-        {
-            Console.Write("- > Initializing, please wait...");
-
-            // Put the screen in the pretty colors
-            framebuffer.setFramePosition(INIT_SCREEN);
-
-            // Load loading screen
-            MooseBoxImage loadingScreen = new MooseBoxImage("loading.bmp");
-            //uart.write(LOADING_SCREEN, loadingScreen);
-            Console.WriteLine("Done!");
-
-            // Display loading screen and music while the rest loads
-            //framebuffer.setFramePosition(LOADING_SCREEN);
-            //backgroundAudio.start();
-
-            // Load main screen
-            Console.Write("- > Loading title screen...");
-            MooseBoxImage titleScreen = new MooseBoxImage("space_title.bmp");
-            uart.write(MAIN_MENU, titleScreen);
-
-            MooseBoxImage titleScreen2 = new MooseBoxImage("space_title_2.bmp");
-            uart.write(MAIN_MENU_2, titleScreen2);
-            Console.WriteLine("Done!");
-
-            // Load background image
-            Console.Write("- > Loading background image...");
-            MooseBoxImage backgroundImage = new MooseBoxImage("star_background.bmp");
-           // uart.write(0x6500, backgroundImage);
-            Console.WriteLine("Done!");
-
-            //backgroundAudio.stop();
-        }
-
-        /// <summary>
-        /// Displays the start menu until the user presses space
-        /// </summary>
-        static void displayStartMenu()
-        {
-            backgroundAudio.start();
-            // Switch to title screen
-            framebuffer.setFramePosition(MAIN_MENU + 1);
-            bool title2 = false;
-            while (true)
-            {
-                // wait until the SPACE key is pressed
-                if (keyboard.isKeyPressed(keyEnum.SPACE))
-                {
-                    break;
-                }
-
-                title2 = !title2;
-                if (title2)
-                {
-                    framebuffer.setFramePosition(MAIN_MENU_2 + 1);
-                }
-                else
-                {
-                    framebuffer.setFramePosition(MAIN_MENU + 1);
-                }
-
-                Thread.Sleep(1000);
-            }
         }
     }
 }

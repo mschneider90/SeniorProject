@@ -174,16 +174,6 @@ namespace MooseBoxGame
         }
 
         /// <summary>
-        /// Write an image starting at the specified address. Thread safe.
-        /// </summary>
-        /// <param name="startingAddr">The address to start writing the image</param>
-        /// <param name="img">The image to be written</param>
-        public void write(uint startingAddr, MooseBoxImage img) 
-        {
-            write(startingAddr, img.getRGB());
-        }
-
-        /// <summary>
         /// Get a list of names of available ports
         /// </summary>
         /// <returns>A list of names of available ports</returns>

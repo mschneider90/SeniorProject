@@ -17,13 +17,18 @@ namespace MooseBoxGame
     {
         Bitmap bmp;
         String[] rgb;
+        uint addr;
+        MooseBoxUART uart;
 
         /// <summary>
         /// Constructs the object from a bitmap file
         /// </summary>
         /// <param name="bitMapPath">The path to the bitmap file</param>
-        public MooseBoxImage(String bitMapPath)
+        /// <param name="addr">The address in memory of the image</param>
+        public MooseBoxImage(String bitMapPath, MooseBoxUART uartObj, uint startingAddr)
         {
+            addr = startingAddr;
+            uart = uartObj;
             bmp = new Bitmap(bitMapPath);
             convertToRGB();
         }
@@ -44,6 +49,14 @@ namespace MooseBoxGame
         public String[] getRGB() 
         {
             return rgb;
+        }
+
+        /// <summary>
+        /// Writes the image to memory
+        /// </summary>
+        public void write()
+        {
+            uart.write(addr, getRGB());
         }
 
         /// <summary>
