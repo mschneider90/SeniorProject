@@ -8,7 +8,7 @@
 //pixel buffer
 //16 wide by 8 deep pixel buffer. Holds 
 
-module pixelbuff #(parameter WIDTH = 16, DEPTH = 3)
+module pixelbuff #(parameter WIDTH = 16, DEPTH = 8)
              (input  [WIDTH-1:0] data_in,
               input  clk,
               input  we,
@@ -16,7 +16,7 @@ module pixelbuff #(parameter WIDTH = 16, DEPTH = 3)
               input  [DEPTH - 1:0] read_address,
               output [WIDTH-1:0] data_out);
 
-    reg [DEPTH - 1:0] buffer [WIDTH - 1:0];
+    reg [WIDTH - 1:0] buffer [DEPTH - 1:0];
 
     always@(posedge clk)
     begin

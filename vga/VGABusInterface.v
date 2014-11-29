@@ -26,7 +26,7 @@ localparam BURST_LENGTH = 8;
 
                        
 wire [31:0] pix_addr;  // For selecting each byte
-assign buf_read_addr = pix_addr[3:1];
+assign buf_read_addr[2:0] = pix_addr[3:1];
 
 /* //left this unmodified from 80*240 mode 
 assign pix_addr = (row >> 1) * RES_X + (col) >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
@@ -80,8 +80,9 @@ count_reg b_counter(.count_load(0),
                     .load(0));
 
 assign burst_count_geq = (burst_counter >= BURST_LENGTH - 1) ? 1 : 0;
-assign buff_write_address = burst_counter[2:0]; 
- 
+//assign buff_write_address = burst_counter[2:0]; 
+assign buf_write_addr[2:0] = burst_counter[2:0];
+
 reg buf_we;
 assign buf0_we = ((buf_sel != 0) && buf_we)? 1 : 0; // Buffer not selected, so write to it
 assign buf1_we = ((buf_sel != 1) && buf_we)? 1 : 0;

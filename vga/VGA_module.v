@@ -26,16 +26,16 @@ wire [10:0] col;
 
 // Two pixel buffers. We can read 16 bits = two pixels from memory at a time
 wire buf0_we;
-wire [(COLOR_DEPTH * 2)-1:0] buf0_out;
+wire [15:0] buf0_out;
 wire [2:0] buffer_write_addr;
 wire [2:0] buffer_read_addr;
 
-pixelbuff #(.WIDTH((COLOR_DEPTH * 2)-1), .DEPTH(3)) buffer0( //16 wide by 8 deep pixel buffer. 
+pixelbuff #(.WIDTH((COLOR_DEPTH * 2))) buffer0( //16 wide by 8 deep pixel buffer. 
               .data_in(bus_in[15:0]),
               .clk(clk25MHz),
               .we(buf0_we),
-              .write_address(buffer_write_addr),
-              .read_address(buffer_read_addr),
+              .write_address(buffer_write_addr[2:0]),
+              .read_address(buffer_read_addr[2:0]),
               .data_out(buf0_out)
               );
 
@@ -56,13 +56,13 @@ mux21 #(.D_WIDTH(COLOR_DEPTH)) buf0_byte_mux(.in_a(buf0_out[7:0]),
                                        .out(buf0_byte_out));
  
 wire buf1_we; 
-wire [(COLOR_DEPTH * 2)-1:0] buf1_out;
-pixelbuff #(.WIDTH((COLOR_DEPTH * 2)-1), .DEPTH(3)) buffer1( //16 wide by 8 deep pixel buffer. 
+wire [15:0] buf1_out;
+pixelbuff #(.WIDTH((COLOR_DEPTH * 2))) buffer1( //16 wide by 8 deep pixel buffer. 
               .data_in(bus_in[15:0]),
               .clk(clk25MHz), 
               .we(buf1_we),
-              .write_address(buffer_write_addr),
-              .read_address(buffer_read_addr),
+              .write_address(buffer_write_addr[2:0]),
+              .read_address(buffer_read_addr[2:0]),
               .data_out(buf1_out)
               );
 /*
@@ -113,8 +113,8 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .buf_byte_sel(buf_byte_sel),
                 .buf0_we(buf0_we),
                 .buf1_we(buf1_we),
-                .buf_read_addr(buffer_read_addr),
-                .buf_write_addr(buffer_write_addr),
+                .buf_read_addr(buffer_read_addr[2:0]),
+                .buf_write_addr(buffer_write_addr[2:0]),
                 .bus_out(bus_out),
 				.idle(master_idle));
 					 

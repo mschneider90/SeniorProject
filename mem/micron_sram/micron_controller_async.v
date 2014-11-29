@@ -91,14 +91,14 @@ d_reg #(.WIDTH(3)) burstReg
 //Counter for burst length - support length of up to 16 (page mode read)
 reg burst_count_en;
 wire burst_count_geq;
-wire[2:0] burst_counter;
-count_reg b_counter(.count_load(0),
+wire[4:0] burst_counter;
+count_reg #(.D_WIDTH(5)) b_counter(.count_load(0),
                     .en(burst_count_en),
                     .rst(reset),
                     .clk(clk25MHz),
                     .count(burst_counter),
                     .load(DEASSERT));
-reg[2:0] burst_length;
+reg[4:0] burst_length;
 always@(*) begin
     case (bus_burst) 
         3'b000: burst_length = 1;
