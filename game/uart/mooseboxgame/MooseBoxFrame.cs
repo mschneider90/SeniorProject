@@ -207,7 +207,7 @@ namespace MooseBoxGame
         /// <param name="addr">The address to set the framebuffer to</param>
         public void setFramePosition(uint addr)
         {
-            framePos = addr + 8; // Align the screen correctly
+            framePos = addr + 16; // Align the screen correctly
             uart.write(FRAMEBUFFER_ADDR, framePos);
         }
 
