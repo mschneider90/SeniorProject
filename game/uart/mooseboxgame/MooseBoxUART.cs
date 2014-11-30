@@ -79,7 +79,6 @@ namespace MooseBoxGame
 
             uart_mutex.WaitOne();
             serial.Write(READ_COMMAND, 0, 1);
-            Thread.Sleep(1);
             serial.Write(toByteArray(addr), 0, 4);
 
             byte[] rx_data_bytes = new byte[4];
@@ -116,14 +115,11 @@ namespace MooseBoxGame
             uart_mutex.WaitOne();
 
             serial.Write(WRITE_COMMAND, 0, 1);
-            Thread.Sleep(1);
             serial.Write(toByteArray(addr), 0, 4);
-            Thread.Sleep(1);
             serial.Write(toByteArray(data), 0, 4);
 
             if (verifyWrite)
             {
-                Thread.Sleep(1);
                 // Check that value was successfully written by reading it back
                 try
                 {
@@ -168,7 +164,6 @@ namespace MooseBoxGame
                     success = false;
                     break;
                 }
-                Thread.Sleep(1);
             }
             return success;
         }

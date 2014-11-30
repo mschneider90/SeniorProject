@@ -17,19 +17,13 @@ namespace MooseBoxGame
     {
         Bitmap bmp;
         String[] rgb;
-        uint addr;
-        MooseBoxUART uart;
 
         /// <summary>
         /// Constructs the object from a bitmap file
         /// </summary>
         /// <param name="bitMapPath">The path to the bitmap file</param>
-        /// <param name="uartObj">The UART to write to</param>
-        /// <param name="startingAddr">The address in memory of the image</param>
-        public MooseBoxImage(String bitMapPath, MooseBoxUART uartObj, uint startingAddr)
+        public MooseBoxImage(String bitMapPath)
         {
-            addr = startingAddr;
-            uart = uartObj;
             bmp = new Bitmap(bitMapPath);
             convertToRGB();
         }
@@ -53,11 +47,67 @@ namespace MooseBoxGame
         }
 
         /// <summary>
-        /// Writes the image to memory
+        /// Gets the pixel at the specified location
         /// </summary>
-        public void write()
+        /// <param name="x">X coordinate of the pixel</param>
+        /// <param name="y">Y coordinate of the pixel</param>
+        /// <returns>The pixel in 8 bit RGB</returns>
+        public byte getPixel8(int x, int y)
         {
-            uart.write(addr, getRGB());
+            return convertTo8Bit(bmp.GetPixel(x, y));
+        }
+
+        /// <summary>
+        /// Gets the pixel at the specified address
+        /// </summary>
+        /// <param name="addr">The address of the pixel</param>
+        /// <returns>The pixel in 8 bit RGB</returns>
+        public byte getPixel8(int addr)
+        {
+            int y = addr % width;
+            int x = addr - y;
+            return getPixel8(x, y);
+        }
+
+        /// <summary>
+        /// Returns the pixel at the specified location
+        /// </summary>
+        /// <param name="x">X coordinate of the pixel</param>
+        /// <param name="y">Y coordinate of the pixel</param>
+        /// <returns>The pixel in 24 bit RGB</returns>
+        public Color getPixel24(int x, int y)
+        {
+            return bmp.GetPixel(x, y);
+        }
+
+        /// <summary>
+        /// Get the height of the image in pixels
+        /// </summary>
+        public int height
+        {
+            get
+            {
+                return bmp.Height;
+            }
+        }
+
+        /// <summary>
+        /// Get the width of the image in pixels
+        /// </summary>
+        public int width
+        {
+            get
+            {
+                return bmp.Width;
+            }
+        }
+
+        public uint size
+        {
+            get
+            {
+                return (uint)(height * width / 2);
+            }
         }
 
         /// <summary>
@@ -89,6 +139,16 @@ namespace MooseBoxGame
                     rgb_index++;
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts 24-bit RGB to 8 bit RGB
+        /// </summary>
+        /// <param name="pixel">The pixel to convert</param>
+        /// <returns>The color in 8 bit RGB</returns>
+        private byte convertTo8Bit(Color pixel)
+        {
+            return convertTo8Bit(pixel.R, pixel.G, pixel.B);
         }
 
         /// <summary>
