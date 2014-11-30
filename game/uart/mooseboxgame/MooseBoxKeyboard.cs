@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MooseBoxGame
 {
-    public enum keyEnum { A, D, ENTER, SPACE };
+    public enum Key { A, D, ENTER, SPACE };
 
     /// <summary>
-    /// 
+    /// Provides the ability to read from the keyboard in a background thread
     /// </summary>
     public class MooseBoxKeyboard
     {
@@ -18,56 +19,83 @@ namespace MooseBoxGame
         const byte SPACE_ADDR = 0x15;
         const byte ENTER_ADDR = 0x16;
 
+        const int THREAD_SLEEP_MS = 100;
+
         MooseBoxUART uart;
 
+        Thread keyboardThread;
+
+        bool a_pressed;
+        bool d_pressed;
+        bool space_pressed;
+        bool enter_pressed;
+
         /// <summary>
-        /// 
+        /// Creates a keyboard object
         /// </summary>
-        /// <param name="uartObj"></param>
+        /// <param name="uartObj">The UART to read from</param>
         public MooseBoxKeyboard(MooseBoxUART uartObj)
         {
             uart = uartObj;
+
+            a_pressed = false;
+            d_pressed = false;
+            space_pressed = false;
+            enter_pressed = false;
+
+            keyboardThread = new Thread(new ThreadStart(updateKeyStatus));
+            keyboardThread.Start();
+        }
+
+        /// <summary>
+        /// Updates the key status
+        /// </summary>
+        private void updateKeyStatus()
+        {
+            while (true)
+            {
+                a_pressed = (uart.read(A_ADDR) == 1);
+                Thread.Sleep(1);
+                d_pressed = (uart.read(D_ADDR) == 1);
+                Thread.Sleep(1);
+                enter_pressed = (uart.read(ENTER_ADDR) == 1);
+                Thread.Sleep(1);
+                space_pressed = (uart.read(SPACE_ADDR) == 1);
+
+                Thread.Sleep(THREAD_SLEEP_MS);
+            }
         }
 
         /// <summary>
         /// Checks whether or not a key is pressed
         /// </summary>
+        /// <remarks>Not synchronized with the update thread but doesn't really matter in this application</remarks>
         /// <param name="key">The key to check</param>
         /// <returns>True if the key is pressed, false otherwise</returns>
-        public bool isKeyPressed(keyEnum key)
+        public bool isKeyPressed(Key key)
         {
-            uint readValue = 0;
             switch (key)
             {
-                case keyEnum.A:
+                case Key.A:
                     {
-                        readValue = uart.read(A_ADDR);
-                        break;
+                        return a_pressed;
                     }
-                case keyEnum.D:
+                case Key.D:
                     {
-                        readValue = uart.read(D_ADDR);
-                        break;
+                        return d_pressed;
                     }
-                case keyEnum.ENTER:
+                case Key.ENTER:
                     {
-                        readValue = uart.read(ENTER_ADDR);
-                        break;
+                        return enter_pressed;
                     }
-                case keyEnum.SPACE:
+                case Key.SPACE:
                     {
-                        readValue = uart.read(SPACE_ADDR);
-                        break;
+                        return space_pressed;
                     }
-            }
-
-            if (readValue == 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                default:
+                    {
+                        return false;
+                    }
             }
         }
     }

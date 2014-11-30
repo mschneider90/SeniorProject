@@ -22,20 +22,38 @@ namespace MooseBoxGame
         const int TRANSPARENT_B = (int)(0xDC);
         Color TRANSPARENT = Color.FromArgb(TRANSPARENT_R, TRANSPARENT_G, TRANSPARENT_B); // hot pink
         const uint FRAMEBUFFER_ADDR = 0x20;
+        const uint SCREEN_WIDTH = 320;
+        const uint SCREEN_HEIGHT = 240;
 
         uint framePos;
         uint backgroundScrollLine;
 
         /// <summary>
-        /// Constructs the framebuffer object
+        /// Constructs the framebuffer object from a memory address
         /// </summary>
         /// <param name="uartObj">The UART object</param>
-        /// <param name="initialAddr">The initial frame position</param>
-        public MooseBoxFrame(MooseBoxUART uartObj, uint initialAddr = 0)
+        /// <param name="frameAddress">The address in memory from which to display the frame</param>
+        public MooseBoxFrame(MooseBoxUART uartObj, uint frameAddress)
         {
             uart = uartObj;
-            framePos = initialAddr;
+            setFramePosition(frameAddress);
             backgroundScrollLine = 0;
+
+            pixels = new List<MooseBoxPixel>();
+        }
+
+        /// <summary>
+        /// Constructs the framebuffer object from a background image
+        /// </summary>
+        /// <param name="uartObj">The UART object</param>
+        /// <param name="backgroundImage">The background image</param>
+        public MooseBoxFrame(MooseBoxUART uartObj, MooseBoxBackgroundImage backgroundImage)
+        {
+            uart = uartObj;
+            setFramePosition(backgroundImage.address);
+            backgroundScrollLine = 0;
+
+            pixels = new List<MooseBoxPixel>();
         }
 
         /// <summary>
@@ -64,11 +82,17 @@ namespace MooseBoxGame
                     {
                         byte pix8MSB = 0;
                         byte pix8LSB = 0;
-                        uint pixAddr = 0;
 
+                        // Pixel address = base address of the frame + 
+                        //                 base address of the sprite +
+                        //                 address of the pixel within the sprite
+                        uint pixAddr = (uint)(framePos +
+                                       (sprite.position.y * background.width / 2) + sprite.position.x +
+                                        (y * background.width / 2) + x); 
+                        //Console.WriteLine("Calculated pixel address {0} for pixel {1},{2}", pixAddr, x, y);
+         
                         if (x % 2 == 0) // word aligned
                         {
-                            pixAddr = (uint)(y * sprite.width + x); // TODO
                             pix8MSB = sprite.getPixel8(x,y);
 
                             // Also need to check the next pixel since we pack two pixels together
@@ -90,10 +114,14 @@ namespace MooseBoxGame
                             pix8LSB = sprite.getPixel8(x, y);
 
                             // Subtract 1 since the pixel address must be word aligned
-                            pixAddr = (uint)( y * sprite.width + x - 1); // TODO
+                            pixAddr -= 1;
                         }
 
                         pixels.Add(new MooseBoxPixel(uart, pix8MSB, pix8LSB, pixAddr));
+                    }
+                    else
+                    {
+                        //Console.WriteLine("Found transparent pixel {0},{1}", x, y);
                     }
                 }
             }
@@ -104,7 +132,6 @@ namespace MooseBoxGame
         /// </summary>
         public void write()
         {
-            setFramePosition((uint)(background.address + backgroundScrollLine * background.width / 2));
             // write list of pixels to the screen
             foreach (MooseBoxPixel pix in pixels)
             {
@@ -113,7 +140,7 @@ namespace MooseBoxGame
         }
 
         /// <summary>
-        /// 
+        /// Clears the frame by erasing any written pixels
         /// </summary>
         public void clear()
         {
@@ -129,10 +156,15 @@ namespace MooseBoxGame
                                                                  background.getPixel8(pixelAddr + 1),
                                                                  pix.addr);
                 pix_background.write();
+                //Console.WriteLine("Cleared pixel at address {0} from background {1}", pix.addr, pixelAddr);
             }
             pixels.Clear();
         }
 
+        /// <summary>
+        /// Scrolls the background 
+        /// </summary>
+        /// <param name="lines">The number of lines to scroll. Positive values scroll down, negative values scroll up</param>
         public void scrollBackground(int lines)
         {
             if (lines > 0) //scroll down
@@ -148,15 +180,25 @@ namespace MooseBoxGame
             }
             else //scroll up
             {
-                if (backgroundScrollLine - lines > 0)
+                if (backgroundScrollLine + lines > 0)
                 {
-                    backgroundScrollLine -= (uint)lines;
+                    backgroundScrollLine += (uint)lines;
                 }
                 else
                 {
-                    backgroundScrollLine = (uint)background.height;
+                    backgroundScrollLine = (uint)background.height - SCREEN_HEIGHT;
                 }
             }
+
+            setFramePosition((uint)(background.address + backgroundScrollLine * background.width / 2));
+        }
+
+        /// <summary>
+        /// Displays the frame.
+        /// </summary>
+        public void showFrame()
+        {
+            uart.write(FRAMEBUFFER_ADDR, framePos);
         }
 
         /// <summary>

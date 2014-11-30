@@ -54,5 +54,13 @@ namespace MooseBoxGame
                 pos_y = value;
             }
         }
+
+        public static MooseBoxPosition zero
+        {
+            get
+            {
+                return new MooseBoxPosition(0, 0);
+            }
+        }
     }
 }

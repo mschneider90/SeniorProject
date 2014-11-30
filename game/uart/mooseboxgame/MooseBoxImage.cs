@@ -64,8 +64,8 @@ namespace MooseBoxGame
         /// <returns>The pixel in 8 bit RGB</returns>
         public byte getPixel8(int addr)
         {
-            int y = addr % width;
-            int x = addr - y;
+            int y = addr / width;
+            int x = addr - (y * width) - 1;
             return getPixel8(x, y);
         }
 
