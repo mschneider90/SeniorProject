@@ -13,8 +13,8 @@ module VGABusInterface(input clk,
                        output buf_byte_sel,
                        output buf0_we,
                        output buf1_we,
-                       output [2:0] buf_read_addr,
-                       output [2:0] buf_write_addr,
+                       output [3:0] buf_read_addr,
+                       output [3:0] buf_write_addr,
 					   output idle,
                        output [31:0] bus_out);
                    
@@ -22,11 +22,11 @@ localparam RES_X = 320;
 localparam RES_Y = 240;
 
 localparam BASE_ADDR = 32'h00001050;
-localparam BURST_LENGTH = 8;
-
+localparam BURST_LENGTH = 16;
+//localparam BKGND_WIDTH = 2560; //this is simply the horizontal resolution * 8
                        
 wire [31:0] pix_addr;  // For selecting each byte
-assign buf_read_addr[2:0] = pix_addr[3:1];
+assign buf_read_addr[3:0] = pix_addr[4:1];
 
 /* //left this unmodified from 80*240 mode 
 assign pix_addr = (row >> 1) * RES_X + (col) >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
@@ -42,11 +42,12 @@ assign pix_addr = (row >> 1) * RES_X + (col >> 1); // row >> 1: 480 >> 1 = 240 r
 
 wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
 //assign pix_addr_reduced = pix_addr >> 1;
-assign pix_addr_reduced = pix_addr >> 4; //with bigger buffers, we access the buss less. 
-                                         //16 pix buffers mean we only get every 16th PIXEL address, or every 8th PHYSICAL (16-bit/word) address.  
+assign pix_addr_reduced = pix_addr >> 5; //with bigger buffers, we access the buss less. 
+                                         //16 pix buffers mean we only get every 16th PIXEL address, or every 8th PHYSICAL (16-bit/word) address.
+                                         //32 pix buffers mean we get every 32nd PIXEL address, or every 16th physical address
 
 
-assign bus_out =  (base_addr + (pix_addr_reduced << 3)); //the bus should only ask for every 8th PHYSICAL address. (pix_addr >> 4) << 3 = (each digit repeated 16 times) 0,8,16 
+assign bus_out =  (base_addr + (pix_addr_reduced << 4)); //the bus should only ask for every 16th PHYSICAL address. (pix_addr >> 5) << 4 = (each digit repeated 16 times) 0,8,16 
 
 
 wire currentBuf;
@@ -70,7 +71,7 @@ d_reg_sync #(.WIDTH(32)) lastAddrReg(.clk(clk),
 //Counter for burst length 
 reg burst_count_en;
 wire burst_count_geq;
-wire[2:0] burst_counter;
+wire[3:0] burst_counter;
 reg burst_count_reset;
 count_reg b_counter(.count_load(0),
                     .en(burst_count_en),
@@ -81,7 +82,7 @@ count_reg b_counter(.count_load(0),
 
 assign burst_count_geq = (burst_counter >= BURST_LENGTH - 1) ? 1 : 0;
 //assign buff_write_address = burst_counter[2:0]; 
-assign buf_write_addr[2:0] = burst_counter[2:0];
+assign buf_write_addr[3:0] = burst_counter[3:0];
 
 reg buf_we;
 assign buf0_we = ((buf_sel != 0) && buf_we)? 1 : 0; // Buffer not selected, so write to it
@@ -89,13 +90,14 @@ assign buf1_we = ((buf_sel != 1) && buf_we)? 1 : 0;
 
 assign buf_byte_sel = ~pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
 //assign buf_sel = pix_addr[1];
-assign buf_sel = pix_addr[4]; //pix_addr[4] switches the buffer every 16 pixels
+assign buf_sel = pix_addr[5]; //pix_addr[4] switches the buffer every 16 pixels
+//pix_addr[5] switches the buffer every 32 pixels 
 
-parameter STATE_IDLE = 0;
-parameter STATE_PRESENT_ADDR = 1;
-parameter STATE_WAIT = 2;
-parameter STATE_READ_DATA = 3;
-parameter STATE_FINISH = 4;
+localparam STATE_IDLE = 0;
+localparam STATE_PRESENT_ADDR = 1;
+localparam STATE_WAIT = 2;
+localparam STATE_READ_DATA = 3;
+localparam STATE_FINISH = 4;
 
 reg [2:0] currentState;
 reg [2:0] nextState;
