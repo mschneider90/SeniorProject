@@ -87,10 +87,9 @@ namespace MooseBoxGame
                         //                 base address of the sprite +
                         //                 address of the pixel within the sprite
                         uint pixAddr = (uint)(framePos +
-                                       (sprite.position.y * background.width / 2) + sprite.position.x +
-                                        (y * background.width / 2) + x); 
-                        //Console.WriteLine("Calculated pixel address {0} for pixel {1},{2}", pixAddr, x, y);
-         
+                                       (sprite.position.y * background.width / 2) + sprite.position.x / 2 +
+                                       (y * background.width / 2) + x / 2); 
+                        
                         if (x % 2 == 0) // word aligned
                         {
                             pix8MSB = sprite.getPixel8(x,y);
@@ -105,6 +104,7 @@ namespace MooseBoxGame
                             {
                                 pix8LSB = sprite.getPixel8(x + 1, y);
                             }
+                            //Console.WriteLine("Calculated pixel address {0} for pixel {1},{2}", pixAddr, x, y);
                             x++; // Now we can skip the next pixel
                         }
                         else // not word aligned
@@ -114,14 +114,17 @@ namespace MooseBoxGame
                             pix8LSB = sprite.getPixel8(x, y);
 
                             // Subtract 1 since the pixel address must be word aligned
-                            pixAddr -= 1;
+                            //pixAddr -= 1;
+                            //Console.WriteLine("Calculated pixel address {0} for pixel {1},{2}", pixAddr, x, y);
                         }
+
+                        
 
                         pixels.Add(new MooseBoxPixel(uart, pix8MSB, pix8LSB, pixAddr));
                     }
                     else
                     {
-                        //Console.WriteLine("Found transparent pixel {0},{1}", x, y);
+                        // Console.WriteLine("Found transparent pixel {0},{1}", x, y);
                     }
                 }
             }
@@ -189,8 +192,8 @@ namespace MooseBoxGame
                     backgroundScrollLine = (uint)background.height - SCREEN_HEIGHT;
                 }
             }
-
-            setFramePosition((uint)(background.address + backgroundScrollLine * background.width / 2));
+            //etFramePosition((uint)(background.address + backgroundScrollLine * background.width / 2));
+            framePos = (uint)(background.address + backgroundScrollLine * background.width / 2) + 16;
         }
 
         /// <summary>

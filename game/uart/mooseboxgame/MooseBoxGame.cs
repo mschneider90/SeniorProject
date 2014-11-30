@@ -47,7 +47,7 @@ namespace MooseBoxGame
             }
 
             // Init the background threads
-            backgroundAudio = new MooseBoxBackgroundAudio(uart, "audiotest9.p2f");
+            backgroundAudio = new MooseBoxBackgroundAudio(uart, "audiotest8.paf");
             keyboard = new MooseBoxKeyboard(uart);
             framebuffer_1 = new MooseBoxFrame(uart, MEMORY_START);
             framebuffer_2 = new MooseBoxFrame(uart, MEMORY_START);
@@ -90,11 +90,12 @@ namespace MooseBoxGame
         /// </summary>
         static void playGame()
         {
+            backgroundAudio.loadSong("audiotest9.p2f");
             backgroundAudio.start();
 
             framebuffer_1.setBackground(backgroundImage_1);
             framebuffer_2.setBackground(backgroundImage_2);
-            //framebuffer_2.scrollBackground(-8);
+            framebuffer_2.scrollBackground(-4);
             MooseBoxSprite sprite = new MooseBoxSprite("test_sprite.bmp", new MooseBoxPosition(100, 100));
             bool framebuffer_sel = true;
             while (true)
@@ -128,23 +129,21 @@ namespace MooseBoxGame
                 // Draw the frame
                 if (framebuffer_sel)
                 {
-                    //framebuffer_1.scrollBackground(-8);
+                    framebuffer_1.scrollBackground(-8);
                     framebuffer_1.draw(sprite);
-                    framebuffer_1.write(); // Write the other framebuffer
+                    framebuffer_1.write(); 
                     framebuffer_1.showFrame();
                 }
                 else
                 {
-                    //framebuffer_2.scrollBackground(-8);
+                    framebuffer_2.scrollBackground(-8);
                     framebuffer_2.draw(sprite);
-                    framebuffer_2.write(); // Write the other framebuffer
+                    framebuffer_2.write(); 
                     framebuffer_2.showFrame();
                 }
 
                 framebuffer_sel = !framebuffer_sel;
-                Thread.Sleep(15);
-
-                //Console.ReadLine()
+                //Thread.Sleep(15);
             }
         }
 
@@ -173,18 +172,18 @@ namespace MooseBoxGame
 
             // Display loading screen and music while the rest loads
             framebuffer_1.setBackground(loadingScreen);
-            backgroundAudio.start();
+            //backgroundAudio.start();
 
             // Load main screen
             Console.Write("- > Loading title screen...");
-            titleScreen = new MooseBoxBackgroundImage(uart, "SPACEDEMO2.bmp", freeMemoryPointer);
+            titleScreen = new MooseBoxBackgroundImage(uart, "space5.bmp", freeMemoryPointer);
             freeMemoryPointer += titleScreen.size;
             if (load)
             {
                 titleScreen.write();
             }
 
-            titleScreen2 = new MooseBoxBackgroundImage(uart, "SPACEDEMO3.bmp", freeMemoryPointer);
+            titleScreen2 = new MooseBoxBackgroundImage(uart, "space5b.bmp", freeMemoryPointer);
             if (load)
             {
                 titleScreen2.write();
