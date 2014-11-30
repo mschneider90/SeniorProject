@@ -16,7 +16,7 @@ module VGA_module #(parameter COLOR_DEPTH = 8,
                     output[CTRL_WIDTH-1:0] ctrl_out,
                     output[BUS_WIDTH-1:0] bus_out);
                     
-assign ctrl_out = 8'b00001100; // burst length 8 and read
+assign ctrl_out = 8'b00010000; // burst length 16 and read
 
 wire output_valid;
 wire [COLOR_DEPTH-1:0] pixel;
@@ -27,15 +27,15 @@ wire [10:0] col;
 // Two pixel buffers. We can read 16 bits = two pixels from memory at a time
 wire buf0_we;
 wire [15:0] buf0_out;
-wire [2:0] buffer_write_addr;
-wire [2:0] buffer_read_addr;
+wire [3:0] buffer_write_addr; //16 words
+wire [3:0] buffer_read_addr; //16 words
 
 pixelbuff #(.WIDTH((COLOR_DEPTH * 2))) buffer0( //16 wide by 8 deep pixel buffer. 
               .data_in(bus_in[15:0]),
               .clk(clk25MHz),
               .we(buf0_we),
-              .write_address(buffer_write_addr[2:0]),
-              .read_address(buffer_read_addr[2:0]),
+              .write_address(buffer_write_addr[3:0]),
+              .read_address(buffer_read_addr[3:0]),
               .data_out(buf0_out)
               );
 
@@ -61,8 +61,8 @@ pixelbuff #(.WIDTH((COLOR_DEPTH * 2))) buffer1( //16 wide by 8 deep pixel buffer
               .data_in(bus_in[15:0]),
               .clk(clk25MHz), 
               .we(buf1_we),
-              .write_address(buffer_write_addr[2:0]),
-              .read_address(buffer_read_addr[2:0]),
+              .write_address(buffer_write_addr[3:0]),
+              .read_address(buffer_read_addr[3:0]),
               .data_out(buf1_out)
               );
 /*
@@ -113,8 +113,8 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .buf_byte_sel(buf_byte_sel),
                 .buf0_we(buf0_we),
                 .buf1_we(buf1_we),
-                .buf_read_addr(buffer_read_addr[2:0]),
-                .buf_write_addr(buffer_write_addr[2:0]),
+                .buf_read_addr(buffer_read_addr[3:0]),
+                .buf_write_addr(buffer_write_addr[3:0]),
                 .bus_out(bus_out),
 				.idle(master_idle));
 					 

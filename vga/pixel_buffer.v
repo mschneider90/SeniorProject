@@ -8,7 +8,7 @@
 //pixel buffer
 //16 wide by 8 deep pixel buffer. Holds 
 
-module pixelbuff #(parameter WIDTH = 16, DEPTH = 8)
+module pixelbuff #(parameter WIDTH = 16, DEPTH = 16)
              (input  [WIDTH-1:0] data_in,
               input  clk,
               input  we,

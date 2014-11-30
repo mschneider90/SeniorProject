@@ -56,7 +56,7 @@ assign bus_we = bus_ctrl_in[1];
 
 wire bus_wait_out;
 assign bus_ctrl_out = {3'b000, //not used
-                       3'b000, //not used (burst length)
+                       3'b000, //(burst length)
                        1'b0,   //not used (we)
                        bus_wait_out };
 
