@@ -23,6 +23,8 @@ namespace MooseBoxGame
         audioTypeEnum audioType;
         bool stopped;
 
+        Thread backgroundAudioThread;
+
         Mutex index_lock;
 
         /// <summary>
@@ -38,6 +40,9 @@ namespace MooseBoxGame
             index_lock = new Mutex();
 
             loadSong(audioFilePath);
+
+            backgroundAudioThread = new Thread(new ThreadStart(playAudio));
+            backgroundAudioThread.Start();
         }
 
         /// <summary>

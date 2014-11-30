@@ -168,19 +168,9 @@ namespace MooseBoxGame
                     success = false;
                     break;
                 }
-                Thread.Sleep(5);
+                Thread.Sleep(1);
             }
             return success;
-        }
-
-        /// <summary>
-        /// Write an image starting at the specified address. Thread safe.
-        /// </summary>
-        /// <param name="startingAddr">The address to start writing the image</param>
-        /// <param name="img">The image to be written</param>
-        public void write(uint startingAddr, MooseBoxImage img) 
-        {
-            write(startingAddr, img.getRGB());
         }
 
         /// <summary>
