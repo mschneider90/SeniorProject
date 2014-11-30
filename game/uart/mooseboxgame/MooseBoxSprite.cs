@@ -6,25 +6,54 @@ using System.Threading.Tasks;
 
 namespace MooseBoxGame
 {
+    public enum Direction { up, down, right, left };
+
     /// <summary>
     /// Represents a dynamic sprite to be drawn on top of a background
     /// </summary>
     public class MooseBoxSprite : MooseBoxImage
     {
-        MooseBoxUART uart;
-        uint pos_X;
-        uint pos_Y;
+        MooseBoxPosition pos;
 
-        public MooseBoxSprite(MooseBoxUART uartObj,
-                              String bitMapPath,
-                              uint position_X,
-                              uint position_Y) : base(bitMapPath)
+        public MooseBoxSprite(String bitMapPath,
+                              MooseBoxPosition position) : base(bitMapPath)
         {
-            uart = uartObj;
-            pos_X = position_X;
-            pos_Y = position_Y;
+            pos = position;
         }
 
+        public void move(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.up:
+                    {
+                        pos.y -= 4;
+                        break;
+                    }
+                case Direction.down:
+                    {
+                        pos.y += 4;
+                        break;
+                    }
+                case Direction.right:
+                    {
+                        pos.x += 4;
+                        break;
+                    }
+                case Direction.left:
+                    {
+                        pos.x -= 4;
+                        break;
+                    }
+            }
+        }
 
+        public MooseBoxPosition position
+        {
+            get
+            {
+                return pos;
+            }
+        }
     }
 }

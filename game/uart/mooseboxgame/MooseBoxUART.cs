@@ -72,12 +72,11 @@ namespace MooseBoxGame
         /// <returns>The 32-bit data read from the specified address</returns>
         public uint read(uint addr)
         {
-            serial.DiscardInBuffer();
-
             // Must match the value in uartInterface.v
             byte[] READ_COMMAND = { 0x55 };
 
             uart_mutex.WaitOne();
+            serial.DiscardInBuffer();
             serial.Write(READ_COMMAND, 0, 1);
             serial.Write(toByteArray(addr), 0, 4);
 
@@ -93,7 +92,6 @@ namespace MooseBoxGame
                     throw new TimeoutException();
                 }
             }
-
             uart_mutex.ReleaseMutex();
 
             return toInt(rx_data_bytes);
