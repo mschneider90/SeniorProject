@@ -13,21 +13,41 @@ module VGABusInterface(input clk,
                        output buf_byte_sel,
                        output buf0_we,
                        output buf1_we,
-                       output idle,
+                       output [2:0] buf_read_addr,
+                       output [2:0] buf_write_addr,
+					   output idle,
                        output [31:0] bus_out);
- 
-parameter RES_X = 80;
-parameter RES_Y = 240;
+                   
+localparam RES_X = 320;
+localparam RES_Y = 240;
 
-parameter BASE_ADDR = 32'h00001050;
+localparam BASE_ADDR = 32'h00001050;
+localparam BURST_LENGTH = 8;
+
                        
 wire [31:0] pix_addr;  // For selecting each byte
-assign pix_addr = (row >> 1) * RES_X + (col >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
+assign buf_read_addr[2:0] = pix_addr[3:1];
+
+/* //left this unmodified from 80*240 mode 
+assign pix_addr = (row >> 1) * RES_X + (col) >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
 
 wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
 assign pix_addr_reduced = pix_addr >> 1;
 
 assign bus_out =  (base_addr + pix_addr_reduced); //(( BASE_ADDR + pix_addr_reduced >= 32'h0000391F)) ? BASE_ADDR : BASE_ADDR + pix_addr_reduced;        //{BASE_ADDR + pix_addr_reduced};
+*/
+
+
+assign pix_addr = (row >> 1) * RES_X + (col >> 1); // row >> 1: 480 >> 1 = 240 rows. col >>1: 640 >> 1 = 320 columns. 
+
+wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
+//assign pix_addr_reduced = pix_addr >> 1;
+assign pix_addr_reduced = pix_addr >> 4; //with bigger buffers, we access the buss less. 
+                                         //16 pix buffers mean we only get every 16th PIXEL address, or every 8th PHYSICAL (16-bit/word) address.  
+
+
+assign bus_out =  (base_addr + (pix_addr_reduced << 3)); //the bus should only ask for every 8th PHYSICAL address. (pix_addr >> 4) << 3 = (each digit repeated 16 times) 0,8,16 
+
 
 wire currentBuf;
 //assign buf_sel = currentBuf;
@@ -45,13 +65,31 @@ d_reg_sync #(.WIDTH(32)) lastAddrReg(.clk(clk),
                                       .reset(reset),
                                       .d(pix_addr_reduced),
                                       .q(last_addr));
-                                      
+ 
+
+//Counter for burst length 
+reg burst_count_en;
+wire burst_count_geq;
+wire[2:0] burst_counter;
+reg burst_count_reset;
+count_reg b_counter(.count_load(0),
+                    .en(burst_count_en),
+                    .rst(burst_count_reset),
+                    .clk(clk),
+                    .count(burst_counter),
+                    .load(0));
+
+assign burst_count_geq = (burst_counter >= BURST_LENGTH - 1) ? 1 : 0;
+//assign buff_write_address = burst_counter[2:0]; 
+assign buf_write_addr[2:0] = burst_counter[2:0];
+
 reg buf_we;
 assign buf0_we = ((buf_sel != 0) && buf_we)? 1 : 0; // Buffer not selected, so write to it
 assign buf1_we = ((buf_sel != 1) && buf_we)? 1 : 0;
 
 assign buf_byte_sel = ~pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
-assign buf_sel = pix_addr[1];
+//assign buf_sel = pix_addr[1];
+assign buf_sel = pix_addr[4]; //pix_addr[4] switches the buffer every 16 pixels
 
 parameter STATE_IDLE = 0;
 parameter STATE_PRESENT_ADDR = 1;
@@ -107,7 +145,14 @@ always@(*) begin
             end
         end
         STATE_READ_DATA: begin
-            nextState <= STATE_FINISH;
+            if(burst_count_geq)  //if we have reached the burst count signal condition,
+                begin
+                    nextState <= STATE_FINISH; //we are done with the page read. 
+                end
+            else 
+                begin
+                    nextState <= STATE_READ_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
+                end
         end
         STATE_FINISH: begin
             nextState <= STATE_IDLE;
@@ -131,36 +176,48 @@ always@(*) begin
             switch_buf <= 0;
             buf_we <= 0;
             last_addr_we <= 0;
+            burst_count_en <= 0;
+            burst_count_reset <= 1;
         end
         STATE_PRESENT_ADDR: begin
             bus_req <= 1;
             buf_we <= 0;
             last_addr_we <= 1;
             switch_buf <= 0;
+            burst_count_en <= 0;
+            burst_count_reset <= 0;
         end
         STATE_WAIT: begin
             bus_req <= 1;
             buf_we <= 0;
             last_addr_we <= 0;
             switch_buf <= 0;
+            burst_count_en <= 0;
+            burst_count_reset <= 0;
         end
         STATE_READ_DATA: begin
             bus_req <= 1;
             buf_we <= 1;
             last_addr_we <= 0;
             switch_buf <= 0;
+            burst_count_en <= 1;
+            burst_count_reset <= 0;
         end
         STATE_FINISH: begin
             bus_req <= 0;
             buf_we <= 0;
             last_addr_we <= 0;
             switch_buf <= 0;
+            burst_count_en <= 0;
+            burst_count_reset <= 1;
         end
         default: begin
             bus_req <= 0;
             buf_we <= 0;
             last_addr_we <= 0;
             switch_buf <= 0;
+            burst_count_en <= 0;
+            burst_count_reset <= 1;
         end
     endcase
 end

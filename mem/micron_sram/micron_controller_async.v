@@ -68,7 +68,7 @@ parameter RW_LATENCY_CYCLES = 2;
 
 //Counter for r/w latency
 reg cycle_count_en;
-wire cycle_count_geq;
+wire cycle_count_geq; //ASSERT if cycle_counter greater than or equal to RW_LATENCY_CYCLES - 1, DEASSERT otherwise
 wire[1:0] cycle_counter;
 count_reg c_counter(.count_load(0),
                     .en(cycle_count_en),
@@ -91,14 +91,14 @@ d_reg #(.WIDTH(3)) burstReg
 //Counter for burst length - support length of up to 16 (page mode read)
 reg burst_count_en;
 wire burst_count_geq;
-wire[2:0] burst_counter;
-count_reg b_counter(.count_load(0),
+wire[4:0] burst_counter;
+count_reg #(.D_WIDTH(5)) b_counter(.count_load(0),
                     .en(burst_count_en),
                     .rst(reset),
                     .clk(clk25MHz),
                     .count(burst_counter),
                     .load(DEASSERT));
-reg[2:0] burst_length;
+reg[4:0] burst_length;
 always@(*) begin
     case (bus_burst) 
         3'b000: burst_length = 1;
@@ -115,14 +115,26 @@ assign burst_count_geq = (burst_counter >= burst_length - 1) ? ASSERT : DEASSERT
 wire [A_WIDTH-1:0] addr_reg_out;
 reg addr_write_en;
 reg addr_reset;
+/*
 d_reg #(.WIDTH(A_WIDTH)) maddrReg
        (.clk(clk25MHz),
         .reset(addr_reset),
         .en(addr_write_en),
         .d(bus_data_in),
         .q(addr_reg_out));
-        
-assign maddr = addr_reg_out;
+  */ 
+ //New maddrReg: Memory address is tied to a counter to enable page mode reading. 
+reg maddrreg_count_enable;       
+count_regp #(.D_WIDTH(A_WIDTH)) maddrReg
+      (.count_load(bus_data_in),    //bus data in loads the count register 
+       .en(maddrreg_count_enable),  //maddrreg_count_enable enables the counting action. should only be asserted during page mode reads. 
+       .load(addr_write_en),        //addr_write_en triggers the loading of the register. 
+       .rst(addr_reset),            //loads a zero into the count register. 
+       .clk(clk25MHz),
+       .count(addr_reg_out)
+       ); 
+
+assign maddr = addr_reg_out;  // need to change maddr to a reg to enable page mode reads. it should be incremented in the vga controller as well as here. //nvm 
 
 //DEBUG
 assign debug_out = addr_reg_out[7:0];
@@ -178,11 +190,26 @@ always@(*) begin
         STATE_READ_SINGLE_DATA: begin
             nextState <= STATE_FINISH;
         end
+/////////////////////////////////////////////////////////////////////////////////
         STATE_READ_PAGE_WAIT: begin
-            nextState <= STATE_READ_PAGE_DATA; //TODO
+            if (cycle_count_geq) begin
+                nextState <= STATE_READ_PAGE_DATA;
+            end
+            else begin
+                nextState <= STATE_READ_PAGE_WAIT;
+            end            
+            //nextState <= STATE_READ_PAGE_DATA; //TODO
         end
         STATE_READ_PAGE_DATA: begin
-            nextState <= STATE_FINISH; //TODO
+            if(burst_count_geq)  //if we have reached the burst count signal condition,
+            begin
+                nextState <= STATE_FINISH; //we are done with the page read. 
+            end
+            else 
+            begin
+                nextState <= STATE_READ_PAGE_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
+            end
+            //nextState <= STATE_FINISH; //TODO
         end
         STATE_WRITE_WAIT: begin
             if (cycle_count_geq) begin
@@ -225,7 +252,8 @@ always@(*) begin
             
             //Local signals
             reset <= ASSERT;
-            addr_reset <= ASSERT;
+            addr_reset <= ASSERT; // is this appropriate when using page mode reads? 
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
@@ -244,6 +272,7 @@ always@(*) begin
             //Local signals
             reset <= ASSERT;
             addr_reset <= DEASSERT;
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= ASSERT;
@@ -272,6 +301,7 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
@@ -290,9 +320,59 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
+        end
+        STATE_READ_PAGE_WAIT: begin
+            //Outputs
+            mwe_L <= DEASSERT_L;
+            madv_L <= ASSERT_L;
+            mce_L <= ASSERT_L;
+                if (cycle_count_geq) begin //end WAIT one cycle before state transition
+                    bwait_en <= DEASSERT;
+                end
+                else begin
+                    bwait_en <= ASSERT;
+                end
+            mcre <= DEASSERT;
+                if (cycle_count_geq) begin
+                    moe_L <= ASSERT_L;
+                end
+                else begin
+                    moe_L <= DEASSERT_L;
+                end
+            mlb_L <= ASSERT_L;
+            mub_L <= ASSERT_L;
+            addr_reset <= DEASSERT;
+            
+            //Local signals
+            reset <= DEASSERT;
+            maddrreg_count_enable <= DEASSERT;
+            cycle_count_en <= ASSERT;
+            burst_count_en <= DEASSERT;
+            addr_write_en <= DEASSERT;
+        end
+        STATE_READ_PAGE_DATA: begin
+            //Outputs
+            mwe_L <= DEASSERT_L;
+            madv_L <= ASSERT_L;
+            mce_L <= ASSERT_L;
+            bwait_en <= DEASSERT;
+            mcre <= DEASSERT;
+            moe_L <= ASSERT_L;
+            mlb_L <= ASSERT_L;
+            mub_L <= ASSERT_L;
+            addr_reset <= DEASSERT;
+            
+            //Local signals
+            reset <= DEASSERT;
+            maddrreg_count_enable <= ASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= ASSERT;
+            addr_write_en <= DEASSERT;
+        
         end
         STATE_WRITE_WAIT: begin
             //Outputs
@@ -318,6 +398,7 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
@@ -336,6 +417,7 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
@@ -354,6 +436,7 @@ always@(*) begin
             
             //Local signals
             reset <= ASSERT;
+            maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;

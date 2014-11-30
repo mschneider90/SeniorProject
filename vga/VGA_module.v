@@ -16,7 +16,7 @@ module VGA_module #(parameter COLOR_DEPTH = 8,
                     output[CTRL_WIDTH-1:0] ctrl_out,
                     output[BUS_WIDTH-1:0] bus_out);
                     
-assign ctrl_out = 0; // burst length 1 and read
+assign ctrl_out = 8'b00001100; // burst length 8 and read
 
 wire output_valid;
 wire [COLOR_DEPTH-1:0] pixel;
@@ -26,12 +26,27 @@ wire [10:0] col;
 
 // Two pixel buffers. We can read 16 bits = two pixels from memory at a time
 wire buf0_we;
-wire [(COLOR_DEPTH * 2)-1:0] buf0_out;
+wire [15:0] buf0_out;
+wire [2:0] buffer_write_addr;
+wire [2:0] buffer_read_addr;
+
+pixelbuff #(.WIDTH((COLOR_DEPTH * 2))) buffer0( //16 wide by 8 deep pixel buffer. 
+              .data_in(bus_in[15:0]),
+              .clk(clk25MHz),
+              .we(buf0_we),
+              .write_address(buffer_write_addr[2:0]),
+              .read_address(buffer_read_addr[2:0]),
+              .data_out(buf0_out)
+              );
+
+/*
 d_reg_sync #(.WIDTH(COLOR_DEPTH * 2)) buf0(.clk(clk25MHz),
                 .en(buf0_we),
                 .reset(reset),
                 .d(bus_in),
                 .q(buf0_out));
+*/ 
+
 
 wire buf_byte_sel; // shared between both buffers  
 wire[COLOR_DEPTH-1:0] buf0_byte_out;            
@@ -41,13 +56,22 @@ mux21 #(.D_WIDTH(COLOR_DEPTH)) buf0_byte_mux(.in_a(buf0_out[7:0]),
                                        .out(buf0_byte_out));
  
 wire buf1_we; 
-wire [(COLOR_DEPTH * 2)-1:0] buf1_out;
+wire [15:0] buf1_out;
+pixelbuff #(.WIDTH((COLOR_DEPTH * 2))) buffer1( //16 wide by 8 deep pixel buffer. 
+              .data_in(bus_in[15:0]),
+              .clk(clk25MHz), 
+              .we(buf1_we),
+              .write_address(buffer_write_addr[2:0]),
+              .read_address(buffer_read_addr[2:0]),
+              .data_out(buf1_out)
+              );
+/*
 d_reg_sync #(.WIDTH(COLOR_DEPTH * 2)) buf1(.clk(clk25MHz),
                 .en(buf1_we),
                 .reset(reset),
                 .d(bus_in),
                 .q(buf1_out));
-                
+ */               
 wire[COLOR_DEPTH-1:0] buf1_byte_out;          
 mux21 #(.D_WIDTH(COLOR_DEPTH)) buf1_byte_mux(.in_a(buf1_out[7:0]),
                                        .in_b(buf1_out[15:8]),
@@ -89,8 +113,10 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .buf_byte_sel(buf_byte_sel),
                 .buf0_we(buf0_we),
                 .buf1_we(buf1_we),
+                .buf_read_addr(buffer_read_addr[2:0]),
+                .buf_write_addr(buffer_write_addr[2:0]),
                 .bus_out(bus_out),
-					 .idle(master_idle));
+				.idle(master_idle));
 					 
 //vga framebuffer select register
 d_reg #(.WIDTH(32)) vga_reg0(

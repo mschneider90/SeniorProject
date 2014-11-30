@@ -16,6 +16,7 @@
 !*.ucf
 !*.xise
 !*.wcfg
+!*.cdc
 
 #visual studio
 !*.sln
