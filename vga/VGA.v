@@ -48,7 +48,7 @@ initial begin
 	row <= 0;
 end
 
-assign output_valid = (col <= H_RES && row <= V_RES) ? ASSERT : DEASSERT;
+assign output_valid = (col < H_RES && row < V_RES) ? ASSERT : DEASSERT;
 
 always@(posedge clk25MHz) begin
 	if (!rst) begin
