@@ -127,7 +127,7 @@ namespace MooseboxSerial
             uint addr = uint.Parse(input[1], NumberStyles.AllowHexSpecifier);
             uint rxData;
 
-            serial.DiscardInBuffer();
+            //serial.DiscardInBuffer();
 
             try
             {
@@ -216,7 +216,7 @@ namespace MooseboxSerial
                     failed = true;
                     break;
                 }
-                Thread.Sleep(5);
+                //Thread.Sleep(5);
             }
             if (!failed)
             {
@@ -518,8 +518,9 @@ namespace MooseboxSerial
             // Must match the value in uartInterface.v
             byte[] READ_COMMAND = {0x55};
 
+            serial.DiscardInBuffer();
             serial.Write(READ_COMMAND, 0, 1);
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
             serial.Write(toByteArray(addr), 0, 4);
 
             byte[] rx_data_bytes = new byte[4];
@@ -544,16 +545,16 @@ namespace MooseboxSerial
             byte[] WRITE_COMMAND = { 0x56 };
 
             serial.Write(WRITE_COMMAND, 0, 1);
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
             serial.Write(toByteArray(addr), 0, 4);
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
             serial.Write(toByteArray(data), 0, 4);
 
             if (verifyWrite)
             {
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
                 // Check that value was successfully written by reading it back
-                serial.DiscardInBuffer();
+                //serial.DiscardInBuffer();
                 try
                 {
                     if (data == serialRead(serial, addr))
