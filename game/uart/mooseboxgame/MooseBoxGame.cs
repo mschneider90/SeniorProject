@@ -19,12 +19,14 @@ namespace MooseBoxGame
 
         static MooseBoxBackgroundAudio backgroundAudio;
 
-        const uint FRAMEBUFFER = 0x20;
-        const uint INIT_SCREEN = 0x1AD00;
-        const uint LOADING_SCREEN = 0x1500;
-        const uint MAIN_MENU = 0x4000;
-        const uint MAIN_MENU_2 = 0x6500;
-        const uint BACKGROUND = 0x9000;
+        // Images
+        static MooseBoxBackgroundImage loadingScreen;
+        static MooseBoxBackgroundImage titleScreen;
+        static MooseBoxBackgroundImage titleScreen2;
+        static MooseBoxBackgroundImage backgroundImage;
+
+        // Points to the next available memory
+        static uint freeMemoryPointer;
 
         public static void Main()
         {
@@ -43,6 +45,9 @@ namespace MooseBoxGame
             backgroundAudio = new MooseBoxBackgroundAudio(uart, "audiotest9.p2f");
             keyboard = new MooseBoxKeyboard(uart);
             framebuffer = new MooseBoxFrame(uart);
+
+            // Init free memory pointer
+            freeMemoryPointer = 0x1050;
 
             gameState = gameStateEnum.LOADING;
             while (true)
@@ -81,46 +86,16 @@ namespace MooseBoxGame
         {
             backgroundAudio.start();
 
-            int line = 839;
-            uint pos = 20;
+            framebuffer.setBackground(backgroundImage);
+            MooseBoxSprite sprite = new MooseBoxSprite(uart, "test_sprite.bmp", 0, 0); // TODO
             while (true)
             {
-                // Clear previous position
-                uart.write((uint)(BACKGROUND + ((line + 40) * 40 + pos)), 0);
-
-                if (line == 0)
-                {
-                    line = 839;
-                }
-                else
-                {
-                    line--;
-                }
-                framebuffer.setFramePosition((uint)(BACKGROUND + (line * 40)));
-                bool aPressed = keyboard.isKeyPressed(keyEnum.A);
-                bool dPressed = keyboard.isKeyPressed(keyEnum.D);
-
-                if (aPressed)
-                {
-                    //Console.WriteLine("a pressed");
-                    if (pos > 0)
-                    {
-                        pos--;
-                    }
-                }
-                if (dPressed)
-                {
-                    //Console.WriteLine("d pressed");
-                    if (pos < 40)
-                    {
-                        pos++;
-                    }
-                }
-
-                uart.write((uint)(BACKGROUND + ((line + 40) * 40 + pos)), (uint)(0xE0), false);
-
+                framebuffer.clear();
+                framebuffer.scrollBackground(-8);
+                framebuffer.draw(sprite);
+                framebuffer.write();
                 Thread.Sleep(33);
-            } 
+            }
         }
 
         /// <summary>
@@ -131,32 +106,44 @@ namespace MooseBoxGame
             Console.Write("- > Initializing, please wait...");
 
             // Put the screen in the pretty colors
-            framebuffer.setFramePosition(INIT_SCREEN);
+            const int INIT_SPACE = 0x1050;
+            framebuffer.setFramePosition(INIT_SPACE);
+
+            Console.Write("- > Load image data? (y/n)");
+            String input = Console.ReadLine();
+            if (input.Equals("n"))
+            {
+                return;
+            }
 
             // Load loading screen
-            MooseBoxImage loadingScreen = new MooseBoxImage("loading.bmp", uart, LOADING_SCREEN);
+            loadingScreen = new MooseBoxBackgroundImage(uart, "loading.bmp", freeMemoryPointer);
             loadingScreen.write();
+            freeMemoryPointer += loadingScreen.size;
             Console.WriteLine("Done!");
 
             // Display loading screen and music while the rest loads
-            framebuffer.setFramePosition(LOADING_SCREEN);
+            framebuffer.setBackground(loadingScreen);
             backgroundAudio.start();
 
             // Load main screen
             Console.Write("- > Loading title screen...");
-            MooseBoxImage titleScreen = new MooseBoxImage("space_title.bmp", uart, MAIN_MENU);
+            titleScreen = new MooseBoxBackgroundImage(uart, "SPACEDEMO2.bmp", freeMemoryPointer);
+            freeMemoryPointer += titleScreen.size;
             titleScreen.write();
 
-            MooseBoxImage titleScreen2 = new MooseBoxImage("space_title_2.bmp", uart, MAIN_MENU_2);
+            titleScreen2 = new MooseBoxBackgroundImage(uart, "SPACEDEMO3.bmp", freeMemoryPointer);
             titleScreen2.write();
-            Console.WriteLine("Done!");
+            freeMemoryPointer += titleScreen.size;
+            Console.WriteLine("Done!"); 
 
             // Load background image
             Console.Write("- > Loading background image...");
-            MooseBoxImage backgroundImage = new MooseBoxImage("starry_background.bmp", uart, BACKGROUND);
+            backgroundImage = new MooseBoxBackgroundImage(uart, "starry_background.bmp", freeMemoryPointer);
             backgroundImage.write();
+            freeMemoryPointer += backgroundImage.size;
             Console.WriteLine("Done!");
-
+            
             backgroundAudio.stop();
         }
 
@@ -165,9 +152,11 @@ namespace MooseBoxGame
         /// </summary>
         static void displayStartMenu()
         {
+            int menuTimeOut = 0;
             backgroundAudio.start();
+
             // Switch to title screen
-            framebuffer.setFramePosition(MAIN_MENU + 1);
+            framebuffer.setBackground(titleScreen);
             bool title2 = false;
             while (true)
             {
@@ -176,18 +165,24 @@ namespace MooseBoxGame
                 {
                     break;
                 }
+                // or until timeout
+                if (menuTimeOut == 20)
+                {
+                    break;
+                }
 
                 // Make the start text blink
                 title2 = !title2;
                 if (title2)
                 {
-                    framebuffer.setFramePosition(MAIN_MENU_2 + 1);
+                    framebuffer.setBackground(titleScreen2);
                 }
                 else
                 {
-                    framebuffer.setFramePosition(MAIN_MENU + 1);
+                    framebuffer.setBackground(titleScreen);
                 }
 
+                menuTimeOut++;
                 Thread.Sleep(1000);
             }
             backgroundAudio.stop();

@@ -15,7 +15,7 @@ namespace MooseBoxGame
         enum audioTypeEnum { PAF, P2F };
         const String PAF_EXT = ".paf";
         const String P2F_EXT = ".p2f";
-        const int SLEEP_BETWEEN_NOTES = 104;
+        const int SLEEP_BETWEEN_NOTES = 120;
 
         MooseBoxUART uart;
         String[] audioFile;
