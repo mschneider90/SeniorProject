@@ -15,8 +15,7 @@ namespace MooseBoxGame
 
         static MooseBoxUART uart;
         static MooseBoxKeyboard keyboard;
-        static MooseBoxFrame framebuffer_1;
-        static MooseBoxFrame framebuffer_2;
+        static MooseBoxFrame[] framebuffer;
 
         static MooseBoxBackgroundAudio backgroundAudio;
 
@@ -49,8 +48,11 @@ namespace MooseBoxGame
             // Init the background threads
             backgroundAudio = new MooseBoxBackgroundAudio(uart, "audiotest8.paf");
             keyboard = new MooseBoxKeyboard(uart);
-            framebuffer_1 = new MooseBoxFrame(uart, MEMORY_START);
-            framebuffer_2 = new MooseBoxFrame(uart, MEMORY_START);
+
+            // Double buffer intitialization
+            framebuffer = new MooseBoxFrame[2];
+            framebuffer[0] = new MooseBoxFrame(uart, MEMORY_START);
+            framebuffer[1] = new MooseBoxFrame(uart, MEMORY_START);
 
             // Init free memory pointer
             freeMemoryPointer = MEMORY_START;
@@ -90,25 +92,23 @@ namespace MooseBoxGame
         /// </summary>
         static void playGame()
         {
+            // Play combat music
             backgroundAudio.loadSong("audiotest9.p2f");
             backgroundAudio.start();
 
-            framebuffer_1.setBackground(backgroundImage_1);
-            framebuffer_2.setBackground(backgroundImage_2);
-            framebuffer_2.scrollBackground(-4);
+            // Double buffer
+            framebuffer[0].setBackground(backgroundImage_1);
+            framebuffer[1].setBackground(backgroundImage_2);
+            framebuffer[1].scrollBackground(-4); // Offset the second framebuffer to make scrolling smoother
+            int framebuffer_sel = 0;
+
+            // Instantiate game objects
             MooseBoxSprite sprite = new MooseBoxSprite("test_sprite.bmp", new MooseBoxPosition(100, 100));
-            bool framebuffer_sel = true;
+
             while (true)
             {
                 // Clear the screen
-                if (framebuffer_sel)
-                {
-                    framebuffer_1.clear();
-                }
-                else
-                {
-                    framebuffer_2.clear();
-                }
+                framebuffer[framebuffer_sel].clear();
 
                 // Update the sprite position based on player input
                 if (keyboard.isKeyPressed(Key.A))
@@ -127,23 +127,14 @@ namespace MooseBoxGame
                 }
 
                 // Draw the frame
-                if (framebuffer_sel)
-                {
-                    framebuffer_1.scrollBackground(-8);
-                    framebuffer_1.draw(sprite);
-                    framebuffer_1.write(); 
-                    framebuffer_1.showFrame();
-                }
-                else
-                {
-                    framebuffer_2.scrollBackground(-8);
-                    framebuffer_2.draw(sprite);
-                    framebuffer_2.write(); 
-                    framebuffer_2.showFrame();
-                }
+                framebuffer[framebuffer_sel].scrollBackground(-8);
+                framebuffer[framebuffer_sel].draw(sprite);
+                framebuffer[framebuffer_sel].write(); 
+                framebuffer[framebuffer_sel].showFrame();
 
-                framebuffer_sel = !framebuffer_sel;
-                //Thread.Sleep(15);
+                // Switch the framebuffer
+                framebuffer_sel = (framebuffer_sel == 0) ? 1 : 0;
+                Thread.Sleep(5);
             }
         }
 
@@ -171,7 +162,7 @@ namespace MooseBoxGame
             Console.WriteLine("Done!");
 
             // Display loading screen and music while the rest loads
-            framebuffer_1.setBackground(loadingScreen);
+            framebuffer[0].setBackground(loadingScreen);
             //backgroundAudio.start();
 
             // Load main screen
@@ -220,7 +211,7 @@ namespace MooseBoxGame
             backgroundAudio.start();
 
             // Switch to title screen
-            framebuffer_1.setBackground(titleScreen);
+            framebuffer[0].setBackground(titleScreen);
             bool title2 = false;
             while (true)
             {
@@ -239,11 +230,11 @@ namespace MooseBoxGame
                 title2 = !title2;
                 if (title2)
                 {
-                    framebuffer_1.setBackground(titleScreen2);
+                    framebuffer[0].setBackground(titleScreen2);
                 }
                 else
                 {
-                    framebuffer_1.setBackground(titleScreen);
+                    framebuffer[0].setBackground(titleScreen);
                 }
 
                 menuTimeOut++;

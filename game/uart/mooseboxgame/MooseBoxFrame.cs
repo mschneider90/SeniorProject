@@ -113,13 +113,8 @@ namespace MooseBoxGame
                             pix8MSB = background.getPixel8(x-1, y);
                             pix8LSB = sprite.getPixel8(x, y);
 
-                            // Subtract 1 since the pixel address must be word aligned
-                            //pixAddr -= 1;
                             //Console.WriteLine("Calculated pixel address {0} for pixel {1},{2}", pixAddr, x, y);
                         }
-
-                        
-
                         pixels.Add(new MooseBoxPixel(uart, pix8MSB, pix8LSB, pixAddr));
                     }
                     else
@@ -151,7 +146,7 @@ namespace MooseBoxGame
             foreach (MooseBoxPixel pix in pixels)
             {
                 // Get the address of the pixel wrt the background
-                int pixelAddr = (int)(pix.addr - background.address);
+                int pixelAddr = (int)((pix.addr - background.address) * 2);
 
                 // Create a new pixel that has the address of the current pixel but with the color of the background
                 MooseBoxPixel pix_background = new MooseBoxPixel(uart,
