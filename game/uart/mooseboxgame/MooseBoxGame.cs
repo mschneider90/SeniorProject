@@ -193,7 +193,6 @@ namespace MooseBoxGame
                     {
                         ((Collideable)sprite_1).collide();
                         ((Collideable)sprite_2).collide();
-                        Console.WriteLine("Collision detected!");
                         return true;
                     }
                 }
@@ -295,7 +294,7 @@ namespace MooseBoxGame
                     break;
                 }
                 // or until timeout
-                if (menuTimeOut == 20)
+                if (menuTimeOut == 400)
                 {
                     break;
                 }
