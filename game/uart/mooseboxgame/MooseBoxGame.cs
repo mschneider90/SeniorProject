@@ -79,6 +79,7 @@ namespace MooseBoxGame
                     case gameStateEnum.PLAYING:
                         {
                             playGame();
+                            gameState = gameStateEnum.START_MENU;
                             break;
                         }
                     case gameStateEnum.END_MENU:
@@ -107,6 +108,10 @@ namespace MooseBoxGame
             // Random number generator for the asteroid position
             Random rand = new Random();
 
+            // Go back to the main menu after 30 asteroids
+            const int MAX_ASTEROIDS = 30;
+            int asteroidCount = 0;
+
             // Holds all of the game objects for the purposes of collision detection
             List<MooseBoxSprite> gameObjects = new List<MooseBoxSprite>();
 
@@ -121,12 +126,17 @@ namespace MooseBoxGame
             {
                 // Clear the screen
                 framebuffer[framebuffer_sel].clear();
+                if (asteroidCount == MAX_ASTEROIDS)
+                {
+                    break;
+                }
 
                 // Add an asteroid if one isn't already active
                 if (!gameObjects.Contains(asteroid))
                 {
                     asteroid = new MooseBoxAsteroid(new MooseBoxPosition(rand.Next(40, 180), 20), uart, gameObjects);
                     gameObjects.Add(asteroid);
+                    asteroidCount++;
                 }
 
                 // Update the the game objects
@@ -163,8 +173,10 @@ namespace MooseBoxGame
 
                 // Switch the framebuffer
                 framebuffer_sel = (framebuffer_sel == 0) ? 1 : 0;
-                Thread.Sleep(5);
+                //Thread.Sleep(6);
             }
+
+            backgroundAudio.stop();
         }
 
         static bool detectCollision(MooseBoxSprite sprite_1, MooseBoxSprite sprite_2)
@@ -266,7 +278,11 @@ namespace MooseBoxGame
         static void displayStartMenu()
         {
             int menuTimeOut = 0;
+            backgroundAudio.loadSong("audiotest8.paf");
             backgroundAudio.start();
+
+            // Blink the PLAYER START text
+            int playerStartCount = 0;
 
             // Switch to title screen
             framebuffer[0].setBackground(titleScreen);
@@ -285,7 +301,10 @@ namespace MooseBoxGame
                 }
 
                 // Make the start text blink
-                title2 = !title2;
+                if (playerStartCount % 20 == 0)
+                {
+                    title2 = !title2;
+                }
                 if (title2)
                 {
                     framebuffer[0].setBackground(titleScreen2);
@@ -295,8 +314,9 @@ namespace MooseBoxGame
                     framebuffer[0].setBackground(titleScreen);
                 }
 
+                playerStartCount++;
                 menuTimeOut++;
-                Thread.Sleep(1000);
+                Thread.Sleep(50);
             }
             backgroundAudio.stop();
         }
