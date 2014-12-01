@@ -14,10 +14,10 @@ namespace MooseBoxGame
     public class MooseBoxSprite : MooseBoxImage
     {
         // Hold child sprites of this sprite (e.g. missles)
-        List<MooseBoxSprite> childSprites;
+        protected List<MooseBoxSprite> childSprites;
 
-        MooseBoxPosition pos;
-        uint velocity;
+        protected MooseBoxPosition pos;
+        protected uint velocity;
 
         /// <summary>
         /// Creates the sprite
@@ -29,7 +29,7 @@ namespace MooseBoxGame
                               MooseBoxPosition position,
                               uint pixPerMove = 4) : base(bitMapPath)
         {
-            pos = position;
+            pos = new MooseBoxPosition(position.x, position.y);
             velocity = pixPerMove;
 
             childSprites = new List<MooseBoxSprite>();

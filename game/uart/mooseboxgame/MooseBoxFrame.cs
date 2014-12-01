@@ -129,7 +129,7 @@ namespace MooseBoxGame
             foreach (MooseBoxSprite child in childSprites)
             {
                 draw(child);
-            }
+            } 
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ namespace MooseBoxGame
     /// <summary>
     /// Represents the player controlled ship
     /// </summary>
-    class MooseBoxShip : MooseBoxSprite, Inputable
+    class MooseBoxShip : MooseBoxSprite, Inputable, Updateable
     {
         const int START_X = 100;
         const int START_Y = 220;
@@ -49,9 +49,20 @@ namespace MooseBoxGame
                 }
             }
 
-            if (kb.isKeyPressed(Key.ENTER))
+            if (kb.isKeyPressed(Key.ENTER)) // fire a missle
             {
-                // fire a missle
+                childSprites.Add(new MooseBoxMissle(position, childSprites));
+            }
+        }
+
+        public void update()
+        {
+            foreach (MooseBoxSprite child in childSprites.ToList())
+            {
+                if (child is Updateable)
+                {
+                    ((Updateable)child).update();
+                }
             }
         }
     }

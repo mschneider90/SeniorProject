@@ -11,12 +11,20 @@ namespace MooseBoxGame
     /// </summary>
     public class MooseBoxMissle : MooseBoxSprite, Updateable, Collideable
     {
+        const String MISSLE_BMP_PATH = "missle.bmp";
+        const int MISSLE_SPEED = 16;
+
+        List<MooseBoxSprite> sprites;
+
         /// <summary>
         /// Creates a missle at the specified position
         /// </summary>
-        public MooseBoxMissle(MooseBoxPosition position) : base("missle.bmp", position)
+        /// <param name="position">The initial position of the missle</param>
+        /// <param name="spriteList">The child sprite list which contains this missle</param>
+        public MooseBoxMissle(MooseBoxPosition position,
+                              List<MooseBoxSprite> spriteList) : base(MISSLE_BMP_PATH, position, MISSLE_SPEED)
         {
-
+            sprites = spriteList;
         }
 
         /// <summary>
@@ -24,7 +32,11 @@ namespace MooseBoxGame
         /// </summary>
         public void update()
         {
-
+            move(Direction.up);
+            if (position.y < 0)
+            {
+                collide();
+            }
         }
 
         /// <summary>
@@ -32,7 +44,14 @@ namespace MooseBoxGame
         /// </summary>
         public void collide()
         {
-
+            foreach (MooseBoxSprite sprite in sprites)
+            {
+                if (sprite == this)
+                {
+                    sprites.Remove(this);
+                    return;
+                }
+            }
         }
     }
 }
