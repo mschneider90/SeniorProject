@@ -16,6 +16,10 @@ namespace MooseBoxGame
         const uint SHIP_VELOCITY = 8;
         const String SHIP_BMP_PATH = "test_sprite.bmp";
 
+        // Limit the cyclic rate of the cannon
+        const int CYCLIC_RATE = 5;
+        int updateCounter;
+
         MooseBoxKeyboard kb;
 
         /// <summary>
@@ -27,6 +31,7 @@ namespace MooseBoxGame
                                                               SHIP_VELOCITY)
         {
             kb = keyboard;
+            updateCounter = 0;
         }
 
         /// <summary>
@@ -51,7 +56,20 @@ namespace MooseBoxGame
 
             if (kb.isKeyPressed(Key.ENTER)) // fire a missle
             {
-                childSprites.Add(new MooseBoxMissle(position, childSprites));
+                if (updateCounter == 0)
+                {
+                    childSprites.Add(new MooseBoxMissle(position, childSprites));
+                    updateCounter = 1;
+                }
+            }
+
+            if (updateCounter != 0)
+            {
+                updateCounter++;
+                if (updateCounter == CYCLIC_RATE)
+                {
+                    updateCounter = 0;
+                }
             }
         }
 
