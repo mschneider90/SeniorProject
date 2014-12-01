@@ -58,7 +58,7 @@ namespace MooseBoxGame
             {
                 if (updateCounter == 0)
                 {
-                    MooseBoxPosition misslePosition = new MooseBoxPosition(position.x + 3, position.y);
+                    MooseBoxPosition misslePosition = new MooseBoxPosition(position.x + 4, position.y);
                     childSprites.Add(new MooseBoxMissle(misslePosition, childSprites));
                     updateCounter = 1;
                 }
