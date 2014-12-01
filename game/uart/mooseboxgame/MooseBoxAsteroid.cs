@@ -43,7 +43,7 @@ namespace MooseBoxGame
         /// </summary>
         public void collide()
         {
-            foreach (MooseBoxSprite sprite in sprites)
+            foreach (MooseBoxSprite sprite in sprites.ToList())
             {
                 if (sprite == this)
                 {

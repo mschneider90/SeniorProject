@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Globalization;
 using System.Security;
 using System.Threading;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace MooseBoxGame
@@ -126,7 +127,7 @@ namespace MooseBoxGame
                 }
 
                 // Update the the game objects
-                foreach (MooseBoxSprite sprite in gameObjects)
+                foreach (MooseBoxSprite sprite in gameObjects.ToList())
                 {
                     if (sprite is Inputable)
                     {
