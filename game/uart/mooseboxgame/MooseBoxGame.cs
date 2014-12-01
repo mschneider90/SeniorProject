@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Globalization;
 using System.Security;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace MooseBoxGame
 {
@@ -102,33 +103,41 @@ namespace MooseBoxGame
             framebuffer[1].scrollBackground(-4); // Offset the second framebuffer to make scrolling smoother
             int framebuffer_sel = 0;
 
-            // Instantiate game objects
-            MooseBoxSprite sprite = new MooseBoxSprite("test_sprite.bmp", new MooseBoxPosition(100, 100));
+            // Holds all of the game objects for the purposes of collision detection
+            List<MooseBoxSprite> gameObjects = new List<MooseBoxSprite>();
+
+            // Instantiate the game objects
+            MooseBoxShip playerShip = new MooseBoxShip(keyboard);
+            gameObjects.Add(playerShip);
 
             while (true)
             {
                 // Clear the screen
                 framebuffer[framebuffer_sel].clear();
 
-                // Update the sprite position based on player input
-                if (keyboard.isKeyPressed(Key.A))
+                // Update the the game objects
+                foreach (MooseBoxSprite sprite in gameObjects)
                 {
-                    if (sprite.position.x > 0)
+                    if (sprite is Inputable)
                     {
-                        sprite.move(Direction.left);
+                        ((Inputable)sprite).handleInput();
                     }
-                }
-                else if (keyboard.isKeyPressed(Key.D))
-                {
-                    if (sprite.position.x < 320 - sprite.width - 20)
+                    if (sprite is Updateable)
                     {
-                        sprite.move(Direction.right);
+                        ((Updateable)sprite).update();
+                    }
+                    if (sprite is Collideable)
+                    {
+                        // collision detection goes here
                     }
                 }
 
                 // Draw the frame
                 framebuffer[framebuffer_sel].scrollBackground(-8);
-                framebuffer[framebuffer_sel].draw(sprite);
+                foreach (MooseBoxSprite sprite in gameObjects)
+                {
+                    framebuffer[framebuffer_sel].draw(sprite);
+                }
                 framebuffer[framebuffer_sel].write(); 
                 framebuffer[framebuffer_sel].showFrame();
 

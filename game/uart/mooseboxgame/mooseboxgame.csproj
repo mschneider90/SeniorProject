@@ -45,15 +45,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MooseBoxAsteroid.cs" />
     <Compile Include="MooseBoxBackgroundAudio.cs" />
     <Compile Include="MooseBoxBackgroundImage.cs" />
     <Compile Include="MooseBoxFileIO.cs" />
     <Compile Include="MooseBoxFrame.cs" />
     <Compile Include="MooseBoxGame.cs" />
     <Compile Include="MooseBoxImage.cs" />
+    <Compile Include="MooseBoxInterfaces.cs" />
     <Compile Include="MooseBoxKeyboard.cs" />
+    <Compile Include="MooseBoxMissle.cs" />
     <Compile Include="MooseBoxPixel.cs" />
     <Compile Include="MooseBoxPosition.cs" />
+    <Compile Include="MooseBoxShip.cs" />
+    <Compile Include="MooseBoxSoundFX.cs" />
     <Compile Include="MooseBoxSprite.cs" />
     <Compile Include="MooseBoxUART.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

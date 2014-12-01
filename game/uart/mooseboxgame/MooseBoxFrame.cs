@@ -123,6 +123,13 @@ namespace MooseBoxGame
                     }
                 }
             }
+
+            // Draw the sprite's child sprites
+            List<MooseBoxSprite> childSprites = sprite.children;
+            foreach (MooseBoxSprite child in childSprites)
+            {
+                draw(child);
+            }
         }
 
         /// <summary>
