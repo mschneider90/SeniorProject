@@ -124,12 +124,16 @@ namespace MooseBoxGame
 
             while (true)
             {
-                // Clear the screen
-                framebuffer[framebuffer_sel].clear();
+                // Exit after 30 asteroids
                 if (asteroidCount == MAX_ASTEROIDS)
                 {
+                    framebuffer[0].clear();
+                    framebuffer[1].clear();
                     break;
                 }
+
+                // Clear the screen
+                framebuffer[framebuffer_sel].clear();
 
                 // Add an asteroid if one isn't already active
                 if (!gameObjects.Contains(asteroid))
