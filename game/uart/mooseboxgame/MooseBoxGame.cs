@@ -144,7 +144,7 @@ namespace MooseBoxGame
                     {
                         foreach (MooseBoxSprite other in gameObjects.ToList())
                         {
-                            if (other != null) // deleted by previous collision
+                            if (other != null && other != sprite) // deleted by previous collision
                             {
                                 detectCollision(sprite, other);
                             }
@@ -181,7 +181,7 @@ namespace MooseBoxGame
                     {
                         ((Collideable)sprite_1).collide();
                         ((Collideable)sprite_2).collide();
-
+                        Console.WriteLine("Collision detected!");
                         return true;
                     }
                 }
