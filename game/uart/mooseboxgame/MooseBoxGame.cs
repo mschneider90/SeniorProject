@@ -300,7 +300,7 @@ namespace MooseBoxGame
                 // or until timeout
                 if (menuTimeOut == 400)
                 {
-                    break;
+                    //break;
                 }
 
                 // Make the start text blink

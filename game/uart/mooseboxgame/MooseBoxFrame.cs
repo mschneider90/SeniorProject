@@ -63,6 +63,7 @@ namespace MooseBoxGame
         public void setBackground(MooseBoxBackgroundImage backgroundImage)
         {
             background = backgroundImage;
+            backgroundScrollLine = 0;
             setFramePosition(background.address);
         }
 
