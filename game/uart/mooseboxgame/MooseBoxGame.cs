@@ -110,10 +110,20 @@ namespace MooseBoxGame
             MooseBoxShip playerShip = new MooseBoxShip(keyboard);
             gameObjects.Add(playerShip);
 
+            MooseBoxAsteroid asteroid = new MooseBoxAsteroid(new MooseBoxPosition(100, 20), gameObjects);
+            gameObjects.Add(asteroid);
+
             while (true)
             {
                 // Clear the screen
                 framebuffer[framebuffer_sel].clear();
+
+                // Add an asteroid if one isn't already active
+                if (!gameObjects.Contains(asteroid))
+                {
+                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(100, 20), gameObjects);
+                    gameObjects.Add(asteroid);
+                }
 
                 // Update the the game objects
                 foreach (MooseBoxSprite sprite in gameObjects)
@@ -275,6 +285,21 @@ namespace MooseBoxGame
 
             uart = new MooseBoxUART(portName);
             uart.open();
+
+            // Initialize by doing some writes in case the program left the UART hardware in a bad state
+            bool initialized = false;
+            while (!initialized)
+            {
+                try
+                {
+                    uart.write(1050, 0);
+                    initialized = true;
+                }
+                catch (TimeoutException e)
+                {
+                    initialized = false;
+                }
+            }
         }
     }
 }

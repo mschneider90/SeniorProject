@@ -14,7 +14,7 @@ namespace MooseBoxGame
         const int START_X = 100;
         const int START_Y = 220;
         const uint SHIP_VELOCITY = 8;
-        const String SHIP_BMP_PATH = "test_sprite.bmp";
+        const String SHIP_BMP_PATH = "spaceship.bmp";
 
         // Limit the cyclic rate of the cannon
         const int CYCLIC_RATE = 5;
