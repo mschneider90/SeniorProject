@@ -142,7 +142,13 @@ namespace MooseBoxGame
                     }
                     if (sprite is Collideable)
                     {
-                        // collision detection goes here
+                        foreach (MooseBoxSprite other in gameObjects.ToList())
+                        {
+                            if (other != null) // deleted by previous collision
+                            {
+                                detectCollision(sprite, other);
+                            }
+                        }
                     }
                 }
 
@@ -159,6 +165,35 @@ namespace MooseBoxGame
                 framebuffer_sel = (framebuffer_sel == 0) ? 1 : 0;
                 Thread.Sleep(5);
             }
+        }
+
+        static bool detectCollision(MooseBoxSprite sprite_1, MooseBoxSprite sprite_2)
+        {
+            if (!(sprite_1 is Collideable))
+            {
+                return false;
+            }
+            if (sprite_2 is Collideable)
+            {
+                if (Math.Abs(sprite_1.position.x - sprite_2.position.x) <= sprite_1.width)
+                {
+                    if (Math.Abs(sprite_1.position.y - sprite_2.position.y) <= sprite_1.height)
+                    {
+                        ((Collideable)sprite_1).collide();
+                        ((Collideable)sprite_2).collide();
+
+                        return true;
+                    }
+                }
+            }
+            foreach (MooseBoxSprite child in sprite_2.children.ToList())
+            {
+                if (detectCollision(sprite_1, child))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
