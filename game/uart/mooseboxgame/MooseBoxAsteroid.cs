@@ -11,7 +11,7 @@ namespace MooseBoxGame
     /// </summary>
     public class MooseBoxAsteroid : MooseBoxSprite, Updateable, Collideable
     {
-        const int ASTEROID_SPEED = 4;
+        const int ASTEROID_SPEED = 8;
 
         List<MooseBoxSprite> sprites;
 

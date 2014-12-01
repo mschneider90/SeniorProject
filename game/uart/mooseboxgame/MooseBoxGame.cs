@@ -104,6 +104,9 @@ namespace MooseBoxGame
             framebuffer[1].scrollBackground(-4); // Offset the second framebuffer to make scrolling smoother
             int framebuffer_sel = 0;
 
+            // Random number generator for the asteroid position
+            Random rand = new Random();
+
             // Holds all of the game objects for the purposes of collision detection
             List<MooseBoxSprite> gameObjects = new List<MooseBoxSprite>();
 
@@ -122,7 +125,7 @@ namespace MooseBoxGame
                 // Add an asteroid if one isn't already active
                 if (!gameObjects.Contains(asteroid))
                 {
-                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(100, 20), gameObjects);
+                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(rand.Next(40, 180), 20), gameObjects);
                     gameObjects.Add(asteroid);
                 }
 
