@@ -15,15 +15,24 @@ namespace MooseBoxGame
 
         List<MooseBoxSprite> sprites;
 
+        MooseBoxSoundFX sfx;
+        MooseBoxHitFX hit_sfx;
+        MooseBoxMissFX miss_sfx;
+
         /// <summary>
         /// Create the asteroid at the specified position
         /// </summary>
         /// <param name="position">The initial position of the sprite</param>
+        /// <param name="uartObj">The UART to write sound effects to</param>
         /// <param name="spriteList">The list of sprites which contains this asteroid</param>
         public MooseBoxAsteroid(MooseBoxPosition position,
+                                MooseBoxUART uartObj,
                                 List<MooseBoxSprite> spriteList) : base("asteroid.bmp", position, ASTEROID_SPEED)
         {
             sprites = spriteList;
+            hit_sfx = new MooseBoxHitFX(uartObj);
+            miss_sfx = new MooseBoxMissFX(uartObj);
+            sfx = hit_sfx;
         }
 
         /// <summary>
@@ -34,7 +43,9 @@ namespace MooseBoxGame
             move(Direction.down);
             if (position.y > 220)
             {
+                sfx = miss_sfx;
                 collide();
+                sfx = hit_sfx;
             }
         }
 
@@ -50,6 +61,8 @@ namespace MooseBoxGame
                     sprites.Remove(this);
                 }
             }
+
+            sfx.play();
         }
     }
 }

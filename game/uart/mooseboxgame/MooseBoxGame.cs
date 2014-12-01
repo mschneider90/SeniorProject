@@ -111,10 +111,10 @@ namespace MooseBoxGame
             List<MooseBoxSprite> gameObjects = new List<MooseBoxSprite>();
 
             // Instantiate the game objects
-            MooseBoxShip playerShip = new MooseBoxShip(keyboard);
+            MooseBoxShip playerShip = new MooseBoxShip(keyboard, uart);
             gameObjects.Add(playerShip);
 
-            MooseBoxAsteroid asteroid = new MooseBoxAsteroid(new MooseBoxPosition(100, 20), gameObjects);
+            MooseBoxAsteroid asteroid = new MooseBoxAsteroid(new MooseBoxPosition(100, 20), uart, gameObjects);
             gameObjects.Add(asteroid);
 
             while (true)
@@ -125,7 +125,7 @@ namespace MooseBoxGame
                 // Add an asteroid if one isn't already active
                 if (!gameObjects.Contains(asteroid))
                 {
-                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(rand.Next(40, 180), 20), gameObjects);
+                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(rand.Next(40, 180), 20), uart, gameObjects);
                     gameObjects.Add(asteroid);
                 }
 

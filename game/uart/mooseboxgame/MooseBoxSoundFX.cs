@@ -11,7 +11,7 @@ namespace MooseBoxGame
     /// </summary>
     public abstract class MooseBoxSoundFX
     {
-        MooseBoxUART uart;
+        protected MooseBoxUART uart;
 
         /// <summary>
         /// Creates the sound effect
@@ -26,5 +26,46 @@ namespace MooseBoxGame
         /// Plays the sound effect
         /// </summary>
         public abstract void play();
+    }
+
+    public class MooseBoxFireFX : MooseBoxSoundFX
+    {
+        public MooseBoxFireFX(MooseBoxUART uartObj) : base(uartObj)
+        {
+
+        }
+
+        public override void play()
+        {
+            uart.write(0, 0x9f);
+        }
+    }
+
+    public class MooseBoxHitFX : MooseBoxSoundFX
+    {
+        public MooseBoxHitFX(MooseBoxUART uartObj)
+            : base(uartObj)
+        {
+
+        }
+
+        public override void play()
+        {
+            uart.write(6, 0xac9);
+        }
+    }
+
+    public class MooseBoxMissFX : MooseBoxSoundFX
+    {
+        public MooseBoxMissFX(MooseBoxUART uartObj)
+            : base(uartObj)
+        {
+
+        }
+
+        public override void play()
+        {
+            uart.write(0, 0xbc9);
+        }
     }
 }

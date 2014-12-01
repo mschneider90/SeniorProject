@@ -22,16 +22,20 @@ namespace MooseBoxGame
 
         MooseBoxKeyboard kb;
 
+        MooseBoxFireFX fire_sfx;
+
         /// <summary>
         /// Creates a new ship
         /// </summary>
         /// <param name="keyboard">The keyboard to read input from</param>
-        public MooseBoxShip(MooseBoxKeyboard keyboard) : base(SHIP_BMP_PATH,
+        public MooseBoxShip(MooseBoxKeyboard keyboard, MooseBoxUART uartObj) : base(SHIP_BMP_PATH,
                                                               new MooseBoxPosition(START_X,START_Y),
                                                               SHIP_VELOCITY)
         {
             kb = keyboard;
             updateCounter = 0;
+
+            fire_sfx = new MooseBoxFireFX(uartObj);
         }
 
         /// <summary>
@@ -60,6 +64,7 @@ namespace MooseBoxGame
                 {
                     MooseBoxPosition misslePosition = new MooseBoxPosition(position.x + 5, position.y);
                     childSprites.Add(new MooseBoxMissle(misslePosition, childSprites));
+                    fire_sfx.play();
                     updateCounter = 1;
                 }
             }
