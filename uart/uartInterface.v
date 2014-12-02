@@ -434,10 +434,15 @@ always@(*) begin
             bus_req <= 0;
             if (!busy) begin
                 byte_count_en <= 1;
-                data_tx_valid <= 1;
             end
             else begin
                 byte_count_en <= 0;
+            end
+            
+            if (!busy && byteCount < 4) begin
+                data_tx_valid <= 1;
+            end
+            else begin
                 data_tx_valid <= 0;
             end
             writeTransfer <= 0;
