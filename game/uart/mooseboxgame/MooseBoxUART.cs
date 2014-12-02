@@ -127,13 +127,13 @@ namespace MooseBoxGame
                     }
                     else
                     {
-                        Console.WriteLine("- WRITE > ERROR: Verification read did not match");
+                        //Console.WriteLine("- WRITE > ERROR: Verification read did not match");
                         return false;
                     }
                 }
                 catch (TimeoutException)
                 {
-                    Console.WriteLine("- WRITE > ERROR: Verification read timed out");
+                    //Console.WriteLine("- WRITE > ERROR: Verification read timed out");
                     return false;
                 }
             }
