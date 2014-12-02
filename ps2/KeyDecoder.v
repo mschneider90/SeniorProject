@@ -38,9 +38,9 @@ assign s_we = (key_code == PS2_S && en)? 1 : 0;
 assign d_we = (key_code == PS2_D && en)? 1 : 0;
 
 assign kp7_we = (key_code == PS2_KP7 && en)? 1 : 0;
-assign kp8_we = (key_code == PS2_KP7 && en)? 1 : 0;
-assign kp4_we = (key_code == PS2_KP7 && en)? 1 : 0;
-assign kp5_we = (key_code == PS2_KP7 && en)? 1 : 0;
-assign kp6_we = (key_code == PS2_KP7 && en)? 1 : 0;
+assign kp8_we = (key_code == PS2_KP8 && en)? 1 : 0;
+assign kp4_we = (key_code == PS2_KP4 && en)? 1 : 0;
+assign kp5_we = (key_code == PS2_KP5 && en)? 1 : 0;
+assign kp6_we = (key_code == PS2_KP6 && en)? 1 : 0;
 
 endmodule
