@@ -28,6 +28,7 @@ namespace MooseBoxGame
         /// Creates a new ship
         /// </summary>
         /// <param name="keyboard">The keyboard to read input from</param>
+        /// 
         public MooseBoxShip(MooseBoxKeyboard keyboard, MooseBoxUART uartObj) : base(SHIP_BMP_PATH,
                                                               new MooseBoxPosition(START_X,START_Y),
                                                               SHIP_VELOCITY)
