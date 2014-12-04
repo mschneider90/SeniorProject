@@ -157,7 +157,14 @@ always@(*) begin
                 end
         end
         STATE_FINISH: begin
-            nextState <= STATE_IDLE;
+            if(pix_addr[4:0] != 31)
+                begin
+                    nextState <= STATE_FINISH;
+                end
+            else
+                begin
+                    nextState <= STATE_IDLE; 
+                end
         end
         default: begin
             nextState <= STATE_IDLE;
@@ -206,7 +213,12 @@ always@(*) begin
             burst_count_reset <= 0;
         end
         STATE_FINISH: begin
-            bus_req <= 0;
+            if(pix_addr[4:0] == 31) begin
+                bus_req <= 0;
+            end
+            else begin
+                bus_req <= 1;
+            end
             buf_we <= 0;
             last_addr_we <= 0;
             switch_buf <= 0;
