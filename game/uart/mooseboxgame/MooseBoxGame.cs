@@ -17,9 +17,6 @@ namespace MooseBoxGame
         const String BACKGROUND = "starry_background_short.bmp";
         const String MAIN_MENU_SONG = "main_menu_song.paf";
         const String GAME_SONG = "game_song.p2f";
-        const String SPACESHIP = "spaceship.bmp";
-        const String ASTEROID = "asteroid.bmp";
-        const String MISSLE = "missle.bmp";
 
         enum gameStateEnum { LOADING, START_MENU, PLAYING, END_MENU };
 
@@ -58,7 +55,7 @@ namespace MooseBoxGame
             }
 
             // Init the background threads
-            backgroundAudio = new MooseBoxBackgroundAudio(uart, "audiotest8.paf");
+            backgroundAudio = new MooseBoxBackgroundAudio(uart, "main_menu_song.paf");
             keyboard = new MooseBoxKeyboard(uart);
 
             // Double buffer intitialization
@@ -112,7 +109,7 @@ namespace MooseBoxGame
             // Double buffer
             framebuffer[0].setBackground(backgroundImage_1);
             framebuffer[1].setBackground(backgroundImage_2);
-            framebuffer[1].scrollBackground(-4); // Offset the second framebuffer to make scrolling smoother
+            framebuffer[1].scrollBackground(-1); // Offset the second framebuffer to make scrolling smoother
             int framebuffer_sel = 0;
 
             // Random number generator for the asteroid position
@@ -148,7 +145,7 @@ namespace MooseBoxGame
                 // Add an asteroid if one isn't already active
                 if (!gameObjects.Contains(asteroid))
                 {
-                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(rand.Next(40, 180), 20), uart, gameObjects);
+                    asteroid = new MooseBoxAsteroid(new MooseBoxPosition(rand.Next(40, 180), 10), uart, gameObjects);
                     gameObjects.Add(asteroid);
                     asteroidCount++;
                 }
@@ -177,7 +174,7 @@ namespace MooseBoxGame
                 }
 
                 // Draw the frame
-                framebuffer[framebuffer_sel].scrollBackground(-8);
+                framebuffer[framebuffer_sel].scrollBackground(-2);
                 foreach (MooseBoxSprite sprite in gameObjects)
                 {
                     framebuffer[framebuffer_sel].draw(sprite);
@@ -303,14 +300,14 @@ namespace MooseBoxGame
             while (true)
             {
                 // wait until the SPACE key is pressed
-                if (keyboard.isKeyPressed(Key.SPACE))
+                if (keyboard.isKeyPressed(Key.ENTER))
                 {
                     break;
                 }
                 // or until timeout
                 if (menuTimeOut == 400)
                 {
-                    //break;
+                    break;
                 }
 
                 // Make the start text blink

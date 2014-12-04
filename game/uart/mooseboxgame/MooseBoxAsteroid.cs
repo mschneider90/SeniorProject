@@ -11,7 +11,9 @@ namespace MooseBoxGame
     /// </summary>
     public class MooseBoxAsteroid : MooseBoxSprite, Updateable, Collideable
     {
-        const int ASTEROID_SPEED = 8;
+        const int ASTEROID_SPEED = 6;
+
+        const string ASTEROID_BMP_PATH = "asteroid.bmp";
 
         List<MooseBoxSprite> sprites;
 
@@ -27,7 +29,7 @@ namespace MooseBoxGame
         /// <param name="spriteList">The list of sprites which contains this asteroid</param>
         public MooseBoxAsteroid(MooseBoxPosition position,
                                 MooseBoxUART uartObj,
-                                List<MooseBoxSprite> spriteList) : base("asteroid.bmp", position, ASTEROID_SPEED)
+                                List<MooseBoxSprite> spriteList) : base(ASTEROID_BMP_PATH, position, ASTEROID_SPEED)
         {
             sprites = spriteList;
             hit_sfx = new MooseBoxHitFX(uartObj);

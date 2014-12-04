@@ -12,8 +12,8 @@ namespace MooseBoxGame
     class MooseBoxShip : MooseBoxSprite, Inputable, Updateable
     {
         const int START_X = 100;
-        const int START_Y = 220;
-        const uint SHIP_VELOCITY = 8;
+        const int START_Y = 225;
+        const uint SHIP_VELOCITY = 6;
         const String SHIP_BMP_PATH = "spaceship.bmp";
 
         // Limit the cyclic rate of the cannon
