@@ -106,7 +106,7 @@ namespace MooseBoxGame
         static void playGame()
         {
             // Play combat music
-            backgroundAudio.loadSong("audiotest9.p2f");
+            backgroundAudio.loadSong(GAME_SONG);
             backgroundAudio.start();
 
             // Double buffer
@@ -236,7 +236,7 @@ namespace MooseBoxGame
 
             // Load loading screen
             Console.Write("- > Initializing, please wait...");
-            loadingScreen = new MooseBoxBackgroundImage(uart, "loading.bmp", freeMemoryPointer);
+            loadingScreen = new MooseBoxBackgroundImage(uart, LOADING_SCREEN, freeMemoryPointer);
             if (load)
             {
                 loadingScreen.write();
@@ -250,14 +250,14 @@ namespace MooseBoxGame
 
             // Load main screen
             Console.Write("- > Loading title screen...");
-            titleScreen = new MooseBoxBackgroundImage(uart, "space5.bmp", freeMemoryPointer);
+            titleScreen = new MooseBoxBackgroundImage(uart, MAIN_MENU_A, freeMemoryPointer);
             freeMemoryPointer += titleScreen.size;
             if (load)
             {
                 titleScreen.write();
             }
 
-            titleScreen2 = new MooseBoxBackgroundImage(uart, "space5b.bmp", freeMemoryPointer);
+            titleScreen2 = new MooseBoxBackgroundImage(uart, MAIN_MENU_B, freeMemoryPointer);
             if (load)
             {
                 titleScreen2.write();
@@ -267,14 +267,14 @@ namespace MooseBoxGame
 
             // Load background image
             Console.Write("- > Loading background image...");
-            backgroundImage_1 = new MooseBoxBackgroundImage(uart, "starry_background_short.bmp", freeMemoryPointer);
+            backgroundImage_1 = new MooseBoxBackgroundImage(uart, BACKGROUND, freeMemoryPointer);
             if (load)
             {
                 backgroundImage_1.write();
             }
             freeMemoryPointer += backgroundImage_1.size;
 
-            backgroundImage_2 = new MooseBoxBackgroundImage(uart, "starry_background_short.bmp", freeMemoryPointer);
+            backgroundImage_2 = new MooseBoxBackgroundImage(uart, BACKGROUND, freeMemoryPointer);
             if (load)
             {
                 backgroundImage_2.write();
@@ -291,7 +291,7 @@ namespace MooseBoxGame
         static void displayStartMenu()
         {
             int menuTimeOut = 0;
-            backgroundAudio.loadSong("audiotest8.paf");
+            backgroundAudio.loadSong(MAIN_MENU_SONG);
             backgroundAudio.start();
 
             // Blink the PLAYER START text
