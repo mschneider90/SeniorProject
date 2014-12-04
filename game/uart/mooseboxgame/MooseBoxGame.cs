@@ -364,7 +364,7 @@ namespace MooseBoxGame
             {
                 try
                 {
-                    uart.write(1050, 0, true);
+                    uart.write(1050, 0);
                     initialized = true;
                 }
                 catch (TimeoutException e)

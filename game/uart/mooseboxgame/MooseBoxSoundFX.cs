@@ -37,7 +37,7 @@ namespace MooseBoxGame
 
         public override void play()
         {
-            uart.write(0, 0x9f);
+            uart.write(0, 0xdf);
         }
     }
 

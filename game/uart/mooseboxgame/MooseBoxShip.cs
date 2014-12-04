@@ -59,7 +59,7 @@ namespace MooseBoxGame
                 }
             }
 
-            if (kb.isKeyPressed(Key.ENTER)) // fire a missle
+            if (kb.isKeyPressed(Key.SPACE)) // fire a missle
             {
                 if (updateCounter == 0)
                 {
