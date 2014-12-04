@@ -13,11 +13,11 @@ namespace MooseBoxGame
     {
         const int START_X = 100;
         const int START_Y = 225;
-        const uint SHIP_VELOCITY = 6;
+        const uint SHIP_VELOCITY = 4;
         const String SHIP_BMP_PATH = "spaceship.bmp";
 
         // Limit the cyclic rate of the cannon
-        const int CYCLIC_RATE = 5;
+        const int CYCLIC_RATE = 10;
         int updateCounter;
 
         MooseBoxKeyboard kb;
@@ -46,7 +46,7 @@ namespace MooseBoxGame
         {
             if (kb.isKeyPressed(Key.A)) // move left
             {
-                if (position.x > 0)
+                if (position.x > 5)
                 {
                     move(Direction.left);
                 }

@@ -12,7 +12,7 @@ namespace MooseBoxGame
     public class MooseBoxMissle : MooseBoxSprite, Updateable, Collideable
     {
         const String MISSLE_BMP_PATH = "missle.bmp";
-        const int MISSLE_SPEED = 8;
+        const int MISSLE_SPEED = 6;
 
         List<MooseBoxSprite> sprites;
 

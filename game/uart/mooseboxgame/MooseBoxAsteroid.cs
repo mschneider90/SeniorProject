@@ -11,7 +11,7 @@ namespace MooseBoxGame
     /// </summary>
     public class MooseBoxAsteroid : MooseBoxSprite, Updateable, Collideable
     {
-        const int ASTEROID_SPEED = 6;
+        const int ASTEROID_SPEED = 4;
 
         const string ASTEROID_BMP_PATH = "asteroid.bmp";
 

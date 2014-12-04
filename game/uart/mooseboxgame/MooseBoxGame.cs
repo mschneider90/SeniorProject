@@ -41,6 +41,9 @@ namespace MooseBoxGame
         // The beginning of the main memory space
         const uint MEMORY_START = 0x1050;
 
+        // Frame limiter
+        //Stopwatch timer;
+
         public static void Main()
         {
             try
@@ -307,7 +310,7 @@ namespace MooseBoxGame
                 // or until timeout
                 if (menuTimeOut == 400)
                 {
-                    break;
+                    //break;
                 }
 
                 // Make the start text blink
