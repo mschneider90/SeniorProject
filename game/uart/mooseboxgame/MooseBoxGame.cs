@@ -11,15 +11,15 @@ namespace MooseBoxGame
 {
     class MooseBoxGame
     {
-        static const String LOADING_SCREEN = "loading.bmp";
-        static const String MAIN_MENU_A = "space_title_a.bmp";
-        static const String MAIN_MENU_B = "space_title_b.bmp";
-        static const String BACKGROUND = "starry_background_short.bmp";
-        static const String MAIN_MENU_SONG = "main_menu_song.paf";
-        static const String GAME_SONG = "game_song.p2f";
-        static const String SPACESHIP = "spaceship.bmp";
-        static const String ASTEROID = "asteroid.bmp";
-        static const String MISSLE = "missle.bmp";
+        const String LOADING_SCREEN = "loading.bmp";
+        const String MAIN_MENU_A = "space_title_a.bmp";
+        const String MAIN_MENU_B = "space_title_b.bmp";
+        const String BACKGROUND = "starry_background_short.bmp";
+        const String MAIN_MENU_SONG = "main_menu_song.paf";
+        const String GAME_SONG = "game_song.p2f";
+        const String SPACESHIP = "spaceship.bmp";
+        const String ASTEROID = "asteroid.bmp";
+        const String MISSLE = "missle.bmp";
 
         enum gameStateEnum { LOADING, START_MENU, PLAYING, END_MENU };
 
