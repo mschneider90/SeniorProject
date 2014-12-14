@@ -15,33 +15,28 @@ module VGABusInterface(input clk,
                        output buf1_we,
                        output [3:0] buf_read_addr,
                        output [3:0] buf_write_addr,
+                       output reg [7:0] ctrl_out,
 					   output idle,
                        output [31:0] bus_out);
                    
 localparam RES_X = 320;
 localparam RES_Y = 240;
-
+localparam COL_PER_LINE = 800;  
 localparam BASE_ADDR = 32'h00001050;
 localparam BURST_LENGTH = 16;
 //localparam BKGND_WIDTH = 2560; //this is simply the horizontal resolution * 8
+
+//assign ctrl_out = 8'b00010000; // burst length 16 and read
+//assign ctrl_out = 8'b00010010; // burst length 16 and write
+
                        
 wire [31:0] pix_addr;  // For selecting each byte
 assign buf_read_addr[3:0] = pix_addr[4:1];
-
-/* //left this unmodified from 80*240 mode 
-assign pix_addr = (row >> 1) * RES_X + (col) >> 3); //multiplies row >> 1 by 160 //((((row >> 1) << 2) + (row >> 1)) << 5 ) + (col >> 2);
-
-wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
-assign pix_addr_reduced = pix_addr >> 1;
-
-assign bus_out =  (base_addr + pix_addr_reduced); //(( BASE_ADDR + pix_addr_reduced >= 32'h0000391F)) ? BASE_ADDR : BASE_ADDR + pix_addr_reduced;        //{BASE_ADDR + pix_addr_reduced};
-*/
 
 
 assign pix_addr = (row >> 1) * RES_X + (col >> 1); // row >> 1: 480 >> 1 = 240 rows. col >>1: 640 >> 1 = 320 columns. 
 
 wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
-//assign pix_addr_reduced = pix_addr >> 1;
 assign pix_addr_reduced = pix_addr >> 5; //with bigger buffers, we access the buss less. 
                                          //16 pix buffers mean we only get every 16th PIXEL address, or every 8th PHYSICAL (16-bit/word) address.
                                          //32 pix buffers mean we get every 32nd PIXEL address, or every 16th physical address
@@ -90,7 +85,8 @@ assign buf1_we = ((buf_sel != 1) && buf_we)? 1 : 0;
 
 assign buf_byte_sel = ~pix_addr[0]; // The LSb of the pixel address selects between the higher and lower byte of the buffer
 //assign buf_sel = pix_addr[1];
-assign buf_sel = pix_addr[5]; //pix_addr[4] switches the buffer every 16 pixels
+assign buf_sel = pix_addr[5]; 
+//pix_addr[4] switches the buffer every 16 pixels
 //pix_addr[5] switches the buffer every 32 pixels 
 
 localparam STATE_IDLE = 0;
@@ -156,8 +152,15 @@ always@(*) begin
                     nextState <= STATE_READ_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
                 end
         end
-        STATE_FINISH: begin
-            nextState <= STATE_IDLE;
+        STATE_FINISH: begin //do we even need this state? we can just go back to idle 
+          //  if(~pix_addr[3])
+         //       begin
+          //          nextState <= STATE_FINISH;
+         //       end
+         //   else
+          //      begin
+                    nextState <= STATE_IDLE; 
+          //      end
         end
         default: begin
             nextState <= STATE_IDLE;
