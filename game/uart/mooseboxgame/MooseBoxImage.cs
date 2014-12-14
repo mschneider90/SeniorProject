@@ -22,9 +22,14 @@ namespace MooseBoxGame
         /// Constructs the object from a bitmap file
         /// </summary>
         /// <param name="bitMapPath">The path to the bitmap file</param>
+        /// <exception cref="ArgumentException">The width of the image is not divisible by 2</exception>
         public MooseBoxImage(String bitMapPath)
         {
             bmp = new Bitmap(bitMapPath);
+            if (bmp.Width % 2 != 0) // Only support images with even width
+            {
+                throw new ArgumentException("Image must have an even width");
+            }
             convertToRGB();
         }
 

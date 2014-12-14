@@ -33,7 +33,7 @@ namespace MooseboxSerial
             String portName = Console.ReadLine();
 
             // UART settings. These must match the UART transceiver module (uart.v)
-            int baudRate = 115200;
+            int baudRate = 921600;
             Parity parityBits = Parity.None;
             int dataBits = 8;
             StopBits stopBits = StopBits.One;

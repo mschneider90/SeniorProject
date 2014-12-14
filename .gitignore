@@ -45,6 +45,8 @@
 #Game executables and images
 !/game/uart/*/bin/*/*.exe
 !/game/uart/*/bin/*/*.bmp
+!/release/*/*.bmp
+!/release/*/*.exe
 
 #asm
 !*.asm

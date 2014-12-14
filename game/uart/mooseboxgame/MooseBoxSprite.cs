@@ -13,46 +13,78 @@ namespace MooseBoxGame
     /// </summary>
     public class MooseBoxSprite : MooseBoxImage
     {
-        MooseBoxPosition pos;
+        // Hold child sprites of this sprite (e.g. missles)
+        protected List<MooseBoxSprite> childSprites;
 
+        protected MooseBoxPosition pos;
+        protected uint velocity;
+
+        /// <summary>
+        /// Creates the sprite
+        /// </summary>
+        /// <param name="bitMapPath">The path to the bitmap file</param>
+        /// <param name="position">The initial position of the sprite</param>
+        /// <param name="pixPerMove">The speed at which to move the sprite</param>
         public MooseBoxSprite(String bitMapPath,
-                              MooseBoxPosition position) : base(bitMapPath)
+                              MooseBoxPosition position,
+                              uint pixPerMove = 4) : base(bitMapPath)
         {
-            pos = position;
+            pos = new MooseBoxPosition(position.x, position.y);
+            velocity = pixPerMove;
+
+            childSprites = new List<MooseBoxSprite>();
         }
 
+        /// <summary>
+        /// Moves the sprite
+        /// </summary>
+        /// <param name="direction">The direction to move</param>
         public void move(Direction direction)
         {
             switch (direction)
             {
                 case Direction.up:
                     {
-                        pos.y -= 4;
+                        pos.y -= (int)velocity;
                         break;
                     }
                 case Direction.down:
                     {
-                        pos.y += 4;
+                        pos.y += (int)velocity;
                         break;
                     }
                 case Direction.right:
                     {
-                        pos.x += 4;
+                        pos.x += (int)velocity;
                         break;
                     }
                 case Direction.left:
                     {
-                        pos.x -= 4;
+                        pos.x -= (int)velocity;
                         break;
                     }
             }
         }
 
+        /// <summary>
+        /// Gets the position of the sprite
+        /// </summary>
         public MooseBoxPosition position
         {
             get
             {
                 return pos;
+            }
+        }
+
+        /// <summary>
+        /// Get the list of child sprites
+        /// </summary>
+        public List<MooseBoxSprite> children
+        {
+            get
+            {
+                return childSprites;
             }
         }
     }

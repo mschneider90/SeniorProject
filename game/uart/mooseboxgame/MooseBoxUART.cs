@@ -14,7 +14,8 @@ namespace MooseBoxGame
     public class MooseBoxUART
     {
         // UART settings. These must match the UART transceiver module (uart.v)
-        const int BAUD_RATE = 115200;
+        //const int BAUD_RATE = 115200;
+        const int BAUD_RATE = 921600;
         Parity PARITY_BITS = Parity.None;
         int DATA_BITS = 8;
         StopBits STOP_BITS = StopBits.One;
@@ -127,13 +128,13 @@ namespace MooseBoxGame
                     }
                     else
                     {
-                        Console.WriteLine("- WRITE > ERROR: Verification read did not match");
+                        //Console.WriteLine("- WRITE > ERROR: Verification read did not match");
                         return false;
                     }
                 }
                 catch (TimeoutException)
                 {
-                    Console.WriteLine("- WRITE > ERROR: Verification read timed out");
+                    //Console.WriteLine("- WRITE > ERROR: Verification read timed out");
                     return false;
                 }
             }
