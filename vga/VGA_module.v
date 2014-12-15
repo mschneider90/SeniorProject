@@ -16,7 +16,7 @@ module VGA_module #(parameter COLOR_DEPTH = 8,
                     output[CTRL_WIDTH-1:0] ctrl_out,
                     output[BUS_WIDTH-1:0] bus_out);
                     
-//assign ctrl_out = 8'b00010000; // burst length 16 and read
+assign ctrl_out = 8'b00010000; // burst length 16 and read
 
 wire output_valid;
 wire [COLOR_DEPTH-1:0] pixel;
@@ -105,7 +105,7 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .col(col),
                 .reset(reset),
                 .vga_output_valid(output_valid),
-					 .base_addr(framebuffer_addr),
+			    .base_addr(framebuffer_addr),
                 .bus_ack(bus_master_ack),
                 .bus_req(bus_req),
                 .bus_wait(ctrl_in[0]),
@@ -116,7 +116,7 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .buf_read_addr(buffer_read_addr[3:0]),
                 .buf_write_addr(buffer_write_addr[3:0]),
                 .bus_out(bus_out),
-                .ctrl_out(ctrl_out),
+                //.ctrl_out(ctrl_out),
 				.idle(master_idle));
 					 
 //vga framebuffer select register

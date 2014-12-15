@@ -70,9 +70,10 @@ parameter RW_LATENCY_CYCLES = 2;
 reg cycle_count_en;
 wire cycle_count_geq; //ASSERT if cycle_counter greater than or equal to RW_LATENCY_CYCLES - 1, DEASSERT otherwise
 wire[1:0] cycle_counter;
+reg cycle_counter_reset; 
 count_reg c_counter(.count_load(0),
                     .en(cycle_count_en),
-                    .rst(reset),
+                    .rst(cycle_counter_reset),
                     .clk(clk25MHz),
                     .count(cycle_counter),
                     .load(DEASSERT));
@@ -134,7 +135,14 @@ count_regp #(.D_WIDTH(A_WIDTH)) maddrReg
        .count(addr_reg_out)
        ); 
 
-assign maddr = addr_reg_out;  // need to change maddr to a reg to enable page mode reads. it should be incremented in the vga controller as well as here. //nvm 
+assign maddr = addr_reg_out;  //the micron controller should determine when addr_reg[4] changes during a page-mode read and put in a one-cycle wait. 
+
+reg old_addr4;
+wire [5:0] next_burst_addr;
+assign next_burst_addr = addr_reg_out[5:0] + 1;
+
+//assign old_addr4 = addr_reg_out[4];
+
 
 //DEBUG
 assign debug_out = addr_reg_out[7:0];
@@ -207,7 +215,14 @@ always@(*) begin
             end
             else 
             begin
-                nextState <= STATE_READ_PAGE_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
+                if(addr_reg_out[4] != next_burst_addr[4])
+                begin 
+                    nextState <=  STATE_READ_PAGE_WAIT; //if we detect a change at addr[4], we need to wait a cycle for the memory to respond (tAA = 70ns. @25MHz, 1 cycle = 40ns) 
+                end
+                else begin
+                    nextState <= STATE_READ_PAGE_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
+                end
+            
             end
             //nextState <= STATE_FINISH; //TODO
         end
@@ -257,6 +272,8 @@ always@(*) begin
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
+            cycle_counter_reset <= ASSERT;
+            old_addr4 <= addr_reg_out[4]; //paul's shit
         end
         STATE_IDLE: begin
             //Outputs
@@ -276,6 +293,8 @@ always@(*) begin
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= ASSERT;
+            cycle_counter_reset <= ASSERT;
+            old_addr4 <= addr_reg_out[4];
         end
         STATE_READ_SINGLE_WAIT: begin
             //Outputs
@@ -301,10 +320,12 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            cycle_counter_reset <= DEASSERT;
             maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
+            old_addr4 <= addr_reg_out[4];
         end
         STATE_READ_SINGLE_DATA: begin //Data valid
             //Outputs
@@ -320,10 +341,12 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            cycle_counter_reset <= DEASSERT;
             maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
+            old_addr4 <= addr_reg_out[4]; 
         end
         STATE_READ_PAGE_WAIT: begin
             //Outputs
@@ -347,8 +370,11 @@ always@(*) begin
             mub_L <= ASSERT_L;
             addr_reset <= DEASSERT;
             
+            old_addr4 <= addr_reg_out[4]; //this is set to keep track of bit #4 in addr_reg. hardware limitations do not allow page mode reads across this boundary. 
+            
             //Local signals
             reset <= DEASSERT;
+            cycle_counter_reset <= DEASSERT;
             maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
@@ -367,8 +393,11 @@ always@(*) begin
             addr_reset <= DEASSERT;
             
             //Local signals
+            //old_addr4 <= next_burst_addr[4];
+            old_addr4 <= old_addr4;
             reset <= DEASSERT;
-            maddrreg_count_enable <= ASSERT;
+            cycle_counter_reset <= ASSERT; // the cycle counter is reset during a page mode read in the case that the address requested crosses a page boundary. 
+            maddrreg_count_enable <= ASSERT;  // this forces the hardware to wait for the memory to refresh before continuing the page read. 
             cycle_count_en <= DEASSERT;
             burst_count_en <= ASSERT;
             addr_write_en <= DEASSERT;
@@ -398,6 +427,8 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            old_addr4 <= addr_reg_out[4]; 
+            cycle_counter_reset <= DEASSERT;
             maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= ASSERT;
             burst_count_en <= DEASSERT;
@@ -417,10 +448,33 @@ always@(*) begin
             
             //Local signals
             reset <= DEASSERT;
+            old_addr4 <= addr_reg_out[4]; 
+            cycle_counter_reset <= DEASSERT;
             maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;
             addr_write_en <= DEASSERT;
+        end
+       STATE_FINISH: begin
+            //Outputs
+            mwe_L <= DEASSERT_L;
+            madv_L <= DEASSERT_L;
+            mce_L <= DEASSERT_L;
+            bwait_en <= DEASSERT;
+            mcre <= DEASSERT;
+            moe_L <= DEASSERT_L;
+            mlb_L <= DEASSERT_L;
+            mub_L <= DEASSERT_L;
+            
+            //Local signals
+            reset <= ASSERT;
+            addr_reset <= ASSERT; // is this appropriate when using page mode reads? 
+            maddrreg_count_enable <= DEASSERT;
+            cycle_count_en <= DEASSERT;
+            burst_count_en <= DEASSERT;
+            addr_write_en <= DEASSERT;
+            cycle_counter_reset <= ASSERT;
+            old_addr4 <= addr_reg_out[4]; //paul's shit
         end
         default: begin
             //Outputs
@@ -436,6 +490,8 @@ always@(*) begin
             
             //Local signals
             reset <= ASSERT;
+            old_addr4 <= addr_reg_out[4]; 
+            cycle_counter_reset <= ASSERT;
             maddrreg_count_enable <= DEASSERT;
             cycle_count_en <= DEASSERT;
             burst_count_en <= DEASSERT;

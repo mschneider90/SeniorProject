@@ -15,13 +15,13 @@ module VGABusInterface(input clk,
                        output buf1_we,
                        output [3:0] buf_read_addr,
                        output [3:0] buf_write_addr,
-                       output reg [7:0] ctrl_out,
+                       //output reg [7:0] ctrl_out,
 					   output idle,
                        output [31:0] bus_out);
                    
 localparam RES_X = 320;
 localparam RES_Y = 240;
-localparam COL_PER_LINE = 800;  
+localparam COL_PER_LINE = 800;
 localparam BASE_ADDR = 32'h00001050;
 localparam BURST_LENGTH = 16;
 //localparam BKGND_WIDTH = 2560; //this is simply the horizontal resolution * 8
@@ -145,11 +145,23 @@ always@(*) begin
         STATE_READ_DATA: begin
             if(burst_count_geq)  //if we have reached the burst count signal condition,
                 begin
-                    nextState <= STATE_FINISH; //we are done with the page read. 
+                    if (bus_wait) begin 
+                        nextState <= STATE_WAIT; //technically this should be state_wait. 
+                    end
+                    else
+                    begin
+                        nextState <= STATE_FINISH; //we are done with the page read. 
+                    end
                 end
             else 
                 begin
-                    nextState <= STATE_READ_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
+                    if (bus_wait) begin
+                        nextState <= STATE_WAIT; //the sdram controller may interrupt the vga controller in order to initate a new page-aligned read. this should only have a 1-cycle latency at most. 
+                        //then we subtract 1 from the burst counter also to make up for a bad read. 
+                    end
+                    else begin
+                        nextState <= STATE_READ_DATA; //if we have not reached the burst count signal condition, continue reading page data,.
+                    end
                 end
         end
         STATE_FINISH: begin //do we even need this state? we can just go back to idle 
@@ -205,7 +217,13 @@ always@(*) begin
             buf_we <= 1;
             last_addr_we <= 0;
             switch_buf <= 0;
-            burst_count_en <= 1;
+            if(bus_wait)
+            begin
+                burst_count_en <= 0;
+            end
+            else begin
+                burst_count_en <= 1;
+            end
             burst_count_reset <= 0;
         end
         STATE_FINISH: begin
