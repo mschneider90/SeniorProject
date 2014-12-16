@@ -132,11 +132,11 @@ wire [3:0] nz3;
 
 //Address register. The ACP register address being written to is loaded in here. 
 d_reg address_register(
-	.clk		(clk25MHz),
+	.clk	(clk25MHz),
 	.reset	(1'b0),
 	.en		(m_addr_we),
 	.d 		(m_bus_in[15:0]),
-	.q			(m_addr)
+	.q		(m_addr)
 ); //create a decoder to process the output of the address 
 
 

@@ -97,6 +97,7 @@ color_gen cgen(.pixel(pixel),
                .output_valid(output_valid));
 					
 wire [31:0] framebuffer_addr;
+wire [31:0] framebuffer_y_addr;
 wire slave_data_we;
 wire master_idle;
                             
@@ -106,6 +107,7 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 .reset(reset),
                 .vga_output_valid(output_valid),
 			    .base_addr(framebuffer_addr),
+                .base_y_addr(framebuffer_y_addr),
                 .bus_ack(bus_master_ack),
                 .bus_req(bus_req),
                 .bus_wait(ctrl_in[0]),
@@ -119,22 +121,120 @@ VGABusInterface bus_if(.clk(clk25MHz), // master state machine
                 //.ctrl_out(ctrl_out),
 				.idle(master_idle));
 					 
-//vga framebuffer select register
+
+
+wire slave_addr_we; 
+
+vga_slave_interface vga_slave_busint( // slave state machine
+		.bus_in		(bus_in),
+		.ack		(bus_slave_en),
+		.clk		(clk25MHz),
+		.ctrl_in    (ctrl_in),
+		.data_we	(slave_data_we),
+        .addr_write (slave_addr_we)
+);
+
+wire [15:0] slave_write_addr;
+
+d_reg #(.WIDTH(16)) address_register(
+	.clk	(clk25MHz),
+	.reset	(reset),
+	.en		(slave_addr_we),
+	.d 		(bus_in[15:0]),
+	.q		(slave_write_addr) //when this address register is written to, slave_write_addr becomes the address we are writing to in the vga module. 
+);
+
+
+wire reg0_we, reg1_we, reg2_we, reg3_we, reg4_we, reg5_we, reg6_we, reg7_we;
+
+decoder_1to8 address_decoder( //should be a 1-16 register later. 
+		.select		(slave_write_addr[2:0]),
+		.data_in		(slave_data_we),   //these are the "memory addresses" of the acp registers. 
+		.data_out	({	    reg7_we, //111  0x7
+							reg6_we,   //110  0x6
+							reg5_we, //101  0x5
+							reg4_we,	  //100  0x4
+							reg3_we, //011  0x3
+							reg2_we,	  //010  0x2
+							reg1_we, //001  0x1
+							reg0_we})  //000  0x0
+);
+
+//vga frame select X address 
 d_reg #(.WIDTH(32)) vga_reg0(
 	.clk    (clk25MHz),
 	.reset	(reset),
-	.en		(slave_data_we),
+	.en		(reg0_we),
 	.d 		(bus_in),
 	.q	    (framebuffer_addr)
 );
 
-vga_slave_interface vga_slave_busint( // slave state machine
-		.bus_in		(bus_in),
-		.ack			(bus_slave_en),
-		.clk			(clk25MHz),
-		.ctrl_in    (ctrl_in),
-		.data_we		(slave_data_we)
+//vga frame select Y address
+d_reg #(.WIDTH(32)) vga_reg1(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg1_we),
+	.d 		(bus_in),
+	.q	    (framebuffer_y_addr)
 );
+
+/*
+//sprite 1 
+d_reg #(.WIDTH(32)) vga_reg2(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg0_we),
+	.d 		(bus_in),
+	.q	    ()
+);
+
+//sprite 2
+d_reg #(.WIDTH(32)) vga_reg3(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg0_we),
+	.d 		(bus_in),
+	.q	    ()
+);
+*/
+/*
+//sprite 3 
+d_reg #(.WIDTH(32)) vga_reg4(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg0_we),
+	.d 		(bus_in),
+	.q	    ()
+);
+
+//sprite 4
+d_reg #(.WIDTH(32)) vga_reg5(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg0_we),
+	.d 		(bus_in),
+	.q	    ()
+);
+
+//sprite 5 
+d_reg #(.WIDTH(32)) vga_reg6(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg0_we),
+	.d 		(bus_in),
+	.q	    ()
+);
+
+//sprite 6
+d_reg #(.WIDTH(32)) vga_reg7(
+	.clk    (clk25MHz),
+	.reset	(reset),
+	.en		(reg0_we),
+	.d 		(bus_in),
+	.q	    ()
+);
+*/
+
 
 
 

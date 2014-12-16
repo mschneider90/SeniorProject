@@ -13,7 +13,8 @@ module vga_slave_interface #(parameter BUS_WIDTH = 32,
                      input ack,
                      input clk,
                      input [CTRL_WIDTH-1:0] ctrl_in,
-                     output reg data_we);
+                     output reg data_we,
+                     output reg addr_write);
                      
 reg [3:0] currentState;
 reg [3:0] nextState;
@@ -41,24 +42,38 @@ always@(*) begin
     case (currentState)
         STATE_WAIT_FOR_ACK: begin
             data_we <= 0;
+            if(ack)
+                begin
+                    addr_write <= 1;
+                end
+            else
+                begin
+                    addr_write <= 0;
+                end
         end
         STATE_READ_WAIT: begin
             data_we <= 0;
+            addr_write <= 0;
         end
         STATE_WRITE_WAIT: begin
             data_we <= 0;
+            addr_write <= 0;
         end
         STATE_READ_DATA: begin
             data_we <= 0;
+            addr_write <= 0;
         end
         STATE_WRITE_DATA: begin
             data_we <= 1;
+            addr_write <= 0;
         end
         STATE_FINISH: begin
             data_we <= 0;
+            addr_write <= 0;
         end
         default: begin
             data_we <= 0;
+            addr_write <= 0;
         end
     endcase
 end

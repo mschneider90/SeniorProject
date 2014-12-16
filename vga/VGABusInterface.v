@@ -8,6 +8,7 @@ module VGABusInterface(input clk,
                        input bus_wait,
                        input vga_output_valid,
                        input [31:0] base_addr,
+                       input [31:0] base_y_addr,
                        output reg bus_req,
                        output buf_sel,
                        output buf_byte_sel,
@@ -18,23 +19,35 @@ module VGABusInterface(input clk,
                        //output reg [7:0] ctrl_out,
 					   output idle,
                        output [31:0] bus_out);
-                   
+
+localparam H_RES = 640;
+localparam V_RES = 480;                    
 localparam RES_X = 320;
 localparam RES_Y = 240;
 localparam COL_PER_LINE = 800;
 localparam BASE_ADDR = 32'h00001050;
 localparam BURST_LENGTH = 16;
 //localparam BKGND_WIDTH = 2560; //this is simply the horizontal resolution * 8
+localparam BKGND_WIDTH = 640; //640 = 1280/2 = (horizontal resolution * 4)/2 
+
 
 //assign ctrl_out = 8'b00010000; // burst length 16 and read
 //assign ctrl_out = 8'b00010010; // burst length 16 and write
+wire vga_buffer_valid;
+//assign vga_buffer_valid = (col > (800 - 32) || col < (H_RES - 32) && row < V_RES) ? 1 : 0;          //don't waste any more time on this. 
 
-                       
+
+
+
+             
 wire [31:0] pix_addr;  // For selecting each byte
-assign buf_read_addr[3:0] = pix_addr[4:1];
+assign buf_read_addr[3:0] = pix_addr[4:1]; //this determines which section of each buffer is being read FROM. 0-7 
 
 
-assign pix_addr = (row >> 1) * RES_X + (col >> 1); // row >> 1: 480 >> 1 = 240 rows. col >>1: 640 >> 1 = 320 columns. 
+//assign pix_addr = (row >> 1) * RES_X + ((col + 64) >> 1); // row >> 1: 480 >> 1 = 240 rows. col >>1: 640 >> 1 = 320 columns.  //or this. get x and y coordinates for frame. 
+
+assign pix_addr = (row >> 1) * RES_X + ((col) >> 1);
+
 
 wire [31:0] pix_addr_reduced; // For determining what buffer we should be in
 assign pix_addr_reduced = pix_addr >> 5; //with bigger buffers, we access the buss less. 
@@ -42,7 +55,15 @@ assign pix_addr_reduced = pix_addr >> 5; //with bigger buffers, we access the bu
                                          //32 pix buffers mean we get every 32nd PIXEL address, or every 16th physical address
 
 
-assign bus_out =  (base_addr + (pix_addr_reduced << 4)); //the bus should only ask for every 16th PHYSICAL address. (pix_addr >> 5) << 4 = (each digit repeated 16 times) 0,8,16 
+//assign bus_out =  (base_addr + (pix_addr_reduced << 4)) ; //the bus should only ask for every 16th PHYSICAL address. (pix_addr >> 5) << 4 = (each digit repeated 16 times) 0,8,16 
+
+assign bus_out = base_y_addr*BKGND_WIDTH + base_addr + (row >> 1)*BKGND_WIDTH + (((col >> 1) >> 5) << 4); 
+// what are we doing here?
+// the base_y_addr specifies a y-offset dependent on the background width. 
+// this treats memory like a 2D map, where the visible screen is a 320x240 section of memory. 
+// thus the base_y_addr specifies the vertical position of the frame, 
+// and the base_addr specifies the horizontal position of the frame. 
+
 
 
 wire currentBuf;

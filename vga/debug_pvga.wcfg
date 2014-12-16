@@ -10,7 +10,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="29" />
    <wvobject fp_name="/VGA_tb/tb_hsync" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">tb_hsync</obj_property>
       <obj_property name="ObjectShortName">tb_hsync</obj_property>
@@ -35,10 +35,6 @@
    <wvobject fp_name="/VGA_tb/tb_rst" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">tb_rst</obj_property>
       <obj_property name="ObjectShortName">tb_rst</obj_property>
-   </wvobject>
-   <wvobject fp_name="/VGA_tb/DUT/bus_ack" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_ack</obj_property>
-      <obj_property name="ObjectShortName">bus_ack</obj_property>
    </wvobject>
    <wvobject fp_name="/VGA_tb/DUT/row" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">row[10:0]</obj_property>
@@ -137,5 +133,21 @@
    <wvobject fp_name="/VGA_tb/DUT/bus_if/bus_req" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">bus_req</obj_property>
       <obj_property name="ObjectShortName">bus_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/col_fixed" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">col_fixed[10:0]</obj_property>
+      <obj_property name="ObjectShortName">col_fixed[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/vga_buffer_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">vga_buffer_valid</obj_property>
+      <obj_property name="ObjectShortName">vga_buffer_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/sgen/output_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">output_valid</obj_property>
+      <obj_property name="ObjectShortName">output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/VGA_tb/DUT/bus_if/last_addr_we" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">last_addr_we</obj_property>
+      <obj_property name="ObjectShortName">last_addr_we</obj_property>
    </wvobject>
 </wave_config>

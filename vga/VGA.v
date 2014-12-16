@@ -14,7 +14,7 @@
 /* with a 25MHz clock, we have a 40ns clock period.
 
 */
-`timescale 1ns/100ps  //including this in every module significantly improves simulation speed (like 10x faster, no shit)
+`timescale 1ns/100ps  
 
 module sync_gen(input rst,
                 input clk25MHz,
